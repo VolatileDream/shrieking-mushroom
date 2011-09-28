@@ -52,7 +52,7 @@ public class ConnectionFactory {
 		throws SocketException {
 
 		if( !nif.isUp() ){
-			return null;
+			throw new SocketException("Interface "+nif.getName()+" is not up at the moment");
 		}
 		
 		try {
