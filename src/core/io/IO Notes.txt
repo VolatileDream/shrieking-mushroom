@@ -1,8 +1,0 @@
-For String IO :
-	BufferedWriter
-	BufferedReader
-
-For Byte accurate IO : 
-	FileOutputStream
-	FileInputStream
-	

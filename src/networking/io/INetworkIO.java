@@ -22,9 +22,4 @@ public interface INetworkIO {
 	
 	public void close() throws IOException, ConnectionClosedException;
 	
-	/**
-	 * Returns the INetworkIO object that this one wraps, or null if there is none. 
-	 */
-	public INetworkIO strip();
-	
 }

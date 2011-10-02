@@ -4,24 +4,17 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 
-import networking.exceptions.InsufficientMessageLengthException;
-import networking.exceptions.MalformedMessageException;
-import networking.io.IMessage;
-import networking.io.IMessageFactory;
-import networking.io.IMessageStream;
 import networking.io.INetworkIO;
-import core.uservars.IVariableHandler;
-import core.uservars.IVariableStore;
+import core.CommonAccessObject;
 
+public class MulticastConnection extends Connection {
 
-public class MulticastConnection extends Connection implements IMessageStream {
-
-	public MulticastConnection( IVariableStore store, IMessageFactory fac, IVariableHandler handle, int sz, NetworkInterface nif, InetAddress address, int port ) throws IOException {
-		super( store, fac, handle );
+	public MulticastConnection( CommonAccessObject cao, int sz, NetworkInterface nif, InetAddress address, int port ) throws IOException {
+		super( cao, address, port );
 		
-		int ttl = varHandler.GetRequiredVariableAsInt( "networking.multicast.ttl", varStore );
+		int ttl = cao.handler.GetRequiredVariableAsInt( "networking.multicast.ttl", cao.store );
 		
-		int soTimeOut = varHandler.GetRequiredVariableAsInt( "networking.multicast.so_timeout", varStore );
+		int soTimeOut = cao.handler.GetRequiredVariableAsInt( "networking.multicast.so_timeout", cao.store );
 		
 		status = ConnectionStatus.Open;
 		
@@ -48,19 +41,6 @@ public class MulticastConnection extends Connection implements IMessageStream {
 	}
 
 	@Override
-	public boolean express( IMessage m) throws IOException {
-
-		synchronized( status ){
-			if( status != ConnectionStatus.Open ){
-				return false;
-			}
-		}
-		this.send( m );
-
-		return true;
-	}
-
-	@Override
 	public void flush() throws IOException {
 
 		synchronized( status ){
@@ -69,15 +49,15 @@ public class MulticastConnection extends Connection implements IMessageStream {
 			}
 		}
 
-		IMessage[] tmp = this.getAndClearMessages();
+		byte[][] tmp = this.getAndClearMessages();
 
-		for( IMessage m : tmp ){
+		for( byte[] m : tmp ){
 			if( m != null) send( m );
 		}
 
 	}
 
-	private void send( IMessage m ) throws IOException {
+	private void send( byte[] m ) throws IOException {
 
 		synchronized( status ){
 			if( status != ConnectionStatus.Open ){
@@ -87,9 +67,7 @@ public class MulticastConnection extends Connection implements IMessageStream {
 				
 		synchronized( this ){
 			
-			byte[] send = msgFactory.toBytes(m);
-			
-			ioControl.send( send );
+			ioControl.send( m );
 			
 			lastSent.markCurrentTime();
 		}
@@ -97,7 +75,7 @@ public class MulticastConnection extends Connection implements IMessageStream {
 	}
 
 	@Override
-	public IMessage read() throws IOException {
+	public byte[] read() throws IOException {
 		synchronized( status ){
 			if( status != ConnectionStatus.Open ){
 				throw new IOException("Multicast Connection isn't open");
@@ -112,21 +90,8 @@ public class MulticastConnection extends Connection implements IMessageStream {
 		if( contents == null ){
 			return null;
 		}
-		
 		lastReceive.markCurrentTime();
-		
-		IMessage result = null;
-		try {
-			// is tortured because it's multicast, could be crap before our message
-			result = msgFactory.fromBytes( contents, true ).Item1;
-		} catch ( MalformedMessageException e) {
-			result = null;
-			e.printStackTrace();
-		} catch ( InsufficientMessageLengthException e) {
-			result = null;
-			e.printStackTrace();
-		}
-		return result;
+		return contents;
 	}
 
 }

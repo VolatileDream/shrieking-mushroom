@@ -97,11 +97,5 @@ public class UnicastIO implements INetworkIO {
 			throw new ConnectionClosedException();
 		}
 	}
-
-	@Override
-	public INetworkIO strip() {
-		return null;
-	} 
-
 	
 }

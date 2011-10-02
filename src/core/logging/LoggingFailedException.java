@@ -2,6 +2,11 @@ package core.logging;
 
 public class LoggingFailedException extends RuntimeException {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -417175673179987448L;
+
 	public LoggingFailedException() {}
 
 	public LoggingFailedException(String message) {

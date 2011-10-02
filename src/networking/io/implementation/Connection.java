@@ -1,36 +1,41 @@
 package networking.io.implementation;
 
+import java.net.InetAddress;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import networking.io.IMessage;
-import networking.io.IMessageFactory;
-import networking.io.IMessageStream;
-import core.multithreading.ITimeMarker;
-import core.multithreading.implementation.TimeMark;
-import core.uservars.IVariableHandler;
-import core.uservars.IVariableStore;
+import networking.io.InternalConnection;
+import core.CommonAccessObject;
+import core.threading.ITimeMarker;
+import core.threading.implementation.TimeMark;
 
-public abstract class Connection implements IMessageStream {
-
-	private final Queue<IMessage> messageQueue;
+public abstract class Connection implements InternalConnection {
+	
+	private final Queue<byte[]> sendQueue;
+	private final InetAddress addr;
+	private final int port;
+	protected final CommonAccessObject cao;
 	
 	protected ITimeMarker lastReceive = new TimeMark();
 	protected ITimeMarker lastSent = new TimeMark();
-	
-	protected final IMessageFactory msgFactory;
-	protected final IVariableStore varStore;
-	protected final IVariableHandler varHandler;
 
 	protected ConnectionStatus status = ConnectionStatus.Closed; 
 
-	protected Connection( IVariableStore store, IMessageFactory fac, IVariableHandler h ){
-		messageQueue = new LinkedList<IMessage>();
-		msgFactory = fac;
-		varStore = store;
-		varHandler = h;
+	protected Connection( CommonAccessObject c, InetAddress address, int port ){
+		sendQueue = new LinkedList<byte[]>();
+		this.addr = address;
+		this.port = port;
+		cao = c;
 	}
 
+	public InetAddress getAddress(){
+		return addr;
+	}
+	
+	public int getPort(){
+		return port;
+	}
+	
 	@Override
 	public long lastSent(){
 		return lastSent.getMark();
@@ -40,29 +45,26 @@ public abstract class Connection implements IMessageStream {
 	public long lastReceived(){
 		return lastReceive.getMark();
 	}
-	
-	public ConnectionStatus getStatus(){
-		return status;
-	}
 
+	@Override
 	public boolean isClosed(){
 		return status == ConnectionStatus.Closed;
 	}
 	
-	protected IMessage[] getAndClearMessages() {
-		IMessage[] tmp = null;
+	protected byte[][] getAndClearMessages() {
+		byte[][] tmp = null;
 		
-		synchronized( messageQueue ){
+		synchronized( sendQueue ){
 			
-			int queueSize = messageQueue.size();
+			int queueSize = sendQueue.size();
 			
 			if( queueSize > 0 ){
-				tmp = new IMessage[queueSize];
+				tmp = new byte[queueSize][];
 			}
 			
 			int i=0;
-			while( !messageQueue.isEmpty() ){
-				tmp[i] = messageQueue.remove();
+			while( !sendQueue.isEmpty() ){
+				tmp[i] = sendQueue.remove();
 				i++;
 			}
 		}
@@ -74,24 +76,24 @@ public abstract class Connection implements IMessageStream {
 	public int numSend() {
 		int num = 0;
 		
-		synchronized( messageQueue ){
-			num = messageQueue.size();
+		synchronized( sendQueue ){
+			num = sendQueue.size();
 		}
 		
 		return num;
 	}
 
 	@Override
-	public boolean addMessage( IMessage m) {
+	public boolean write( byte[] m ) {
 
 		if( status == ConnectionStatus.Closed ){
 			return false;
 		}
 		boolean added = false;
 
-		synchronized( messageQueue ){
+		synchronized( sendQueue ){
 			
-			added = messageQueue.offer( m );
+			added = sendQueue.offer( m );
 			
 		}
 		return added;
