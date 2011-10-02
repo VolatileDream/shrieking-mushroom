@@ -7,12 +7,12 @@ import networking.interfaces.IConnection;
 import networking.io.InternalConnection;
 
 import core.CommonAccessObject;
+import core.events.IErrorEvent;
+import core.events.IEventQueue;
+import core.events.IReadEvent;
+import core.events.implementation.ErrorEvent;
+import core.events.implementation.ReadEvent;
 import core.logging.ILogger.LogLevel;
-import events.IErrorEvent;
-import events.IEventQueue;
-import events.IReadEvent;
-import events.implementation.ErrorEvent;
-import events.implementation.ReadEvent;
 
 public class ConnectionThread implements Runnable {
 

@@ -3,8 +3,9 @@ package networking.interfaces;
 import java.net.InetAddress;
 import java.util.ArrayList;
 
+import core.events.*;
 
-import events.*;
+
 
 public interface TCPNetworkAccess {
 	

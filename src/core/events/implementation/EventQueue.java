@@ -1,10 +1,11 @@
-package events.implementation;
+package core.events.implementation;
 
 import java.util.LinkedList;
 import java.util.Queue;
 
-import events.IEvent;
-import events.IEventQueue;
+import core.events.IEvent;
+import core.events.IEventQueue;
+
 
 public class EventQueue implements IEventQueue {
 

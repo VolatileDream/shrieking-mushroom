@@ -11,13 +11,13 @@ import core.config.IVariableHandler;
 import core.config.IVariableStore;
 import core.config.implementation.UserVariableHandler;
 import core.config.implementation.def.DefaultNetworkingVariableStore;
+import core.events.IConnectEvent;
+import core.events.IEvent;
+import core.events.IEventQueue;
+import core.events.IReadEvent;
+import core.events.implementation.EventQueue;
 import core.logging.ILogger;
 import core.logging.LocalTextLogger;
-import events.IConnectEvent;
-import events.IEvent;
-import events.IEventQueue;
-import events.IReadEvent;
-import events.implementation.EventQueue;
 
 public class main {
 

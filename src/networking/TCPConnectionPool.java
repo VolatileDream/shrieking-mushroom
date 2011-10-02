@@ -11,12 +11,12 @@ import networking.io.ConnectionFactory;
 import networking.io.InternalConnection;
 import networking.io.implementation.NullConnection;
 import core.CommonAccessObject;
+import core.events.IConnectEvent;
+import core.events.IErrorEvent;
+import core.events.IEventQueue;
+import core.events.implementation.ConnectEvent;
+import core.events.implementation.ErrorEvent;
 import core.logging.ILogger.LogLevel;
-import events.IConnectEvent;
-import events.IErrorEvent;
-import events.IEventQueue;
-import events.implementation.ConnectEvent;
-import events.implementation.ErrorEvent;
 
 public class TCPConnectionPool implements TCPNetworkAccess {
 	

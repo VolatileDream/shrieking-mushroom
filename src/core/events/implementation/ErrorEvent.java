@@ -1,6 +1,6 @@
-package events.implementation;
+package core.events.implementation;
 
-import events.IErrorEvent;
+import core.events.IErrorEvent;
 import networking.interfaces.IConnection;
 
 public class ErrorEvent extends Event implements IErrorEvent {

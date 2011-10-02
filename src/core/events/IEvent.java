@@ -1,4 +1,4 @@
-package events;
+package core.events;
 
 import networking.interfaces.IConnection;
 

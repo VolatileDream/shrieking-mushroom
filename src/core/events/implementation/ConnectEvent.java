@@ -1,7 +1,7 @@
-package events.implementation;
+package core.events.implementation;
 
+import core.events.IConnectEvent;
 import networking.interfaces.IConnection;
-import events.IConnectEvent;
 
 public class ConnectEvent extends Event implements IConnectEvent {
 

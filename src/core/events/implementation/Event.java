@@ -1,7 +1,7 @@
-package events.implementation;
+package core.events.implementation;
 
+import core.events.IEvent;
 import networking.interfaces.IConnection;
-import events.IEvent;
 
 public abstract class Event implements IEvent {
 

@@ -1,4 +1,4 @@
-package events;
+package core.events;
 
 public interface IReadEvent extends IEvent {
 	
