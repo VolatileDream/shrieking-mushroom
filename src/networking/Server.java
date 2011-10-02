@@ -45,7 +45,7 @@ public class Server implements Runnable, TCPServer {
 
 		CommonVarFetch fetcher = new CommonVarFetch( cao.store, cao.handler );
 		
-		ServerSocket soc;
+		ServerSocket soc = null;
 		try {
 			soc = new ServerSocket( port );
 			soc.setSoTimeout( getWaitTimeOut() );
@@ -81,6 +81,14 @@ public class Server implements Runnable, TCPServer {
 
 		}// end loop
 
+		if( soc != null ){
+			try {
+				soc.close();
+			} catch (IOException e) {
+				cao.log.Log(e, LogLevel.Info);
+			}
+		}
+		
 	}
 
 	public void stop(){
