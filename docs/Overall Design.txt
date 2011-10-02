@@ -1,0 +1,66 @@
+Overall design of Shrieking Mushroom
+
+Application Layer
+	-All parts of the application except for protocol logic, and direct network io
+
+Protocol Layer
+	-Contains all (most) of the protocol logic for the application
+
+Networking Layer
+	-Contains all direct read/writes to networking interfaces and sockets
+
+
+
+App
+	
+	+---------------------------------------+
+	|					|
+	|		What ever		|
+	|					|
+	|					|
+	|	+-----------------------+	|
+	|	|			|	|
+	|	|    message handler	|	|
+	|	|			|	|
+	|	+-----------------------+	|
+	|		|	/\		|
+	+---------------|-------|---------------+
+			|	|
+Protocol		|	|
+			|	|
+			\/	|
+	+---------------------------------------+
+	|					|
+	|	+-----------------------+	|
+	|	|			|	|
+	|	|    Message Filter	|	|
+	|	|			|	|
+	|	+-----------------------+	|
+	|		|	/\		|
+	|		\/	|		|
+	|	+-----------------------+	|
+	|	|			|	|
+	|	|	Translator	|	|
+	|	|			|	|
+	|	+-----------------------+	|
+	|		|	/\		|
+	+---------------|-------|---------------+
+			|	|
+			|	|
+			|	|
+Net			\/	|
+	+---------------------------------------+
+	|					|
+	|	+-------+	+-------+	|
+	|	|	|	|	|	|
+	|	|	|	|	|	|
+	|	|  TCP	|	| multi	|	|
+	|	|	|	| -cast	|	|
+	|	|	|	|	|	|
+	|	+-------+	+-------+	|
+	+---------------------------------------+
+		|			/\
+		|			|
+		\/			|
+	+---------------------------------------+
+			internet
