@@ -6,6 +6,7 @@ import core.config.IVariableStore;
 import core.config.exceptions.VariableError;
 import core.config.exceptions.VariableNotBoolException;
 import core.config.exceptions.VariableNotIntException;
+import core.config.implementation.def.DefaultNetworkingVariableStore;
 
 public class UserVariableHandler implements IVariableHandler {
 
@@ -60,7 +61,7 @@ public class UserVariableHandler implements IVariableHandler {
 	@Override
 	public IVariable HandleMissingRequiredVariable( String name, IVariableStore store ){
 
-		IVariableStore newStore = new DefaultVariableStore();
+		IVariableStore newStore = new DefaultNetworkingVariableStore();
 		IVariable[] var = new IVariable[1];
 
 		if( newStore.TryGetVariable( name, var ) ){

@@ -9,8 +9,8 @@ import networking.interfaces.TCPServer;
 import core.config.IVariable;
 import core.config.IVariableHandler;
 import core.config.IVariableStore;
-import core.config.implementation.DefaultVariableStore;
 import core.config.implementation.UserVariableHandler;
+import core.config.implementation.def.DefaultNetworkingVariableStore;
 import core.logging.ILogger;
 import core.logging.LocalTextLogger;
 import events.IConnectEvent;
@@ -26,7 +26,7 @@ public class main {
 	 */
 	public static void main(String[] args) throws IOException {
 		
-		IVariableStore store = new DefaultVariableStore();
+		IVariableStore store = new DefaultNetworkingVariableStore();
 		IVariableHandler handler = new UserVariableHandler();
 		
 		IVariable logFile = handler.GetRequiredVariable( "logging.logFile", store );
@@ -42,9 +42,7 @@ public class main {
 		
 		TCPServer tcp54444 = netAccess.allowConnection( 54444 );
 		tcp54444.start();
-		
-		
-		
+
 		InetAddress adr = InetAddress.getByName("Po.local");
 		try {
 			Thread.sleep(5000);

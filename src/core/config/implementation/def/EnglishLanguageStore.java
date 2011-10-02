@@ -1,4 +1,4 @@
-package core.config.implementation;
+package core.config.implementation.def;
 
 import core.config.IVariable;
 import core.config.IVariableStore;

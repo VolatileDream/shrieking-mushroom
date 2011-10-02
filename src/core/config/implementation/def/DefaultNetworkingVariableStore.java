@@ -1,17 +1,19 @@
-package core.config.implementation;
+package core.config.implementation.def;
 
 import core.config.IVariable;
 import core.config.IVariableStore;
+import core.config.implementation.UserVariable;
+import core.config.implementation.UserVariableStore;
 
-public class DefaultVariableStore implements IVariableStore {
+public class DefaultNetworkingVariableStore implements IVariableStore {
 
 	private IVariableStore store = new UserVariableStore();
 	
-	public DefaultVariableStore(){
+	public DefaultNetworkingVariableStore(){
 		this("");
 	}
 	
-	public DefaultVariableStore( String rootNamespace ){
+	public DefaultNetworkingVariableStore( String rootNamespace ){
 		Threading( rootNamespace );
 		
 		Networking( rootNamespace );
@@ -55,7 +57,6 @@ public class DefaultVariableStore implements IVariableStore {
 		var = new UserVariable( loggingNameSpace + "logProfile","31");
 		this.AddOrChangeValue( var );
 	}	
-
 	
 	private void Networking( String rootNameSpace ){
 		String networkingNameSpace = rootNameSpace + "networking.";
@@ -63,7 +64,6 @@ public class DefaultVariableStore implements IVariableStore {
 		Unicast( networkingNameSpace );
 		Multicast( networkingNameSpace );
 	}
-
 	
 	private void Unicast( String networkingNameSpace ){
 		String unicastNameSpace = networkingNameSpace + "unicast.";

@@ -3,10 +3,11 @@ package core.config.implementation;
 import core.config.IDefaultVariableSetup;
 import core.config.IVariable;
 import core.config.IVariableStore;
+import core.config.implementation.def.DefaultNetworkingVariableStore;
 
 public class VariableSetup implements IDefaultVariableSetup {
 
-	private IVariableStore defaults = new DefaultVariableStore(); 
+	private IVariableStore defaults = new DefaultNetworkingVariableStore(); 
 	
 	
 	@Override
