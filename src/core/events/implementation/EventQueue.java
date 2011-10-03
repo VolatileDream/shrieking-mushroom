@@ -7,11 +7,11 @@ import core.events.IEvent;
 import core.events.IEventQueue;
 
 
-public class EventQueue implements IEventQueue {
+public class EventQueue<M extends IEvent> implements IEventQueue<M> {
 
-	private final Queue<IEvent> queue = new LinkedList<IEvent>();
+	private final Queue<M> queue = new LinkedList<M>();
 	
-	public synchronized boolean offer( IEvent e ){
+	public synchronized boolean offer( M e ){
 		boolean result = false;
 		synchronized( queue ){
 			result = queue.offer( e );
@@ -30,7 +30,7 @@ public class EventQueue implements IEventQueue {
 	}
 
 	@Override
-	public synchronized IEvent remove() {
+	public synchronized M remove() {
 		synchronized( queue ){
 			return queue.poll();
 		}

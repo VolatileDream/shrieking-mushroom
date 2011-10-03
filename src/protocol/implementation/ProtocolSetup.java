@@ -1,5 +1,6 @@
 package protocol.implementation;
 
+import networking.events.INetworkEvent;
 import protocol.IMessageFactory;
 import protocol.IMessageFilter;
 import protocol.ITranslator;
@@ -10,7 +11,7 @@ import core.events.IEventQueue;
 public class ProtocolSetup {
 	
 	
-	public static MessageMover setup( CommonAccessObject c, IEventQueue allEventsQueue ){
+	public static MessageMover setup( CommonAccessObject c, IEventQueue<INetworkEvent> allEventsQueue ){
 		MessageType text = new MessageType("text");
 		MessageType con = new MessageType("connection");
 		MessageType redund = new MessageType("redundancy");

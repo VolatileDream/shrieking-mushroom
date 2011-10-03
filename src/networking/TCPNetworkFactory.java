@@ -1,26 +1,27 @@
 package networking;
 
+import networking.events.INetworkEvent;
 import networking.implementation.unicast.TCPConnectionPool;
 import core.CommonAccessObject;
 import core.events.IEventQueue;
 
 public class TCPNetworkFactory {
 	
-	private IEventQueue clientQ = null;
-	private IEventQueue serverQ = null;
+	private IEventQueue<INetworkEvent> clientQ = null;
+	private IEventQueue<INetworkEvent> serverQ = null;
 	private final CommonAccessObject cao;
 	
 	public TCPNetworkFactory( CommonAccessObject c ){
 		cao = c;
 	}
 	
-	public TCPNetworkFactory sameQueue( IEventQueue e ){
+	public TCPNetworkFactory sameQueue( IEventQueue<INetworkEvent> e ){
 		clientQ = e;
 		serverQ = e;
 		return this;
 	}
 	
-	public TCPNetworkFactory differentQueue( IEventQueue client, IEventQueue server ){
+	public TCPNetworkFactory differentQueue( IEventQueue<INetworkEvent> client, IEventQueue<INetworkEvent> server ){
 		clientQ = client;
 		serverQ = server;
 		return this;

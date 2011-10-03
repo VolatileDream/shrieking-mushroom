@@ -3,10 +3,10 @@ package core;
 import java.io.IOException;
 import java.net.InetAddress;
 
-import networking.TCPNetworkFactory;
 import networking.TCPNetworkAccess;
+import networking.TCPNetworkFactory;
 import networking.TCPServer;
-import networking.implementation.unicast.TCPConnectionPool;
+import networking.events.INetworkEvent;
 import protocol.implementation.MessageMover;
 import protocol.implementation.ProtocolSetup;
 import core.config.IVariable;
@@ -42,7 +42,7 @@ public class main {
 		
 		TCPNetworkFactory netF = new TCPNetworkFactory( cao );
 		
-		IEventQueue eq = new EventQueue();
+		IEventQueue<INetworkEvent> eq = new EventQueue<INetworkEvent>();
 		
 		netF.sameQueue( eq );
 		
@@ -65,9 +65,7 @@ public class main {
 		InetAddress adr = InetAddress.getByName("Po.local");
 		netAccess.connect( adr, 54444 );
 		
-		try {
-			Thread.sleep(5000);
-		} catch (InterruptedException e) {}
+		sleep(5000);
 		
 		//networking close
 		tcp54444.stop();

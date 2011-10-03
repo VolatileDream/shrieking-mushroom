@@ -3,27 +3,28 @@ package protocol.implementation;
 import java.util.Hashtable;
 
 import networking.IConnection;
+import networking.events.ICloseEvent;
+import networking.events.IConnectEvent;
+import networking.events.IErrorEvent;
+import networking.events.INetworkEvent;
+import networking.events.IReadEvent;
 import protocol.IMessageFactory;
 import protocol.ITranslator;
 import protocol.implementation.interfaces.MyMessage;
 import core.CommonAccessObject;
 import core.Tupple;
-import core.events.ICloseEvent;
-import core.events.IConnectEvent;
-import core.events.IErrorEvent;
 import core.events.IEvent;
 import core.events.IEventQueue;
-import core.events.IReadEvent;
 import core.logging.ILogger.LogLevel;
 
 public class Translator implements ITranslator<MyMessage> {
 
-	private final IEventQueue queue;
+	private final IEventQueue<INetworkEvent> queue;
 	private final CommonAccessObject cao;
 	private final IMessageFactory<MyMessage> factory;
 	private final Hashtable<IConnection, byte[]> buffers = new Hashtable<IConnection,byte[]>();
 	
-	public Translator( CommonAccessObject c, IEventQueue e, IMessageFactory<MyMessage> f ){
+	public Translator( CommonAccessObject c, IEventQueue<INetworkEvent> e, IMessageFactory<MyMessage> f ){
 		queue = e;
 		cao = c;
 		factory = f;
