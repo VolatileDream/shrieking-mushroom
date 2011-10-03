@@ -28,11 +28,13 @@ public abstract class Connection implements InternalConnection {
 		this.port = port;
 		cao = c;
 	}
-
+	
+	@Override
 	public InetAddress getAddress(){
 		return addr;
 	}
 	
+	@Override
 	public int getPort(){
 		return port;
 	}
