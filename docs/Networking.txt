@@ -1,0 +1,15 @@
+Networking code organization
+
+networking/
+	IConnection
+		Connection information exposed to the protocol layer
+	TCPNetworkAccess
+		TCP Connection manager, holds all TCP connections
+	TCPNetworkFactory
+		Creates the TCPNetworkAccess instance
+	TCPServer
+		Returned by the TCPNetworkAccess when opening ports for incoming connections
+	exceptions/
+		Stores exceptions thrown by interfaces exposed to the protocol layer
+	implementation/
+		default implementation of all interfaces
