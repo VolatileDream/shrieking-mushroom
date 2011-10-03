@@ -9,6 +9,7 @@ import networking.TCPNetworkAccess;
 import networking.TCPServer;
 import networking.events.IConnectEvent;
 import networking.events.IErrorEvent;
+import networking.events.INetworkEvent;
 import networking.implementation.ConnectionFactory;
 import networking.implementation.ConnectionThread;
 import networking.implementation.InternalConnection;
@@ -21,8 +22,8 @@ import core.logging.ILogger.LogLevel;
 
 public class TCPConnectionPool implements TCPNetworkAccess {
 	
-	private final IEventQueue clientQueue;
-	private final IEventQueue serverQueue;
+	private final IEventQueue<INetworkEvent> clientQueue;
+	private final IEventQueue<INetworkEvent> serverQueue;
 	private final CommonAccessObject cao;
 	private final ConnectionFactory fac;
 	
@@ -31,7 +32,7 @@ public class TCPConnectionPool implements TCPNetworkAccess {
 	
 	private Boolean keepRunning = true;
 	
-	public TCPConnectionPool( CommonAccessObject c, IEventQueue clientQ, IEventQueue serverQ ){
+	public TCPConnectionPool( CommonAccessObject c, IEventQueue<INetworkEvent> clientQ, IEventQueue<INetworkEvent> serverQ ){
 		clientQueue = clientQ;
 		serverQueue = serverQ;
 		cao = c;
@@ -46,7 +47,7 @@ public class TCPConnectionPool implements TCPNetworkAccess {
 		addConnection( c, serverThreads, serverQueue );
 	}
 	
-	private void addConnection( final InternalConnection con, final ArrayList<ConnectionThread> threads, final IEventQueue queue ){
+	private void addConnection( final InternalConnection con, final ArrayList<ConnectionThread> threads, final IEventQueue<INetworkEvent> queue ){
 		
 		boolean added = false;
 		
@@ -79,7 +80,7 @@ public class TCPConnectionPool implements TCPNetworkAccess {
 		}
 	}
 
-	private ConnectionThread newThread( ArrayList<ConnectionThread> threads, IEventQueue e ){
+	private ConnectionThread newThread( ArrayList<ConnectionThread> threads, IEventQueue<INetworkEvent> e ){
 		ConnectionThread ct = new ConnectionThread( cao, e );
 		
 		Thread t = new Thread( ct );
@@ -93,12 +94,12 @@ public class TCPConnectionPool implements TCPNetworkAccess {
 	// interfaces
 	
 	@Override
-	public IEventQueue getClientQueue(){
+	public IEventQueue<INetworkEvent> getClientQueue(){
 		return clientQueue;
 	}
 	
 	@Override
-	public IEventQueue getServerQueue(){
+	public IEventQueue<INetworkEvent> getServerQueue(){
 		return serverQueue;
 	}
 	

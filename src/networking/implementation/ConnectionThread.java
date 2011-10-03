@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import networking.IConnection;
 import networking.events.IErrorEvent;
+import networking.events.INetworkEvent;
 import networking.events.IReadEvent;
 import networking.implementation.events.ErrorEvent;
 import networking.implementation.events.ReadEvent;
@@ -16,12 +17,12 @@ import core.logging.ILogger.LogLevel;
 public class ConnectionThread implements Runnable {
 
 	private final CommonAccessObject cao;
-	private final IEventQueue eventQueue;
+	private final IEventQueue<INetworkEvent> eventQueue;
 	private final ArrayList<InternalConnection> connections = new ArrayList<InternalConnection>();
 
 	private volatile Boolean keepRunning = true;
 
-	public ConnectionThread( CommonAccessObject c, IEventQueue eq ){
+	public ConnectionThread( CommonAccessObject c, IEventQueue<INetworkEvent> eq ){
 		cao = c;
 		eventQueue = eq;
 	}
