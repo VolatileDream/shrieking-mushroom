@@ -4,13 +4,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import networking.IConnection;
+import networking.events.IErrorEvent;
+import networking.events.IReadEvent;
+import networking.implementation.events.ErrorEvent;
+import networking.implementation.events.ReadEvent;
 
 import core.CommonAccessObject;
-import core.events.IErrorEvent;
 import core.events.IEventQueue;
-import core.events.IReadEvent;
-import core.events.implementation.ErrorEvent;
-import core.events.implementation.ReadEvent;
 import core.logging.ILogger.LogLevel;
 
 public class ConnectionThread implements Runnable {

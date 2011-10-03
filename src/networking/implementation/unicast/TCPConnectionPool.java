@@ -7,16 +7,16 @@ import java.util.ArrayList;
 import networking.IConnection;
 import networking.TCPNetworkAccess;
 import networking.TCPServer;
+import networking.events.IConnectEvent;
+import networking.events.IErrorEvent;
 import networking.implementation.ConnectionFactory;
 import networking.implementation.ConnectionThread;
 import networking.implementation.InternalConnection;
 import networking.implementation.NullConnection;
+import networking.implementation.events.ConnectEvent;
+import networking.implementation.events.ErrorEvent;
 import core.CommonAccessObject;
-import core.events.IConnectEvent;
-import core.events.IErrorEvent;
 import core.events.IEventQueue;
-import core.events.implementation.ConnectEvent;
-import core.events.implementation.ErrorEvent;
 import core.logging.ILogger.LogLevel;
 
 public class TCPConnectionPool implements TCPNetworkAccess {

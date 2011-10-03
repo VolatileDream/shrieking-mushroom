@@ -1,9 +1,9 @@
-package core.events.implementation;
+package networking.implementation.events;
 
-import core.events.IReadEvent;
 import networking.IConnection;
+import networking.events.IReadEvent;
 
-public class ReadEvent extends Event implements IReadEvent {
+public class ReadEvent extends NetworkEvent implements IReadEvent {
 
 	private final byte[] read;
 	

@@ -1,6 +1,6 @@
-package core.events;
+package networking.events;
 
-public interface IReadEvent extends IEvent {
+public interface IReadEvent extends INetworkEvent {
 	
 	/**
 	 * @return Returns the contents that were read.
