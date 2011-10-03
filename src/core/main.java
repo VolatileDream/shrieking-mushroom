@@ -6,15 +6,14 @@ import java.net.InetAddress;
 import networking.TCPNetworkAccess;
 import networking.TCPServer;
 import networking.implementation.unicast.TCPConnectionPool;
+import protocol.implementation.MessageMover;
+import protocol.implementation.ProtocolSetup;
 import core.config.IVariable;
 import core.config.IVariableHandler;
 import core.config.IVariableStore;
 import core.config.implementation.UserVariableHandler;
 import core.config.implementation.def.DefaultNetworkingVariableStore;
-import core.events.IConnectEvent;
-import core.events.IEvent;
 import core.events.IEventQueue;
-import core.events.IReadEvent;
 import core.events.implementation.EventQueue;
 import core.logging.ILogger;
 import core.logging.LocalTextLogger;
@@ -26,6 +25,8 @@ public class main {
 	 */
 	public static void main(String[] args) throws IOException {
 		
+		// General Setup
+		
 		IVariableStore store = new DefaultNetworkingVariableStore();
 		IVariableHandler handler = new UserVariableHandler();
 		
@@ -36,43 +37,34 @@ public class main {
 		
 		CommonAccessObject cao = new CommonAccessObject( store, handler, log );
 		
+		// Network Layer Setup
+		
 		IEventQueue eq = new EventQueue();
 		
 		TCPNetworkAccess netAccess = new TCPConnectionPool( cao, eq, eq );// use same event queue for both
+
+		// Protocol Layer setup
 		
+		MessageMover mover = ProtocolSetup.setup( cao, eq );
+		
+		// Actual usage Setup
+		
+		//protocol layer start
+		mover.start();
+		
+		//networking listen
 		TCPServer tcp54444 = netAccess.allowConnection( 54444 );
 		tcp54444.start();
 
+		//networking connect 
 		InetAddress adr = InetAddress.getByName("Po.local");
-		try {
-			Thread.sleep(5000);
-			System.out.println("Almost done waiting...");
-			Thread.sleep(2000);
-		} catch (InterruptedException e1) {}
 		netAccess.connect( adr, 54444 );
 		
-		eq.waitFor();
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {}
 		
-		System.out.println("Done waiting for queue");
-		
-		while( eq.poll() ){
-			
-			IEvent e = eq.remove();
-			System.out.print( e.getClass().getName() +" "+e.getConnection().getAddress().toString()+":");
-			
-			//System.out.println( e.getClass().getName() );
-			
-			if( e instanceof IConnectEvent ){
-				e.getConnection().write( "O Hai :)".getBytes() );
-			}else if( e instanceof IReadEvent ){
-				IReadEvent re = (IReadEvent)e;
-				System.out.print( new String( re.getRead() ) );
-			}
-			System.out.println();
-			sleep(200);
-			
-		}
-		
+		//networking close
 		tcp54444.stop();
 		netAccess.close();
 		

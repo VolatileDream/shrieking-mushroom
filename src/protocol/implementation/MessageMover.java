@@ -2,6 +2,7 @@ package protocol.implementation;
 
 import protocol.IMessageFilter;
 import protocol.ITranslator;
+import protocol.implementation.interfaces.MyMessage;
 
 public class MessageMover implements Runnable {
 	

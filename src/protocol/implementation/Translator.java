@@ -5,6 +5,7 @@ import java.util.Hashtable;
 import networking.IConnection;
 import protocol.IMessageFactory;
 import protocol.ITranslator;
+import protocol.implementation.interfaces.MyMessage;
 import core.CommonAccessObject;
 import core.Tupple;
 import core.events.ICloseEvent;
@@ -52,7 +53,7 @@ public class Translator implements ITranslator<MyMessage> {
 			
 			byte[] buf = buffers.get( c );
 			
-			Tupple<MyMessage,Integer> result = factory.transformToMessage( buf ); 
+			Tupple<MyMessage,Integer> result = factory.transformToMessage( c, buf ); 
 			
 			if( result.Item1 != null && result.Item2 > 0 ){
 				
