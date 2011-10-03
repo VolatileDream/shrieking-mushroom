@@ -2,13 +2,15 @@ package networking;
 
 import java.net.InetAddress;
 
+import networking.exceptions.ConnectionClosedException;
+
 public interface IConnection {
 
 	public InetAddress getAddress();
 	
 	public int getPort();
 	
-	boolean write( byte[] m );
+	boolean write( byte[] m ) throws ConnectionClosedException;
 	
 	/**
 	 * Returns the last time the connection read something

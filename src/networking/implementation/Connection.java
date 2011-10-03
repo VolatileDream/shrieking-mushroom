@@ -4,6 +4,8 @@ import java.net.InetAddress;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import networking.exceptions.ConnectionClosedException;
+
 import core.CommonAccessObject;
 import core.threading.ITimeMarker;
 import core.threading.implementation.TimeMark;
@@ -83,10 +85,10 @@ public abstract class Connection implements InternalConnection {
 	}
 
 	@Override
-	public boolean write( byte[] m ) {
+	public boolean write( byte[] m ) throws ConnectionClosedException {
 
 		if( status == ConnectionStatus.Closed ){
-			return false;
+			throw new ConnectionClosedException("Connection has been closed");
 		}
 		boolean added = false;
 
