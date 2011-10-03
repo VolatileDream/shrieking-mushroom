@@ -5,6 +5,8 @@ Application Layer
 
 Protocol Layer
 	-Contains all (most) of the protocol logic for the application
+	-Handles encryption/decryption
+	-3 unique sections: TCPserver, TCPclient, Multicast
 
 Networking Layer
 	-Contains all direct read/writes to networking interfaces and sockets
