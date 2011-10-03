@@ -1,9 +1,10 @@
-package networking.io.implementation;
+package networking.implementation.unicast;
 
 import java.io.IOException;
 import java.net.Socket;
 
-import networking.io.INetworkIO;
+import networking.implementation.Connection;
+import networking.implementation.INetworkIO;
 import core.CommonAccessObject;
 
 public class UnicastConnection extends Connection {

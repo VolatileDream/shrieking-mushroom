@@ -1,12 +1,11 @@
-package networking;
+package networking.implementation.unicast;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
-import networking.interfaces.TCPServer;
-import networking.io.implementation.UnicastConnection;
+import networking.TCPServer;
 import core.CommonAccessObject;
 import core.CommonVarFetch;
 import core.logging.ILogger.LogLevel;

@@ -1,4 +1,4 @@
-package networking.io.implementation;
+package networking.implementation.multicast;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -10,7 +10,7 @@ import java.net.SocketTimeoutException;
 
 import networking.exceptions.ConnectionClosedException;
 import networking.exceptions.MulticastUnavailableException;
-import networking.io.INetworkIO;
+import networking.implementation.INetworkIO;
 
 public class MulticastIO implements INetworkIO {
 

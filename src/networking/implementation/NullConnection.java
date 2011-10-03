@@ -1,8 +1,8 @@
-package networking.io.implementation;
+package networking.implementation;
 
 import java.net.InetAddress;
 
-import networking.interfaces.IConnection;
+import networking.IConnection;
 
 public class NullConnection implements IConnection {
 

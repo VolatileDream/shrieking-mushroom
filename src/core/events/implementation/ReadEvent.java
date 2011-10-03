@@ -1,7 +1,7 @@
 package core.events.implementation;
 
 import core.events.IReadEvent;
-import networking.interfaces.IConnection;
+import networking.IConnection;
 
 public class ReadEvent extends Event implements IReadEvent {
 

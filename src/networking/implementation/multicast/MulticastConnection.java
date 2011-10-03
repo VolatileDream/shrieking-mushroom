@@ -1,10 +1,11 @@
-package networking.io.implementation;
+package networking.implementation.multicast;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 
-import networking.io.INetworkIO;
+import networking.implementation.Connection;
+import networking.implementation.INetworkIO;
 import core.CommonAccessObject;
 
 public class MulticastConnection extends Connection {

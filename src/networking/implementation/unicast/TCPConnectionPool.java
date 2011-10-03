@@ -1,15 +1,16 @@
-package networking;
+package networking.implementation.unicast;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.ArrayList;
 
-import networking.interfaces.IConnection;
-import networking.interfaces.TCPNetworkAccess;
-import networking.interfaces.TCPServer;
-import networking.io.ConnectionFactory;
-import networking.io.InternalConnection;
-import networking.io.implementation.NullConnection;
+import networking.IConnection;
+import networking.TCPNetworkAccess;
+import networking.TCPServer;
+import networking.implementation.ConnectionFactory;
+import networking.implementation.ConnectionThread;
+import networking.implementation.InternalConnection;
+import networking.implementation.NullConnection;
 import core.CommonAccessObject;
 import core.events.IConnectEvent;
 import core.events.IErrorEvent;

@@ -1,4 +1,4 @@
-package networking.io;
+package networking.implementation;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -6,8 +6,8 @@ import java.net.NetworkInterface;
 import java.net.Socket;
 import java.net.SocketException;
 
-import networking.io.implementation.MulticastConnection;
-import networking.io.implementation.UnicastConnection;
+import networking.implementation.multicast.MulticastConnection;
+import networking.implementation.unicast.UnicastConnection;
 import core.CommonAccessObject;
 
 public class ConnectionFactory {

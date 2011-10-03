@@ -1,10 +1,9 @@
-package networking.io.implementation;
+package networking.implementation;
 
 import java.net.InetAddress;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import networking.io.InternalConnection;
 import core.CommonAccessObject;
 import core.threading.ITimeMarker;
 import core.threading.implementation.TimeMark;

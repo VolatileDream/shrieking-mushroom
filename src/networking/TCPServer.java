@@ -1,4 +1,4 @@
-package networking.interfaces;
+package networking;
 
 public interface TCPServer {
 	

@@ -3,9 +3,9 @@ package core;
 import java.io.IOException;
 import java.net.InetAddress;
 
-import networking.TCPConnectionPool;
-import networking.interfaces.TCPNetworkAccess;
-import networking.interfaces.TCPServer;
+import networking.TCPNetworkAccess;
+import networking.TCPServer;
+import networking.implementation.unicast.TCPConnectionPool;
 import core.config.IVariable;
 import core.config.IVariableHandler;
 import core.config.IVariableStore;

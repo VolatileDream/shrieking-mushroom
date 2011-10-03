@@ -1,10 +1,9 @@
-package networking;
+package networking.implementation;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-import networking.interfaces.IConnection;
-import networking.io.InternalConnection;
+import networking.IConnection;
 
 import core.CommonAccessObject;
 import core.events.IErrorEvent;

@@ -1,8 +1,8 @@
-package networking.io;
+package networking.implementation;
 
 import java.io.IOException;
 
-import networking.interfaces.IConnection;
+import networking.IConnection;
 
 public interface InternalConnection extends IConnection {
 

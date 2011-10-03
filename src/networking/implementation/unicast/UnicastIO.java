@@ -1,4 +1,4 @@
-package networking.io.implementation;
+package networking.implementation.unicast;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -6,7 +6,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 import networking.exceptions.ConnectionClosedException;
-import networking.io.INetworkIO;
+import networking.implementation.INetworkIO;
 
 public class UnicastIO implements INetworkIO {
 

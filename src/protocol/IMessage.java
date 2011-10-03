@@ -1,6 +1,6 @@
 package protocol;
 
-import networking.interfaces.IConnection;
+import networking.IConnection;
 
 public interface IMessage {
 	

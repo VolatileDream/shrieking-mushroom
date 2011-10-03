@@ -1,10 +1,11 @@
-package networking;
+package networking.implementation.unicast;
 
 import java.io.IOException;
 import java.net.InetAddress;
 
-import networking.io.ConnectionFactory;
-import networking.io.InternalConnection;
+import networking.implementation.ConnectionFactory;
+import networking.implementation.InternalConnection;
+
 import core.CommonAccessObject;
 import core.logging.ILogger.LogLevel;
 
