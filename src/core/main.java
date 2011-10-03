@@ -3,6 +3,7 @@ package core;
 import java.io.IOException;
 import java.net.InetAddress;
 
+import networking.TCPNetworkFactory;
 import networking.TCPNetworkAccess;
 import networking.TCPServer;
 import networking.implementation.unicast.TCPConnectionPool;
@@ -39,9 +40,13 @@ public class main {
 		
 		// Network Layer Setup
 		
+		TCPNetworkFactory netF = new TCPNetworkFactory( cao );
+		
 		IEventQueue eq = new EventQueue();
 		
-		TCPNetworkAccess netAccess = new TCPConnectionPool( cao, eq, eq );// use same event queue for both
+		netF.sameQueue( eq );
+		
+		TCPNetworkAccess netAccess = netF.build();
 
 		// Protocol Layer setup
 		
