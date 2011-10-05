@@ -10,7 +10,7 @@ import java.net.SocketTimeoutException;
 
 import networking.exceptions.ConnectionClosedException;
 import networking.exceptions.MulticastUnavailableException;
-import networking.implementation.INetworkIO;
+import networking.implementation.interfaces.INetworkIO;
 
 public class MulticastIO implements INetworkIO {
 

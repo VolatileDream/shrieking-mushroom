@@ -6,6 +6,7 @@ import java.net.NetworkInterface;
 import java.net.Socket;
 import java.net.SocketException;
 
+import networking.implementation.interfaces.InternalConnection;
 import networking.implementation.multicast.MulticastConnection;
 import networking.implementation.unicast.UnicastConnection;
 import core.CommonAccessObject;

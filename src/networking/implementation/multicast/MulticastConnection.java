@@ -5,7 +5,7 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 
 import networking.implementation.Connection;
-import networking.implementation.INetworkIO;
+import networking.implementation.interfaces.INetworkIO;
 import core.CommonAccessObject;
 
 public class MulticastConnection extends Connection {

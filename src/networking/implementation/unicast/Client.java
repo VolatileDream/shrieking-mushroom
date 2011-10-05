@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 
 import networking.implementation.ConnectionFactory;
-import networking.implementation.InternalConnection;
+import networking.implementation.interfaces.InternalConnection;
 
 import core.CommonAccessObject;
 import core.logging.ILogger.LogLevel;

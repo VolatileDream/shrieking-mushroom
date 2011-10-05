@@ -1,4 +1,4 @@
-package networking.implementation;
+package networking.implementation.unicast;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,10 +9,14 @@ import networking.events.INetworkEvent;
 import networking.events.INetReadEvent;
 import networking.implementation.events.ErrorEvent;
 import networking.implementation.events.ReadEvent;
+import networking.implementation.interfaces.InternalConnection;
 
 import core.CommonAccessObject;
 import core.events.IEventQueue;
 import core.logging.ILogger.LogLevel;
+import core.threading.IStopper;
+import core.threading.implementation.DisjointStopper;
+import core.threading.implementation.Stopper;
 
 public class ConnectionThread implements Runnable {
 
@@ -20,17 +24,19 @@ public class ConnectionThread implements Runnable {
 	private final IEventQueue<INetworkEvent> eventQueue;
 	private final ArrayList<InternalConnection> connections = new ArrayList<InternalConnection>();
 
-	private volatile Boolean keepRunning = true;
+	private final IStopper localStop = new Stopper();
+	private final IStopper allStop;
 
-	public ConnectionThread( CommonAccessObject c, IEventQueue<INetworkEvent> eq ){
+	public ConnectionThread( CommonAccessObject c, IEventQueue<INetworkEvent> eq, IStopper s ){
 		cao = c;
 		eventQueue = eq;
+		allStop = new DisjointStopper( localStop, s );
 	}
 
 	@Override
 	public void run(){
 
-		while( keepRunning ){
+		while( !allStop.hasStopped() ){
 
 			ArrayList<InternalConnection> removals = new ArrayList<InternalConnection>();
 
@@ -105,9 +111,7 @@ public class ConnectionThread implements Runnable {
 	}
 
 	public void close(){
-		synchronized( keepRunning ){
-			keepRunning = false;
-		}
+		localStop.setStop();
 	}
 
 	public boolean addConnection( InternalConnection c ){

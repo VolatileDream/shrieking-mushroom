@@ -8,6 +8,8 @@ import networking.events.INetworkEvent;
 import protocol.INetworkEventsHandler;
 import protocol.IProtocolBlock;
 import core.events.IEventQueue;
+import core.threading.IStopper;
+import core.threading.implementation.Stopper;
 
 public class MessageMover implements Runnable, IProtocolBlock {
 	
@@ -15,20 +17,21 @@ public class MessageMover implements Runnable, IProtocolBlock {
 	private final INetworkEventsHandler handler;
 	private final IEventQueue<INetworkEvent> queue;
 	
-	private Boolean keepRunning = false;
-	private Thread thread;
+	private final IStopper stopper;
 	
+	private Thread thread;
 	
 	public MessageMover( INetworkEventsHandler h, IEventQueue<INetworkEvent> e ){
 		handler = h;
 		queue = e;
+		stopper = new Stopper();
 	}
 	
 	@Override
 	public void run(){
-		while( keepRunning ){
+		while( !stopper.hasStopped() ){
 			
-			queue.waitFor();
+			queue.waitFor( stopper );
 			INetworkEvent ev = queue.remove();
 			
 			if( ev instanceof INetConnectEvent ){
@@ -60,7 +63,7 @@ public class MessageMover implements Runnable, IProtocolBlock {
 	@Override
 	public void stop(){
 		synchronized( threadLock ){
-			keepRunning = false;
+			stopper.setStop();
 		}
 	}
 	

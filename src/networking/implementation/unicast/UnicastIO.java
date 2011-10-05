@@ -6,7 +6,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 import networking.exceptions.ConnectionClosedException;
-import networking.implementation.INetworkIO;
+import networking.implementation.interfaces.INetworkIO;
 
 public class UnicastIO implements INetworkIO {
 

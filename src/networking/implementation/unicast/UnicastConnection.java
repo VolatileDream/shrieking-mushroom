@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 import networking.implementation.Connection;
-import networking.implementation.INetworkIO;
+import networking.implementation.interfaces.INetworkIO;
 import core.CommonAccessObject;
 
 public class UnicastConnection extends Connection {

@@ -1,5 +1,7 @@
 package core.events;
 
+import core.threading.IStopper;
+
 public interface IEventQueue< M extends IEvent > {
 	
 	/**
@@ -24,5 +26,5 @@ public interface IEventQueue< M extends IEvent > {
 	/**
 	 * Waits until there is an event in the queue
 	 */
-	public void waitFor();
+	public void waitFor( IStopper stop );
 }

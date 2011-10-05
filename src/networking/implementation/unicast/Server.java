@@ -9,6 +9,9 @@ import networking.TCPServer;
 import core.CommonAccessObject;
 import core.CommonVarFetch;
 import core.logging.ILogger.LogLevel;
+import core.threading.IStopper;
+import core.threading.implementation.DisjointStopper;
+import core.threading.implementation.Stopper;
 
 public class Server implements Runnable, TCPServer {
 
@@ -19,13 +22,14 @@ public class Server implements Runnable, TCPServer {
 	private final Object threadLock = new Object();
 	private Thread thread = null;
 
+	private final IStopper localStop = new Stopper();
+	private final IStopper allStop;
 
-	private volatile Boolean keepRunning = true;
-
-	public Server( TCPConnectionPool p, CommonAccessObject c, int port ){
+	public Server( TCPConnectionPool p, IStopper s, CommonAccessObject c, int port ){
 		cao = c;
 		pool = p;
 		this.port = port;
+		allStop = new DisjointStopper( localStop, s );
 	}
 
 	public void start(){
@@ -53,7 +57,7 @@ public class Server implements Runnable, TCPServer {
 			return;
 		}
 
-		while( keepRunning ){
+		while( ! allStop.hasStopped() ){
 
 			try {
 				UnicastConnection connect = null;
@@ -91,15 +95,13 @@ public class Server implements Runnable, TCPServer {
 	}
 
 	public void stop(){
-		synchronized( keepRunning ){
-			keepRunning = false;
-		}
+		localStop.setStop();
 	}
 
 	public void restart(){
 		synchronized( threadLock ){
 			if( thread != null ){
-
+				stop();
 				while( thread.isAlive() ){
 					try {
 						thread.join();
@@ -108,6 +110,7 @@ public class Server implements Runnable, TCPServer {
 				thread = null;
 			}
 		}
+		localStop.reset();
 		start();
 	}
 

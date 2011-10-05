@@ -5,6 +5,7 @@ import java.util.Queue;
 
 import core.events.IEvent;
 import core.events.IEventQueue;
+import core.threading.IStopper;
 
 
 public class EventQueue<M extends IEvent> implements IEventQueue<M> {
@@ -37,8 +38,8 @@ public class EventQueue<M extends IEvent> implements IEventQueue<M> {
 	}
 
 	@Override
-	public synchronized void waitFor(){
-		while( ! poll() ){
+	public synchronized void waitFor( IStopper stop ){
+		while( ! poll() && !stop.hasStopped() ){
 			try {
 				wait();
 			} catch (InterruptedException e) {}

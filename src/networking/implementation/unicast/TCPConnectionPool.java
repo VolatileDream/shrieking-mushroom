@@ -11,14 +11,15 @@ import networking.events.INetConnectEvent;
 import networking.events.INetErrorEvent;
 import networking.events.INetworkEvent;
 import networking.implementation.ConnectionFactory;
-import networking.implementation.ConnectionThread;
-import networking.implementation.InternalConnection;
 import networking.implementation.NullConnection;
 import networking.implementation.events.ConnectEvent;
 import networking.implementation.events.ErrorEvent;
+import networking.implementation.interfaces.InternalConnection;
 import core.CommonAccessObject;
 import core.events.IEventQueue;
 import core.logging.ILogger.LogLevel;
+import core.threading.IStopper;
+import core.threading.implementation.Stopper;
 
 public class TCPConnectionPool implements TCPNetworkAccess {
 	
@@ -30,7 +31,7 @@ public class TCPConnectionPool implements TCPNetworkAccess {
 	private final ArrayList<ConnectionThread> serverThreads = new ArrayList<ConnectionThread>();
 	private final ArrayList<ConnectionThread> clientThreads = new ArrayList<ConnectionThread>();
 	
-	private Boolean keepRunning = true;
+	private final IStopper stop = new Stopper();
 	
 	public TCPConnectionPool( CommonAccessObject c, IEventQueue<INetworkEvent> clientQ, IEventQueue<INetworkEvent> serverQ ){
 		clientQueue = clientQ;
@@ -59,7 +60,7 @@ public class TCPConnectionPool implements TCPNetworkAccess {
 			}
 		}
 		
-		if( !added && keepRunning ){
+		if( !added && ! stop.hasStopped() ){
 			
 			ConnectionThread ct = newThread( threads, queue );
 			
@@ -81,7 +82,7 @@ public class TCPConnectionPool implements TCPNetworkAccess {
 	}
 
 	private ConnectionThread newThread( ArrayList<ConnectionThread> threads, IEventQueue<INetworkEvent> e ){
-		ConnectionThread ct = new ConnectionThread( cao, e );
+		ConnectionThread ct = new ConnectionThread( cao, e, stop );
 		
 		Thread t = new Thread( ct );
 		t.start();
@@ -122,7 +123,7 @@ public class TCPConnectionPool implements TCPNetworkAccess {
 	
 	@Override
 	public TCPServer allowConnection( int port ){
-		return new Server( this, cao, port );
+		return new Server( this, stop, cao, port );
 	}
 	
 	@Override
@@ -140,16 +141,15 @@ public class TCPConnectionPool implements TCPNetworkAccess {
 	@Override
 	public void close(){
 		
-		synchronized( keepRunning ){
-			keepRunning = false;
-		}
-		
+		stop.setStop();
+		/*
+		//Don't need this because IStopper.setStop() will stop all of it's copies as well
 		for( ConnectionThread ct : serverThreads ){
 			ct.close();
 		}
 		for( ConnectionThread ct : clientThreads ){
 			ct.close();
 		}
-		
+		*/
 	}
 }
