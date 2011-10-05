@@ -1,9 +1,9 @@
 package networking.implementation.events;
 
 import networking.IConnection;
-import networking.events.IReadEvent;
+import networking.events.INetReadEvent;
 
-public class ReadEvent extends NetworkEvent implements IReadEvent {
+public class ReadEvent extends NetworkEvent implements INetReadEvent {
 
 	private final byte[] read;
 	

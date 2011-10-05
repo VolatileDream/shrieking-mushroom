@@ -1,30 +1,46 @@
 package protocol.implementation;
 
-import protocol.IMessageFilter;
-import protocol.ITranslator;
-import protocol.implementation.interfaces.MyMessage;
+import networking.events.INetCloseEvent;
+import networking.events.INetConnectEvent;
+import networking.events.INetErrorEvent;
+import networking.events.INetworkEvent;
+import networking.events.INetReadEvent;
+import protocol.INetworkEventsHandler;
+import core.events.IEventQueue;
 
 public class MessageMover implements Runnable {
 	
 	private final Object threadLock = new Object();
-	private final IMessageFilter<MyMessage> filter;
-	private final ITranslator<MyMessage> translator;
+	private final INetworkEventsHandler handler;
+	private final IEventQueue<INetworkEvent> queue;
 	
 	private Boolean keepRunning = false;
 	private Thread thread;
 	
 	
-	public MessageMover( IMessageFilter<MyMessage> f, ITranslator<MyMessage> tr ){
-		filter = f;
-		translator = tr;
+	public MessageMover( INetworkEventsHandler h, IEventQueue<INetworkEvent> e ){
+		handler = h;
+		queue = e;
 	}
 	
 	@Override
 	public void run(){
 		while( keepRunning ){
 			
-			MyMessage msg = translator.getMessage();
-			filter.doAction( msg );
+			queue.waitFor();
+			INetworkEvent ev = queue.remove();
+			
+			if( ev instanceof INetConnectEvent ){
+				handler.handleConnect( (INetConnectEvent)ev );
+			}else if( ev instanceof INetCloseEvent ){
+				handler.handleClose( (INetCloseEvent) ev );
+			}else if( ev instanceof INetErrorEvent ){
+				handler.handleError( (INetErrorEvent) ev );
+			}else if( ev instanceof INetReadEvent ){
+				handler.handleRead( (INetReadEvent) ev );
+			}else {
+				handler.handleUnknown( ev );
+			}
 			
 		}
 	}

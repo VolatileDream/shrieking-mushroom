@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import networking.IConnection;
-import networking.events.IErrorEvent;
+import networking.events.INetErrorEvent;
 import networking.events.INetworkEvent;
-import networking.events.IReadEvent;
+import networking.events.INetReadEvent;
 import networking.implementation.events.ErrorEvent;
 import networking.implementation.events.ReadEvent;
 
@@ -52,7 +52,7 @@ public class ConnectionThread implements Runnable {
 
 					cao.log.Log( e, LogLevel.Error );
 
-					IErrorEvent er = new ErrorEvent( con );
+					INetErrorEvent er = new ErrorEvent( con );
 
 					if( !eventQueue.offer( er ) ){
 						cao.log.Log( "Couldn't add error event to queue", LogLevel.Error );
@@ -97,7 +97,7 @@ public class ConnectionThread implements Runnable {
 
 		byte[] read = con.read();
 		if( read != null && read.length > 0 ){
-			IReadEvent evt = new ReadEvent( con, read );
+			INetReadEvent evt = new ReadEvent( con, read );
 			if( ! eventQueue.offer( evt ) ){
 				cao.log.Log( "Couldn't add read event to the queue", LogLevel.Error );
 			}

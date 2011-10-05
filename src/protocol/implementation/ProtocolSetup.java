@@ -2,11 +2,12 @@ package protocol.implementation;
 
 import networking.events.INetworkEvent;
 import protocol.IMessageFactory;
-import protocol.IMessageFilter;
-import protocol.ITranslator;
+import protocol.INetworkEventsHandler;
+import protocol.events.IProtocolEvent;
 import protocol.implementation.interfaces.MyMessage;
 import core.CommonAccessObject;
 import core.events.IEventQueue;
+import core.events.implementation.EventQueue;
 
 public class ProtocolSetup {
 	
@@ -16,10 +17,13 @@ public class ProtocolSetup {
 		MessageType con = new MessageType("connection");
 		MessageType redund = new MessageType("redundancy");
 		
+		IEventQueue<IProtocolEvent> outEvents = new EventQueue<IProtocolEvent>();
+		
 		IMessageFactory<MyMessage> f = new MessageFactory( c.log, text, con, redund );
-		ITranslator<MyMessage> clientTr = new Translator( c, allEventsQueue, f );
-		IMessageFilter<MyMessage> filter = new MessageFilter();
-		MessageMover mover = new MessageMover( filter, clientTr );
+		
+		INetworkEventsHandler eventHandle = new EventHandler( c, outEvents, f );
+		
+		MessageMover mover = new MessageMover( eventHandle, allEventsQueue );
 		
 		return mover;
 	}

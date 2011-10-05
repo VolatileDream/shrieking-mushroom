@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import networking.IConnection;
 import networking.TCPNetworkAccess;
 import networking.TCPServer;
-import networking.events.IConnectEvent;
-import networking.events.IErrorEvent;
+import networking.events.INetConnectEvent;
+import networking.events.INetErrorEvent;
 import networking.events.INetworkEvent;
 import networking.implementation.ConnectionFactory;
 import networking.implementation.ConnectionThread;
@@ -70,7 +70,7 @@ public class TCPConnectionPool implements TCPNetworkAccess {
 			}
 		}
 		if( added ){
-			IConnectEvent event = new ConnectEvent( con );
+			INetConnectEvent event = new ConnectEvent( con );
 			queue.offer( event );
 		}else{
 			try {
@@ -115,7 +115,7 @@ public class TCPConnectionPool implements TCPNetworkAccess {
 		} catch (IOException e) {
 			cao.log.Log(e, LogLevel.Error);
 			IConnection con = new NullConnection( net, port );
-			IErrorEvent event = new ErrorEvent( con );
+			INetErrorEvent event = new ErrorEvent( con );
 			clientQueue.offer( event );
 		}
 	}
