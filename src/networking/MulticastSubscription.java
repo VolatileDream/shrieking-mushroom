@@ -1,9 +1,7 @@
 package networking;
 
-public interface MulticastSubscription {
-	
-	public void startListen();
-	
-	public void stopListen();
+import core.threading.IRunner;
+
+public interface MulticastSubscription extends IRunner {
 	
 }

@@ -1,16 +1,8 @@
 package networking;
 
-public interface TCPServer {
-	
-	/**
-	 * Starts the tcp server
-	 */
-	public void start();
-	
-	/**
-	 * Stops the tcp server.
-	 */
-	public void stop();
+import core.threading.IRunner;
+
+public interface TCPServer extends IRunner {
 	
 	/**
 	 * Reopens the port that the tcp server was listening on.

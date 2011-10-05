@@ -3,12 +3,13 @@ package protocol.implementation;
 import networking.events.INetCloseEvent;
 import networking.events.INetConnectEvent;
 import networking.events.INetErrorEvent;
-import networking.events.INetworkEvent;
 import networking.events.INetReadEvent;
+import networking.events.INetworkEvent;
 import protocol.INetworkEventsHandler;
+import protocol.IProtocolBlock;
 import core.events.IEventQueue;
 
-public class MessageMover implements Runnable {
+public class MessageMover implements Runnable, IProtocolBlock {
 	
 	private final Object threadLock = new Object();
 	private final INetworkEventsHandler handler;
@@ -45,6 +46,7 @@ public class MessageMover implements Runnable {
 		}
 	}
 
+	@Override
 	public void start(){
 		synchronized( threadLock ){
 			if( thread != null ){
@@ -55,6 +57,7 @@ public class MessageMover implements Runnable {
 		}
 	}
 	
+	@Override
 	public void stop(){
 		synchronized( threadLock ){
 			keepRunning = false;
