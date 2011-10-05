@@ -11,6 +11,13 @@ Protocol Layer
 Networking Layer
 	-Contains all direct read/writes to networking interfaces and sockets
 
+Basic flow:
+	Initialize Network layer
+	Initialize Protocol layer
+	Initialize App layer
+	Network -> pushes read/connect/close/error events to the event queue
+	Protocol -> reads events from network and passes them to handlers, handlers push read/connect/close/error events into event queue as necessary
+	App -> reads events from protocol queue and does whatever it feels like
 
 
 App
@@ -22,17 +29,17 @@ App
 	|					|
 	|	+-----------------------+	|
 	|	|			|	|
-	|	|    message handler	|	|
+	|	|      event handlers	|	|
 	|	|			|	|
 	|	+-----------------------+	|
 	|		|	/\		|
 	+---------------|-------|---------------+
 			|	|
-Protocol		|	|
+Protocol		|	|- IEventQueue<IProtocolEvent>
 			|	|
-			\/	|
-	+---------------------------------------+
-	|					|
+			|	|
+	+---------------|-------|---------------+
+	|		\/	|		|
 	|	+-----------------------+	|
 	|	|			|	|
 	|	|    Message Filter	|	|
@@ -40,14 +47,8 @@ Protocol		|	|
 	|	+-----------------------+	|
 	|		|	/\		|
 	|		|	|		|
-	|		|	|		|
-	|   +-----------|-------|-----------+	|
-	|   |		\/	|	    |	|
-	|   |	+-----------------------+   |	|
-	|   |	|			|   |	|
-	|   |	|	Translator	|   |	|
-	|   |	|			|   |	|
-	|   |	+-----------------------+   |	|
+	|		\/	|		|
+	|   +-------------------------------+	|
 	|   |				    |	|
 	|   |	     Event Handlers	    |	|
 	|   |				    |	|
@@ -55,7 +56,7 @@ Protocol		|	|
 	|   		|	/\	    	|
 	+---------------|-------|---------------+
 			|	|
-			|	|
+			|	|- IEventQueue<INetworkEvent>
 			|	|
 Net			\/	|
 	+---------------------------------------+

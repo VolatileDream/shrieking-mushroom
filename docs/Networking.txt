@@ -9,6 +9,10 @@ networking/
 		Creates the TCPNetworkAccess instance
 	TCPServer
 		Returned by the TCPNetworkAccess when opening ports for incoming connections
+	MulticastNetworkAccess
+		Like TCPNetworkAccess but for multicast
+	MulticastSubscription
+		Like TCPServer but for multicast, subscribes to a specific multicast address, and listens
 	exceptions/
 		Stores exceptions thrown by interfaces exposed to the protocol layer
 	implementation/
