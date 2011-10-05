@@ -17,7 +17,7 @@ public class ProtocolSetup {
 		MessageType con = new MessageType("connection");
 		MessageType redund = new MessageType("redundancy");
 		
-		IEventQueue<IProtocolEvent> outEvents = new EventQueue<IProtocolEvent>();
+		IEventQueue<IProtocolEvent<MyMessage>> outEvents = new EventQueue<IProtocolEvent<MyMessage>>();
 		
 		IMessageFactory<MyMessage> f = new MessageFactory( c.log, text, con, redund );
 		

@@ -10,6 +10,10 @@ public abstract class Event implements IEvent {
 		time = System.currentTimeMillis();
 	}
 
+	protected Event( long l ){
+		time = l;
+	}
+	
 	@Override
 	public long getTimestamp() {
 		return time;
