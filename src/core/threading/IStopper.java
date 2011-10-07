@@ -8,14 +8,4 @@ public interface IStopper {
 	 */
 	public boolean hasStopped();
 	
-	/**
-	 * Puts the IStopper into a stopped state.
-	 */
-	public void setStop();
-	
-	/**
-	 * Resets the IStopper state to running.
-	 */
-	public void reset();
-	
 }

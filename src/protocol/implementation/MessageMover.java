@@ -8,7 +8,7 @@ import networking.events.INetworkEvent;
 import protocol.INetworkEventsHandler;
 import protocol.IProtocolBlock;
 import core.events.IEventQueue;
-import core.threading.IStopper;
+import core.threading.IResetableStopper;
 import core.threading.implementation.Stopper;
 
 public class MessageMover implements Runnable, IProtocolBlock {
@@ -17,7 +17,7 @@ public class MessageMover implements Runnable, IProtocolBlock {
 	private final INetworkEventsHandler handler;
 	private final IEventQueue<INetworkEvent> queue;
 	
-	private final IStopper stopper;
+	private final IResetableStopper stopper;
 	
 	private Thread thread;
 	

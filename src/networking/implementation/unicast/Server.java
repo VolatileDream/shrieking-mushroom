@@ -9,6 +9,7 @@ import networking.TCPServer;
 import core.CommonAccessObject;
 import core.CommonVarFetch;
 import core.logging.ILogger.LogLevel;
+import core.threading.IResetableStopper;
 import core.threading.IStopper;
 import core.threading.implementation.DisjointStopper;
 import core.threading.implementation.Stopper;
@@ -22,7 +23,7 @@ public class Server implements Runnable, TCPServer {
 	private final Object threadLock = new Object();
 	private Thread thread = null;
 
-	private final IStopper localStop = new Stopper();
+	private final IResetableStopper localStop = new Stopper();
 	private final IStopper allStop;
 
 	public Server( TCPConnectionPool p, IStopper s, CommonAccessObject c, int port ){

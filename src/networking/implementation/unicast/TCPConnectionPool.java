@@ -18,7 +18,7 @@ import networking.implementation.interfaces.InternalConnection;
 import core.CommonAccessObject;
 import core.events.IEventQueue;
 import core.logging.ILogger.LogLevel;
-import core.threading.IStopper;
+import core.threading.IResetableStopper;
 import core.threading.implementation.Stopper;
 
 public class TCPConnectionPool implements TCPNetworkAccess {
@@ -31,7 +31,7 @@ public class TCPConnectionPool implements TCPNetworkAccess {
 	private final ArrayList<ConnectionThread> serverThreads = new ArrayList<ConnectionThread>();
 	private final ArrayList<ConnectionThread> clientThreads = new ArrayList<ConnectionThread>();
 	
-	private final IStopper stop = new Stopper();
+	private final IResetableStopper stop = new Stopper();
 	
 	public TCPConnectionPool( CommonAccessObject c, IEventQueue<INetworkEvent> clientQ, IEventQueue<INetworkEvent> serverQ ){
 		clientQueue = clientQ;

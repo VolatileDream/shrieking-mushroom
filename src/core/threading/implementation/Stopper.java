@@ -1,8 +1,8 @@
 package core.threading.implementation;
 
-import core.threading.IStopper;
+import core.threading.IResetableStopper;
 
-public class Stopper implements IStopper {
+public class Stopper implements IResetableStopper {
 
 	private Boolean running = true;
 
@@ -10,7 +10,7 @@ public class Stopper implements IStopper {
 	public synchronized boolean hasStopped() {
 		return !running;
 	}
-
+	
 	@Override
 	public synchronized void reset() {
 		running = true;

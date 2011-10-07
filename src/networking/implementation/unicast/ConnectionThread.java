@@ -14,6 +14,7 @@ import networking.implementation.interfaces.InternalConnection;
 import core.CommonAccessObject;
 import core.events.IEventQueue;
 import core.logging.ILogger.LogLevel;
+import core.threading.IResetableStopper;
 import core.threading.IStopper;
 import core.threading.implementation.DisjointStopper;
 import core.threading.implementation.Stopper;
@@ -24,7 +25,7 @@ public class ConnectionThread implements Runnable {
 	private final IEventQueue<INetworkEvent> eventQueue;
 	private final ArrayList<InternalConnection> connections = new ArrayList<InternalConnection>();
 
-	private final IStopper localStop = new Stopper();
+	private final IResetableStopper localStop = new Stopper();
 	private final IStopper allStop;
 
 	public ConnectionThread( CommonAccessObject c, IEventQueue<INetworkEvent> eq, IStopper s ){
