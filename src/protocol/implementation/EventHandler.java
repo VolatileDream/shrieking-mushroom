@@ -1,5 +1,8 @@
 package protocol.implementation;
 
+import java.util.Hashtable;
+
+import networking.IConnection;
 import networking.events.INetCloseEvent;
 import networking.events.INetConnectEvent;
 import networking.events.INetErrorEvent;
@@ -19,6 +22,8 @@ public class EventHandler implements INetworkEventsHandler {
 	private final IEventQueue<IProtocolEvent<MyMessage>> queue;
 	private final IMessageFactory<MyMessage> factory;
 	
+	private final Hashtable<IConnection,ConnectionInfo> table = new Hashtable<IConnection,ConnectionInfo>();
+	
 	public EventHandler( CommonAccessObject c, IEventQueue<IProtocolEvent<MyMessage>> q, IMessageFactory<MyMessage> f ){
 		queue = q;
 		cao = c;
@@ -27,13 +32,12 @@ public class EventHandler implements INetworkEventsHandler {
 
 	@Override
 	public void handleClose(INetCloseEvent e) {
-		// TODO Auto-generated method stub
+		table.remove( e.getConnection() );
 	}
 
 	@Override
 	public void handleConnect(INetConnectEvent e) {
-		// TODO Auto-generated method stub
-		
+		table.put( e.getConnection(), new ConnectionInfo() );
 	}
 
 	@Override
@@ -44,7 +48,11 @@ public class EventHandler implements INetworkEventsHandler {
 
 	@Override
 	public void handleRead(INetReadEvent e) {
-		// TODO Auto-generated method stub
+		ConnectionInfo info = table.get( e.getConnection() );
+		if( info == null ){
+			cao.log.Log( "Couldn't find connection info for connection", LogLevel.Error );
+			
+		}
 		
 	}
 
