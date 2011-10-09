@@ -9,6 +9,8 @@ public interface MulticastNetworkAccess {
 	
 	public MulticastSubscription subscribe( InetAddress net, int port );
 	
+	public MulticastSubscription subscribe( InetAddress net, int port, IEventQueue<INetworkEvent> e );
+	
 	public IEventQueue<INetworkEvent> getEventQueue();
 	
 }

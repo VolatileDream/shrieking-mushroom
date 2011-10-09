@@ -23,32 +23,19 @@ import core.threading.implementation.Stopper;
 
 public class TCPConnectionPool implements TCPNetworkAccess {
 	
-	private final IEventQueue<INetworkEvent> clientQueue;
-	private final IEventQueue<INetworkEvent> serverQueue;
 	private final CommonAccessObject cao;
 	private final ConnectionFactory fac;
 	
-	private final ArrayList<ConnectionThread> serverThreads = new ArrayList<ConnectionThread>();
-	private final ArrayList<ConnectionThread> clientThreads = new ArrayList<ConnectionThread>();
+	private final ArrayList<ConnectionThread> threads = new ArrayList<ConnectionThread>();
 	
 	private final IResetableStopper stop = new Stopper();
 	
-	public TCPConnectionPool( CommonAccessObject c, IEventQueue<INetworkEvent> clientQ, IEventQueue<INetworkEvent> serverQ ){
-		clientQueue = clientQ;
-		serverQueue = serverQ;
+	public TCPConnectionPool( CommonAccessObject c ){
 		cao = c;
 		fac = new ConnectionFactory( cao );
 	}
 	
-	public void addClientConnection( InternalConnection c ){
-		addConnection( c, clientThreads, clientQueue );
-	}
-	
-	public void addServerConnection( InternalConnection c ){
-		addConnection( c, serverThreads, serverQueue );
-	}
-	
-	private void addConnection( final InternalConnection con, final ArrayList<ConnectionThread> threads, final IEventQueue<INetworkEvent> queue ){
+	void addConnection( final InternalConnection con, IEventQueue<INetworkEvent> queue ){
 		
 		boolean added = false;
 		
@@ -93,46 +80,33 @@ public class TCPConnectionPool implements TCPNetworkAccess {
 	}
 	
 	// interfaces
-	
+		
 	@Override
-	public IEventQueue<INetworkEvent> getClientQueue(){
-		return clientQueue;
-	}
-	
-	@Override
-	public IEventQueue<INetworkEvent> getServerQueue(){
-		return serverQueue;
-	}
-	
-	@Override
-	public void connect( InetAddress net, int port ){
+	public void connect( InetAddress net, int port, IEventQueue<INetworkEvent> queue ){
 		Client c = new Client( fac, cao, net, port );
 		
 		try {
 		
 			InternalConnection con = c.Connect();
-			this.addClientConnection( con );
+			this.addConnection( con, queue );
 
 		} catch (IOException e) {
 			cao.log.Log(e, LogLevel.Error);
 			IConnection con = new NullConnection( net, port );
 			INetErrorEvent event = new ErrorEvent( con );
-			clientQueue.offer( event );
+			queue.offer( event );
 		}
 	}
 	
 	@Override
-	public TCPServer allowConnection( int port ){
-		return new Server( this, stop, cao, port );
+	public TCPServer allowConnection( int port, IEventQueue<INetworkEvent> q ){
+		return new Server( this, stop, cao, port, q );
 	}
 	
 	@Override
 	public ArrayList<IConnection> getConnections(){
 		ArrayList<IConnection> connections = new ArrayList<IConnection>();
-		for( ConnectionThread ct : serverThreads ){
-			connections.addAll( ct.getConnections() );
-		}
-		for( ConnectionThread ct : clientThreads ){
+		for( ConnectionThread ct : threads ){
 			connections.addAll( ct.getConnections() );
 		}
 		return connections;
@@ -140,16 +114,6 @@ public class TCPConnectionPool implements TCPNetworkAccess {
 	
 	@Override
 	public void close(){
-		
 		stop.setStop();
-		/*
-		//Don't need this because IStopper.setStop() will stop all of it's copies as well
-		for( ConnectionThread ct : serverThreads ){
-			ct.close();
-		}
-		for( ConnectionThread ct : clientThreads ){
-			ct.close();
-		}
-		*/
 	}
 }
