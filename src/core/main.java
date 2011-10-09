@@ -4,9 +4,10 @@ import java.io.IOException;
 import java.net.InetAddress;
 
 import networking.TCPNetworkAccess;
-import networking.TCPNetworkFactory;
+import networking.TCPConnectionBuilder;
 import networking.TCPServer;
 import networking.events.INetworkEvent;
+import networking.implementation.unicast.TCPConnectionPool;
 import protocol.implementation.MessageMover;
 import protocol.implementation.ProtocolSetup;
 import core.config.IVariable;
@@ -40,14 +41,14 @@ public class main {
 		
 		// Network Layer Setup
 		
-		TCPNetworkFactory netF = new TCPNetworkFactory( cao );
+		TCPNetworkAccess netAccess = new TCPConnectionPool( cao );
 		
+		TCPConnectionBuilder netF = new TCPConnectionBuilder( netAccess );
+		
+		netF.withPort( 54444 );
 		IEventQueue<INetworkEvent> eq = new EventQueue<INetworkEvent>();
+		netF.withQueue( eq );
 		
-		netF.sameQueue( eq );
-		
-		TCPNetworkAccess netAccess = netF.build();
-
 		// Protocol Layer setup
 		
 		MessageMover mover = ProtocolSetup.setup( cao, eq );
@@ -58,14 +59,16 @@ public class main {
 		mover.start();
 		
 		//networking listen
-		TCPServer tcp54444 = netAccess.allowConnection( 54444 );
+		TCPServer tcp54444 = netF.allowConnection();
 		tcp54444.start();
 
 		//networking connect 
 		InetAddress adr = InetAddress.getByName("Po.local");
-		netAccess.connect( adr, 54444 );
+		netF.connect( adr );
 		
 		sleep(5000);
+		
+		
 		
 		//networking close
 		tcp54444.stop();
