@@ -10,6 +10,7 @@ Protocol Layer
 
 Networking Layer
 	-Contains all direct read/writes to networking interfaces and sockets
+	-Requires overhaul of Multicast/UDP, flow only works for TCP structures as UDP/Multicast is a distinct recieve/send situation, and not bi-directional on every connection.
 
 Basic flow:
 	Initialize Network layer
