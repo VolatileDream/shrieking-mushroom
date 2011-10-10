@@ -1,4 +1,4 @@
-package networking.implementation.unicast;
+package networking.implementation.tcp;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -7,7 +7,7 @@ import networking.implementation.Connection;
 import networking.implementation.interfaces.INetworkIO;
 import core.CommonAccessObject;
 
-public class UnicastConnection extends Connection {
+public class TCPConnection extends Connection {
 
 	private INetworkIO ioControl;
 
@@ -18,9 +18,9 @@ public class UnicastConnection extends Connection {
 	 * <br>If there are left over bytes between message reads and it can't
 	 * hold everything in the buffer it will throw a BufferFullException
 	 */
-	public UnicastConnection( CommonAccessObject c, Socket soc ){
+	public TCPConnection( CommonAccessObject c, Socket soc ){
 		super( c, soc.getInetAddress(), soc.getPort() );
-		ioControl = new UnicastIO( soc );
+		ioControl = new TCPIO( soc );
 		status = ConnectionStatus.Open;
 	} 
 

@@ -1,4 +1,4 @@
-package networking.implementation.unicast;
+package networking.implementation.tcp;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -65,14 +65,14 @@ public class Server implements Runnable, IRunner {
 		while( ! allStop.hasStopped() ){
 
 			try {
-				UnicastConnection connect = null;
+				TCPConnection connect = null;
 
 				soc.setSoTimeout( getWaitTimeOut() );
 
 				Socket connectionSocket = soc.accept();
 				connectionSocket.setKeepAlive( true );
 
-				connect = new UnicastConnection( cao, connectionSocket );
+				connect = new TCPConnection( cao, connectionSocket );
 
 				pool.addConnection( connect, queue );
 

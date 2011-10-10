@@ -8,7 +8,7 @@ import java.net.SocketException;
 
 import networking.implementation.interfaces.InternalConnection;
 import networking.implementation.multicast.MulticastConnection;
-import networking.implementation.unicast.UnicastConnection;
+import networking.implementation.tcp.TCPConnection;
 import core.CommonAccessObject;
 
 public class ConnectionFactory {
@@ -31,12 +31,12 @@ public class ConnectionFactory {
 	public InternalConnection ConstructUnicastClient( InetAddress inet, int port)
 			throws SocketException, IOException {
 
-		UnicastConnection connect= null;
+		TCPConnection connect= null;
 		
 		Socket soc = new Socket( inet, port );
 		soc.setKeepAlive( true );
 
-		connect = new UnicastConnection( cao, soc );
+		connect = new TCPConnection( cao, soc );
 
 		return connect;
 	}

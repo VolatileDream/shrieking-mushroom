@@ -52,7 +52,7 @@ public class Util {
 		return result;
 	}
 	
-	public static byte[] add( byte[] start, byte[] end ){
+	public static byte[] concat( byte[] start, byte[] end ){
 		byte[] dst = new byte[ start.length + end.length ];
 		System.arraycopy(start, 0, dst, 0, start.length);
 		System.arraycopy(end, 0, dst, start.length, end.length);

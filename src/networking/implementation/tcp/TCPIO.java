@@ -1,4 +1,4 @@
-package networking.implementation.unicast;
+package networking.implementation.tcp;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,11 +8,11 @@ import java.net.Socket;
 import networking.exceptions.ConnectionClosedException;
 import networking.implementation.interfaces.INetworkIO;
 
-public class UnicastIO implements INetworkIO {
+public class TCPIO implements INetworkIO {
 
 	private Socket socket;
 	
-	public UnicastIO( Socket s ){
+	public TCPIO( Socket s ){
 		socket = s;
 	}
 	

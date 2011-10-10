@@ -3,11 +3,10 @@ package core;
 import java.io.IOException;
 import java.net.InetAddress;
 
-import networking.TCPNetworkAccess;
 import networking.TCPConnectionBuilder;
-import networking.TCPServer;
+import networking.TCPNetworkAccess;
 import networking.events.INetworkEvent;
-import networking.implementation.unicast.TCPConnectionPool;
+import networking.implementation.tcp.TCPConnectionPool;
 import protocol.implementation.MessageMover;
 import protocol.implementation.ProtocolSetup;
 import core.config.IVariable;
@@ -19,6 +18,7 @@ import core.events.IEventQueue;
 import core.events.implementation.EventQueue;
 import core.logging.ILogger;
 import core.logging.LocalTextLogger;
+import core.threading.IRunner;
 
 public class main {
 
@@ -59,7 +59,7 @@ public class main {
 		mover.start();
 		
 		//networking listen
-		TCPServer tcp54444 = netF.allowConnection();
+		IRunner tcp54444 = netF.allowConnection();
 		tcp54444.start();
 
 		//networking connect 
