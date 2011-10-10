@@ -4,6 +4,7 @@ import java.net.InetAddress;
 
 import networking.events.INetworkEvent;
 import core.events.IEventQueue;
+import core.threading.IRunner;
 
 public class TCPConnectionBuilder {
 	
@@ -27,7 +28,7 @@ public class TCPConnectionBuilder {
 		access.connect( inet, port, queue );
 	}
 	
-	public TCPServer allowConnection(){
+	public IRunner allowConnection(){
 		return access.allowConnection( port, queue );
 	}
 	

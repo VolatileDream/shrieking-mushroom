@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 import networking.IConnection;
 import networking.TCPNetworkAccess;
-import networking.TCPServer;
 import networking.events.INetConnectEvent;
 import networking.events.INetErrorEvent;
 import networking.events.INetworkEvent;
@@ -19,6 +18,7 @@ import core.CommonAccessObject;
 import core.events.IEventQueue;
 import core.logging.ILogger.LogLevel;
 import core.threading.IResetableStopper;
+import core.threading.IRunner;
 import core.threading.implementation.Stopper;
 
 public class TCPConnectionPool implements TCPNetworkAccess {
@@ -99,7 +99,7 @@ public class TCPConnectionPool implements TCPNetworkAccess {
 	}
 	
 	@Override
-	public TCPServer allowConnection( int port, IEventQueue<INetworkEvent> q ){
+	public IRunner allowConnection( int port, IEventQueue<INetworkEvent> q ){
 		return new Server( this, stop, cao, port, q );
 	}
 	

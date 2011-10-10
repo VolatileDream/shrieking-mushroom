@@ -5,18 +5,18 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
-import networking.TCPServer;
 import networking.events.INetworkEvent;
 import core.CommonAccessObject;
 import core.CommonVarFetch;
 import core.events.IEventQueue;
 import core.logging.ILogger.LogLevel;
 import core.threading.IResetableStopper;
+import core.threading.IRunner;
 import core.threading.IStopper;
 import core.threading.implementation.DisjointStopper;
 import core.threading.implementation.Stopper;
 
-public class Server implements Runnable, TCPServer {
+public class Server implements Runnable, IRunner {
 
 	private final CommonAccessObject cao;
 	private final TCPConnectionPool pool;
