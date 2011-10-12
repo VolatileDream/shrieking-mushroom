@@ -6,14 +6,14 @@ import networking.events.INetworkEvent;
 import core.events.IEventQueue;
 import core.threading.IRunner;
 
-public class UDPConnectionBuilder {
-	
-	private IEventQueue<INetworkEvent> queue;
+public class MulticastConnectionBuilder {
+
+	private final MulticastNetworkAccess access;
 	private int port;
-	private final UDPNetworkAccess access;
+	private IEventQueue<INetworkEvent> queue;
 	
-	public UDPConnectionBuilder( UDPNetworkAccess mna ){
-		access = mna;
+	public MulticastConnectionBuilder( MulticastNetworkAccess a ){
+		access = a;
 	}
 	
 	public void withPort( int p ){
@@ -24,8 +24,8 @@ public class UDPConnectionBuilder {
 		queue = q;
 	}
 	
-	public IRunner subscribe( InetAddress net ){
-		return access.subscribe( net, port, queue );
+	public IRunner subscribe( InetAddress inet ){
+		return access.subscribe( inet, port, queue );
 	}
 	
 }
