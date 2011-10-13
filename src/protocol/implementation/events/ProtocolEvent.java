@@ -1,22 +1,22 @@
 package protocol.implementation.events;
 
 import networking.events.INetworkEvent;
+import protocol.IMessage;
 import protocol.IProtocolConnection;
 import protocol.events.IProtocolEvent;
-import protocol.implementation.interfaces.MyMessage;
 import core.events.implementation.Event;
 
-public abstract class ProtocolEvent extends Event implements IProtocolEvent<MyMessage> {
+public abstract class ProtocolEvent<M extends IMessage> extends Event implements IProtocolEvent<M> {
 
-	private final IProtocolConnection<MyMessage> con;
+	private final IProtocolConnection<M> con;
 	
-	public ProtocolEvent( INetworkEvent e, IProtocolConnection<MyMessage> c ){
+	public ProtocolEvent( INetworkEvent e, IProtocolConnection<M> c ){
 		super( e.getTimestamp() );
 		con = c;
 	}
 	
 	@Override
-	public IProtocolConnection<MyMessage> getConnection() {
+	public IProtocolConnection<M> getConnection() {
 		return con;
 	}
 

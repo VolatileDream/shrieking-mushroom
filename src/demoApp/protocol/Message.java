@@ -1,7 +1,7 @@
-package protocol.implementation;
+package demoApp.protocol;
 
-import protocol.implementation.interfaces.MyMessage;
 import networking.IConnection;
+import demoApp.protocol.interfaces.MyMessage;
 
 public class Message implements MyMessage {
 

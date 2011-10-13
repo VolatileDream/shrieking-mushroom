@@ -1,21 +1,21 @@
 package protocol.implementation.events;
 
 import networking.events.INetworkEvent;
+import protocol.IMessage;
 import protocol.IProtocolConnection;
 import protocol.events.IProtoReadEvent;
-import protocol.implementation.interfaces.MyMessage;
 
-public class ProtocolReadEvent extends ProtocolEvent implements IProtoReadEvent<MyMessage> {
+public class ProtocolReadEvent<M extends IMessage> extends ProtocolEvent<M> implements IProtoReadEvent<M> {
 
-	private final MyMessage message;
+	private final M message;
 	
-	public ProtocolReadEvent(INetworkEvent e, IProtocolConnection<MyMessage> c, MyMessage m ) {
+	public ProtocolReadEvent(INetworkEvent e, IProtocolConnection<M> c, M m ) {
 		super(e, c);
 		message = m;
 	}
 
 	@Override
-	public MyMessage getMessage() {
+	public M getMessage() {
 		return message;
 	}
 

@@ -1,13 +1,13 @@
-package protocol.implementation;
+package demoApp.protocol;
 
 import networking.IConnection;
 import protocol.IMessageFactory;
-import protocol.implementation.interfaces.MyMessage;
 import core.ByteBuilder;
 import core.Tupple;
 import core.Util;
 import core.logging.ILogger;
 import core.logging.ILogger.LogLevel;
+import demoApp.protocol.interfaces.MyMessage;
 
 public class MessageFactory implements IMessageFactory<MyMessage> {
 

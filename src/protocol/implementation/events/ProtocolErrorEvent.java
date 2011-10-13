@@ -1,13 +1,13 @@
 package protocol.implementation.events;
 
 import networking.events.INetworkEvent;
+import protocol.IMessage;
 import protocol.IProtocolConnection;
 import protocol.events.IProtoErrorEvent;
-import protocol.implementation.interfaces.MyMessage;
 
-public class ProtocolErrorEvent extends ProtocolEvent implements IProtoErrorEvent<MyMessage> {
+public class ProtocolErrorEvent<M extends IMessage> extends ProtocolEvent<M> implements IProtoErrorEvent<M> {
 
-	public ProtocolErrorEvent(INetworkEvent e, IProtocolConnection<MyMessage> c ) {
+	public ProtocolErrorEvent(INetworkEvent e, IProtocolConnection<M> c ) {
 		super(e, c);
 	}
 

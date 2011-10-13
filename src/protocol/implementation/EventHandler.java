@@ -1,64 +1,85 @@
 package protocol.implementation;
 
-import java.util.Hashtable;
-
-import networking.IConnection;
 import networking.events.INetCloseEvent;
 import networking.events.INetConnectEvent;
 import networking.events.INetErrorEvent;
-import networking.events.INetworkEvent;
 import networking.events.INetReadEvent;
-import protocol.IMessageFactory;
-import protocol.INetworkEventsHandler;
+import networking.events.INetworkEvent;
+import protocol.IEventHandler;
+import protocol.IMessage;
 import protocol.events.IProtocolEvent;
-import protocol.implementation.interfaces.MyMessage;
-import core.CommonAccessObject;
-import core.events.IEventQueue;
-import core.logging.ILogger.LogLevel;
+import protocol.implementation.interfaces.INetworkEventsHandler;
 
-public class EventHandler implements INetworkEventsHandler {
-
-	private final CommonAccessObject cao;
-	private final IEventQueue<IProtocolEvent<MyMessage>> queue;
-	private final IMessageFactory<MyMessage> factory;
-	
-	private final Hashtable<IConnection,ConnectionInfo> table = new Hashtable<IConnection,ConnectionInfo>();
-	
-	public EventHandler( CommonAccessObject c, IEventQueue<IProtocolEvent<MyMessage>> q, IMessageFactory<MyMessage> f ){
-		queue = q;
-		cao = c;
-		factory = f;
-	}
-
-	@Override
-	public void handleClose(INetCloseEvent e) {
-		table.remove( e.getConnection() );
-	}
-
-	@Override
-	public void handleConnect(INetConnectEvent e) {
-		table.put( e.getConnection(), new ConnectionInfo() );
-	}
-
-	@Override
-	public void handleError(INetErrorEvent e) {
-		// TODO Auto-generated method stub
+public class EventHandler<M extends IMessage> implements INetworkEventsHandler<M> {
 		
+	private final IEventHandler<IProtocolEvent<M>,INetConnectEvent> connect;
+	private final IEventHandler<IProtocolEvent<M>,INetReadEvent> read;
+	private final IEventHandler<IProtocolEvent<M>,INetErrorEvent> error;
+	private final IEventHandler<IProtocolEvent<M>,INetCloseEvent> close;
+	private final IEventHandler<IProtocolEvent<M>,INetworkEvent> unknown;
+	
+	public EventHandler(
+		IEventHandler<IProtocolEvent<M>,INetConnectEvent> c,
+		IEventHandler<IProtocolEvent<M>,INetReadEvent> r,
+		IEventHandler<IProtocolEvent<M>,INetErrorEvent> e,
+		IEventHandler<IProtocolEvent<M>,INetCloseEvent> c2,
+		IEventHandler<IProtocolEvent<M>,INetworkEvent> u		
+	){
+		connect = c;
+		read = r;
+		error = e;
+		close = c2;
+		unknown = u;
 	}
 
 	@Override
-	public void handleRead(INetReadEvent e) {
-		ConnectionInfo info = table.get( e.getConnection() );
+	public IProtocolEvent<M> handleClose(INetCloseEvent e) {
+		return close.handle( e );
+		//table.remove( e.getConnection() );
+	}
+
+	@Override
+	public IProtocolEvent<M> handleConnect(INetConnectEvent e) {
+		return connect.handle( e );
+		//table.put( e.getConnection(), new ConnectionInfo() );
+	}
+
+	@Override
+	public IProtocolEvent<M> handleError(INetErrorEvent e) {
+		return error.handle( e );
+	}
+
+	@Override
+	public IProtocolEvent<M> handleRead(INetReadEvent e) {
+		return read.handle( e );
+		/*
+		IConnection con = e.getConnection();
+		ConnectionInfo info = table.get( con );
 		if( info == null ){
 			cao.log.Log( "Couldn't find connection info for connection", LogLevel.Error );
-			
+			info = new ConnectionInfo();
+			table.put( e.getConnection(), info );
+		}
+		info.buffer = Util.concat( info.buffer, e.getRead() );
+		Tupple<MyMessage,Integer> result = msgFactory.transformToMessage( con, info.buffer );
+		
+		if( result.Item2 > 0 ){
+			//shift the buffer if we get a non zero return, they might want to clean it.
+			info.buffer = Util.shift( result.Item2, info.buffer );
 		}
 		
+		if( result.Item1 == null ){
+			return;
+		}
+		
+		IProtoReadEvent<MyMessage> event = new ProtocolReadEvent<MyMessage>( e, conFactory.transform( con ), result.Item1 );
+		queue.offer( event );
+		*/
 	}
 
 	@Override
-	public void handleUnknown( INetworkEvent e ) {
-		cao.log.Log( "Unknown INetworkEvent type: "+ e.getClass().getName(), LogLevel.Warn );
+	public IProtocolEvent<M> handleUnknown( INetworkEvent e ) {
+		return unknown.handle( e );
 	}
 
 }

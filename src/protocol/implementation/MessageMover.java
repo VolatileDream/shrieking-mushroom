@@ -5,45 +5,64 @@ import networking.events.INetConnectEvent;
 import networking.events.INetErrorEvent;
 import networking.events.INetReadEvent;
 import networking.events.INetworkEvent;
-import protocol.INetworkEventsHandler;
-import protocol.IProtocolBlock;
+import protocol.IMessage;
+import protocol.events.IProtocolEvent;
+import protocol.implementation.interfaces.INetworkEventsHandler;
 import core.events.IEventQueue;
 import core.threading.IResetableStopper;
+import core.threading.IRunner;
 import core.threading.implementation.Stopper;
 
-public class MessageMover implements Runnable, IProtocolBlock {
-	
+public class MessageMover<M extends IMessage> implements Runnable, IRunner {
+
 	private final Object threadLock = new Object();
-	private final INetworkEventsHandler handler;
-	private final IEventQueue<INetworkEvent> queue;
+	private final INetworkEventsHandler<M> handler;
+	private final IEventQueue<INetworkEvent> networkQueue;
+	private final IEventQueue<IProtocolEvent<M>> protocolQueue;
 	
 	private final IResetableStopper stopper;
-	
+
 	private Thread thread;
-	
-	public MessageMover( INetworkEventsHandler h, IEventQueue<INetworkEvent> e ){
+
+	public MessageMover( INetworkEventsHandler<M> h, IEventQueue<INetworkEvent> e, IEventQueue<IProtocolEvent<M>> e2 ){
 		handler = h;
-		queue = e;
+		networkQueue = e;
+		protocolQueue = e2;
 		stopper = new Stopper();
 	}
-	
+
 	@Override
 	public void run(){
 		while( !stopper.hasStopped() ){
-			
-			queue.waitFor( stopper );
-			INetworkEvent ev = queue.remove();
+
+			networkQueue.waitFor( stopper );
+			INetworkEvent ev = networkQueue.remove();
+
+			IProtocolEvent<M> returnEvent = null;
 			
 			if( ev instanceof INetConnectEvent ){
-				handler.handleConnect( (INetConnectEvent)ev );
-			}else if( ev instanceof INetCloseEvent ){
-				handler.handleClose( (INetCloseEvent) ev );
-			}else if( ev instanceof INetErrorEvent ){
-				handler.handleError( (INetErrorEvent) ev );
-			}else if( ev instanceof INetReadEvent ){
-				handler.handleRead( (INetReadEvent) ev );
-			}else {
-				handler.handleUnknown( ev );
+
+				returnEvent = handler.handleConnect( (INetConnectEvent)ev );
+
+			} else if( ev instanceof INetCloseEvent ){
+
+				returnEvent = handler.handleClose( (INetCloseEvent) ev );
+
+			} else if( ev instanceof INetErrorEvent ){
+
+				returnEvent = handler.handleError( (INetErrorEvent) ev );
+
+			} else if( ev instanceof INetReadEvent ){
+
+				returnEvent = handler.handleRead( (INetReadEvent) ev );
+
+			} else {
+
+				returnEvent = handler.handleUnknown( ev );
+			}
+
+			if( returnEvent != null ){
+				protocolQueue.offer( returnEvent );
 			}
 			
 		}
@@ -59,12 +78,12 @@ public class MessageMover implements Runnable, IProtocolBlock {
 			thread.start();
 		}
 	}
-	
+
 	@Override
 	public void stop(){
 		synchronized( threadLock ){
 			stopper.setStop();
 		}
 	}
-	
+
 }
