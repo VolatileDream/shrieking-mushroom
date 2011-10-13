@@ -1,19 +1,20 @@
 Networking code organization
 
 networking/
-	IConnection
-		Connection information exposed to the protocol layer
-	TCPNetworkAccess
-		TCP Connection manager, holds all TCP connections
-	TCPNetworkFactory
-		Creates the TCPNetworkAccess instance
-	TCPServer
-		Returned by the TCPNetworkAccess when opening ports for incoming connections
-	MulticastNetworkAccess
-		Like TCPNetworkAccess but for multicast
-	MulticastSubscription
-		Like TCPServer but for multicast, subscribes to a specific multicast address, and listens
+	events/
+		Interfaces for events that exist in the networking layer
 	exceptions/
-		Stores exceptions thrown by interfaces exposed to the protocol layer
+		exceptions thrown by the networking layer to other layers
 	implementation/
-		default implementation of all interfaces
+		implementation of networking layer
+	IConnection.java
+		externally visible connection discription
+	*ConnectionBuilder.java
+		easy class to use *NetworkAccess
+	MulticastNetworkAccess.java
+		multicast management interface
+	TCPNetworkAccess.java
+		TCP management interface
+	UDPNetworkAccess.java
+		UDP management interface
+

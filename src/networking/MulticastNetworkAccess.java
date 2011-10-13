@@ -10,4 +10,9 @@ public interface MulticastNetworkAccess {
 
 	public IRunner subscribe( InetAddress net, int port, IEventQueue<INetworkEvent> e );
 	
+	/**
+	 * Closes all connections created with this network access
+	 */
+	public void close();
+
 }
