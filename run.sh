@@ -6,12 +6,12 @@ if [ $# -lt 1 ] ; then
 fi
 
 if [ ! -d "./run" ] ; then
+	echo "Creating running environment"
 	mkdir run
 	mkdir run/res
 fi
 
 cd run
-
 java -cp ../bin $1
 
 
