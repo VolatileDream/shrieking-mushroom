@@ -1,4 +1,4 @@
-package core;
+package demoApp;
 
 import java.io.IOException;
 
@@ -9,7 +9,7 @@ public class main {
 	 */
 	public static void main(String[] args) throws IOException {
 		
-		demoApp.DemoApp.doDemo();
+		DemoApp.doDemo();
 				
 	}
 
