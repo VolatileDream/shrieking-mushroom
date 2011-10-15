@@ -1,7 +1,7 @@
 package core.config.implementation;
 
+import core.common.Util;
 import core.config.IVariable;
-import core.Util;
 
 public class UserVariable implements IVariable {
 	

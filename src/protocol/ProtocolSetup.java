@@ -9,25 +9,26 @@ import protocol.events.IProtocolEvent;
 import protocol.implementation.EventHandler;
 import protocol.implementation.MessageMover;
 import protocol.implementation.interfaces.INetworkEventsHandler;
-import core.Tupple;
+import core.IHandler;
+import core.common.Tupple;
 import core.events.IEventQueue;
 import core.events.implementation.EventQueue;
 import core.threading.IRunner;
 
 public class ProtocolSetup<M extends IMessage> {
 		
-	private final IEventHandler<IProtocolEvent<M>,INetConnectEvent> connect;
-	private final IEventHandler<IProtocolEvent<M>,INetReadEvent> read;
-	private final IEventHandler<IProtocolEvent<M>,INetErrorEvent> error;
-	private final IEventHandler<IProtocolEvent<M>,INetCloseEvent> close;
-	private final IEventHandler<IProtocolEvent<M>,INetworkEvent> unknown;
+	private final IHandler<IProtocolEvent<M>,INetConnectEvent> connect;
+	private final IHandler<IProtocolEvent<M>,INetReadEvent> read;
+	private final IHandler<IProtocolEvent<M>,INetErrorEvent> error;
+	private final IHandler<IProtocolEvent<M>,INetCloseEvent> close;
+	private final IHandler<IProtocolEvent<M>,INetworkEvent> unknown;
 	
 	public ProtocolSetup(
-			IEventHandler<IProtocolEvent<M>,INetConnectEvent> c,
-			IEventHandler<IProtocolEvent<M>,INetReadEvent> r,
-			IEventHandler<IProtocolEvent<M>,INetErrorEvent> e,
-			IEventHandler<IProtocolEvent<M>,INetCloseEvent> c2,
-			IEventHandler<IProtocolEvent<M>,INetworkEvent> u		
+			IHandler<IProtocolEvent<M>,INetConnectEvent> c,
+			IHandler<IProtocolEvent<M>,INetReadEvent> r,
+			IHandler<IProtocolEvent<M>,INetErrorEvent> e,
+			IHandler<IProtocolEvent<M>,INetCloseEvent> c2,
+			IHandler<IProtocolEvent<M>,INetworkEvent> u		
 		){
 			connect = c;
 			read = r;

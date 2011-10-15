@@ -1,4 +1,4 @@
-package core;
+package core.common;
 
 import core.config.IVariableHandler;
 import core.config.IVariableStore;

@@ -5,7 +5,7 @@ import java.net.Socket;
 
 import networking.implementation.Connection;
 import networking.implementation.interfaces.INetworkIO;
-import core.CommonAccessObject;
+import core.common.CommonAccessObject;
 
 public class TCPConnection extends Connection {
 

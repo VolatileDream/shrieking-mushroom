@@ -2,9 +2,9 @@ package demoApp.protocol;
 
 import networking.IConnection;
 import protocol.IMessageFactory;
-import core.ByteBuilder;
-import core.Tupple;
-import core.Util;
+import core.common.ByteBuilder;
+import core.common.Tupple;
+import core.common.Util;
 import core.logging.ILogger;
 import core.logging.ILogger.LogLevel;
 import demoApp.protocol.interfaces.MyMessage;
@@ -107,7 +107,7 @@ public class MessageFactory implements IMessageFactory<MyMessage> {
 		int index = -1;
 		while( index < contents.length ){
 
-			index = core.Util.firstIndex( START, contents, index+1 );
+			index = core.common.Util.firstIndex( START, contents, index+1 );
 
 			if( index < 0 ) return -1;
 

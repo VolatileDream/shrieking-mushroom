@@ -1,4 +1,4 @@
-package core.exceptions;
+package core.common;
 
 public class TryGetException extends IllegalArgumentException {
 

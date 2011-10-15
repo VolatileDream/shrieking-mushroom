@@ -1,4 +1,4 @@
-package core;
+package core.common;
 
 public class Tupple<T,G> {
 

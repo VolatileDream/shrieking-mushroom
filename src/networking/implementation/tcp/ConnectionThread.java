@@ -11,7 +11,7 @@ import networking.implementation.events.ErrorEvent;
 import networking.implementation.events.ReadEvent;
 import networking.implementation.interfaces.InternalConnection;
 
-import core.CommonAccessObject;
+import core.common.CommonAccessObject;
 import core.events.IEventQueue;
 import core.logging.ILogger.LogLevel;
 import core.threading.IResetableStopper;

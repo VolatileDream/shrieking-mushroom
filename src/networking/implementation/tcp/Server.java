@@ -6,8 +6,8 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 
 import networking.events.INetworkEvent;
-import core.CommonAccessObject;
-import core.CommonVarFetch;
+import core.common.CommonAccessObject;
+import core.common.CommonVarFetch;
 import core.events.IEventQueue;
 import core.logging.ILogger.LogLevel;
 import core.threading.IResetableStopper;

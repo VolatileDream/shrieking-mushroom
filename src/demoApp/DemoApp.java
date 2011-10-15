@@ -11,7 +11,7 @@ import protocol.ProtocolSetup;
 import protocol.events.IProtocolEvent;
 import protocol.implementation.EventHandler;
 import protocol.implementation.interfaces.INetworkEventsHandler;
-import core.CommonAccessObject;
+import core.common.CommonAccessObject;
 import core.config.IVariable;
 import core.config.IVariableHandler;
 import core.config.IVariableStore;

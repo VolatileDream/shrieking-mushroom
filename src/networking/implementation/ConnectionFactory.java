@@ -9,7 +9,7 @@ import java.net.SocketException;
 import networking.implementation.interfaces.InternalConnection;
 import networking.implementation.multicast.MulticastConnection;
 import networking.implementation.tcp.TCPConnection;
-import core.CommonAccessObject;
+import core.common.CommonAccessObject;
 
 public class ConnectionFactory {
 

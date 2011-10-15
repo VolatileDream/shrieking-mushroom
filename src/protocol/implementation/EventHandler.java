@@ -1,29 +1,29 @@
 package protocol.implementation;
 
+import core.IHandler;
 import networking.events.INetCloseEvent;
 import networking.events.INetConnectEvent;
 import networking.events.INetErrorEvent;
 import networking.events.INetReadEvent;
 import networking.events.INetworkEvent;
-import protocol.IEventHandler;
 import protocol.IMessage;
 import protocol.events.IProtocolEvent;
 import protocol.implementation.interfaces.INetworkEventsHandler;
 
 public class EventHandler<M extends IMessage> implements INetworkEventsHandler<M> {
 		
-	private final IEventHandler<IProtocolEvent<M>,INetConnectEvent> connect;
-	private final IEventHandler<IProtocolEvent<M>,INetReadEvent> read;
-	private final IEventHandler<IProtocolEvent<M>,INetErrorEvent> error;
-	private final IEventHandler<IProtocolEvent<M>,INetCloseEvent> close;
-	private final IEventHandler<IProtocolEvent<M>,INetworkEvent> unknown;
+	private final IHandler<IProtocolEvent<M>,INetConnectEvent> connect;
+	private final IHandler<IProtocolEvent<M>,INetReadEvent> read;
+	private final IHandler<IProtocolEvent<M>,INetErrorEvent> error;
+	private final IHandler<IProtocolEvent<M>,INetCloseEvent> close;
+	private final IHandler<IProtocolEvent<M>,INetworkEvent> unknown;
 	
 	public EventHandler(
-		IEventHandler<IProtocolEvent<M>,INetConnectEvent> c,
-		IEventHandler<IProtocolEvent<M>,INetReadEvent> r,
-		IEventHandler<IProtocolEvent<M>,INetErrorEvent> e,
-		IEventHandler<IProtocolEvent<M>,INetCloseEvent> c2,
-		IEventHandler<IProtocolEvent<M>,INetworkEvent> u		
+		IHandler<IProtocolEvent<M>,INetConnectEvent> c,
+		IHandler<IProtocolEvent<M>,INetReadEvent> r,
+		IHandler<IProtocolEvent<M>,INetErrorEvent> e,
+		IHandler<IProtocolEvent<M>,INetCloseEvent> c2,
+		IHandler<IProtocolEvent<M>,INetworkEvent> u		
 	){
 		connect = c;
 		read = r;

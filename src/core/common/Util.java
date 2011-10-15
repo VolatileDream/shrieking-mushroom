@@ -1,6 +1,5 @@
-package core;
+package core.common;
 
-import core.exceptions.TryGetException;
 
 public class Util {
 

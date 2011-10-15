@@ -2,7 +2,7 @@ package demoApp;
 
 import java.io.IOException;
 
-public class main {
+public class run {
 
 	/**
 	 * @param args
