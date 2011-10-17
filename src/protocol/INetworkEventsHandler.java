@@ -1,6 +1,5 @@
-package protocol.implementation.interfaces;
+package protocol;
 
-import protocol.IMessage;
 import protocol.events.IProtocolEvent;
 import networking.events.INetCloseEvent;
 import networking.events.INetConnectEvent;

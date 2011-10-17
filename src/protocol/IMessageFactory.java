@@ -1,7 +1,7 @@
 package protocol;
 
 import networking.IConnection;
-import core.common.Tupple;
+import core.Tupple;
 
 public interface IMessageFactory<M extends IMessage> {
 	

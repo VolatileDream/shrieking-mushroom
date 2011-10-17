@@ -6,20 +6,20 @@ import networking.events.INetErrorEvent;
 import networking.events.INetReadEvent;
 import networking.events.INetworkEvent;
 import protocol.IMessage;
+import protocol.INetworkEventsHandler;
 import protocol.events.IProtocolEvent;
-import protocol.implementation.interfaces.INetworkEventsHandler;
 import core.events.IEventQueue;
 import core.threading.IResetableStopper;
 import core.threading.IRunner;
 import core.threading.implementation.Stopper;
 
-public class MessageMover<M extends IMessage> implements Runnable, IRunner {
+class MessageMover<M extends IMessage> implements Runnable, IRunner {
 
 	private final Object threadLock = new Object();
 	private final INetworkEventsHandler<M> handler;
 	private final IEventQueue<INetworkEvent> networkQueue;
 	private final IEventQueue<IProtocolEvent<M>> protocolQueue;
-	
+
 	private final IResetableStopper stopper;
 
 	private Thread thread;
@@ -35,7 +35,12 @@ public class MessageMover<M extends IMessage> implements Runnable, IRunner {
 	public void run(){
 		while( !stopper.hasStopped() ){
 
-			networkQueue.waitFor( stopper );
+			if( !networkQueue.poll() ){
+				try {
+					Thread.sleep(1000);
+				} catch ( InterruptedException e) {}
+				continue;
+			}
 			INetworkEvent ev = networkQueue.remove();
 
 			IProtocolEvent<M> returnEvent = null;
