@@ -13,6 +13,7 @@ import core.logging.ILogger.LogLevel;
 import core.threading.IResetableStopper;
 import core.threading.IRunner;
 import core.threading.IStopper;
+import core.threading.IWaiter;
 import core.threading.implementation.DisjointStopper;
 import core.threading.implementation.Stopper;
 
@@ -50,8 +51,6 @@ public class Server implements Runnable, IRunner {
 	}
 
 	public void run(){
-
-		CommonVarFetch fetcher = new CommonVarFetch( cao.store, cao.handler );
 		
 		ServerSocket soc = null;
 		try {
@@ -81,11 +80,6 @@ public class Server implements Runnable, IRunner {
 			} catch (IOException e1) {
 				cao.log.Log(e1, LogLevel.Error );
 			}
-
-			try {
-				long sleep = fetcher.threadingSleep();
-				Thread.sleep( sleep );
-			} catch (InterruptedException e) {}
 
 		}// end loop
 
