@@ -1,31 +1,16 @@
-package core.logging;
+package core.logging.implementation;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.Date;
 
-public class LocalTextLogger implements ILogger {
+import core.logging.ILogger;
+import core.logging.LoggingFailedException;
 
-	private FileOutputStream out = null;
+public abstract class BaseLogger implements ILogger {
+
 	private final int matchFlags;
 	
-	public LocalTextLogger( String logFile, int logFlags ) throws IOException {
-		matchFlags = logFlags;
-		Exception err = null;
-		try {
-			//open in append mode
-			out = new FileOutputStream( logFile, true );
-		} catch ( FileNotFoundException e ){
-			err = e;
-		} catch (SecurityException e ) {
-			err = e;
-		}
-
-		if( err != null ){
-			throw new IOException("Couldn't create logger", err);
-		}
-		
+	protected BaseLogger( int f ){
+		matchFlags = f;
 	}
 	
 	@Override
@@ -42,15 +27,13 @@ public class LocalTextLogger implements ILogger {
 	public void Log(String str, Exception e, LogLevel l) throws LoggingFailedException {
 		handleLogging(str, e, l);
 	}
-
-	private void handleLogging( String str, Exception e, LogLevel l ) throws LoggingFailedException {
+	
+	protected abstract void log( String s ) throws LoggingFailedException;
+	
+	protected void handleLogging( String str, Exception e, LogLevel l ) throws LoggingFailedException {
 		if( (l.getFlag() & matchFlags) > 0 ){
 			String s = getLogString(str, e, l) + '\n';
-			try {
-				out.write( s.getBytes() );
-			} catch (IOException e1) {
-				throw new LoggingFailedException( e1 );
-			}
+			log( s );
 		}
 	}
 	
