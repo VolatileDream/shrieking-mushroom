@@ -22,7 +22,9 @@ import core.config.implementation.def.DefaultNetworkingVariableStore;
 import core.events.IEventQueue;
 import core.events.implementation.EventQueue;
 import core.logging.ILogger;
-import core.logging.LocalTextLogger;
+import core.logging.implementation.JoinedLogger;
+import core.logging.implementation.LocalTextLogger;
+import core.logging.implementation.StandardErrorLogger;
 import core.threading.IRunner;
 import demoApp.protocol.Handlers;
 import demoApp.protocol.MessageFactory;
@@ -45,7 +47,10 @@ public class DemoApp {
 		IVariable logFile = handler.GetRequiredVariable( "logging.logFile", store );
 		int logFlag = handler.GetRequiredVariableAsInt( "logging.logProfile", store );
 		
-		ILogger log = new LocalTextLogger( logFile.GetValue(), logFlag );
+		ILogger log1 = new LocalTextLogger( logFile.GetValue(), logFlag );
+		ILogger log2 = new StandardErrorLogger( logFlag );
+		
+		ILogger log = new JoinedLogger( log1, log2 );
 		
 		CommonAccessObject cao = new CommonAccessObject( store, handler, log );
 		
