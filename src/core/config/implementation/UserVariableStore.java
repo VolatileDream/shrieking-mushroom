@@ -2,7 +2,7 @@ package core.config.implementation;
 
 import java.util.Hashtable;
 
-import core.common.Util;
+import core.Util;
 import core.config.IVariable;
 import core.config.IVariableStore;
 

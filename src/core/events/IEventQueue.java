@@ -24,7 +24,7 @@ public interface IEventQueue< M extends IEvent > {
 	public boolean poll();
 
 	/**
-	 * Waits until there is an event in the queue
+	 * Waits until there is an event in the queue, or until the stopper's hasStopped returns true.
 	 */
 	public void waitFor( IStopper stop );
 }

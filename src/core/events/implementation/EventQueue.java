@@ -39,7 +39,11 @@ public class EventQueue<M extends IEvent> implements IEventQueue<M> {
 
 	@Override
 	public synchronized void waitFor( IStopper stop ){
-		while( ! poll() && !stop.hasStopped() ){
+		while(
+			! poll()
+			&& (	stop == null
+					|| !stop.hasStopped() )
+		){
 			try {
 				wait();
 			} catch (InterruptedException e) {}

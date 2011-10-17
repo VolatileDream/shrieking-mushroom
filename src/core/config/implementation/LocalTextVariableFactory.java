@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
-import core.common.Util;
+import core.Util;
 import core.config.IVariable;
 import core.config.IVariableFactory;
 import core.config.IVariableStore;
