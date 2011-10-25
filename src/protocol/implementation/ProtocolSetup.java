@@ -5,12 +5,12 @@ import protocol.IMessage;
 import protocol.INetworkEventsHandler;
 import protocol.events.IProtocolEvent;
 import core.CommonAccessObject;
-import core.Tupple;
 import core.events.IEventQueue;
 import core.events.implementation.EventQueue;
 import core.threading.IRunner;
 import core.threading.IWaiter;
 import core.threading.implementation.CommonWaitTime;
+import core.util.Tupple;
 
 public class ProtocolSetup<M extends IMessage> {
 

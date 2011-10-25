@@ -17,9 +17,9 @@ import protocol.implementation.events.ProtocolCloseEvent;
 import protocol.implementation.events.ProtocolConnectEvent;
 import protocol.implementation.events.ProtocolReadEvent;
 import core.CommonAccessObject;
-import core.Tupple;
-import core.Util;
 import core.logging.ILogger.LogLevel;
+import core.util.Tupple;
+import core.util.Util;
 import demoApp.protocol.interfaces.MyMessage;
 
 public class Handlers implements INetworkEventsHandler<MyMessage> {
@@ -105,6 +105,32 @@ class TableEntry {
 	
 	protected static TableEntry getEntry( IConnection c ){
 		return new TableEntry( c.getAddress().getAddress(), c.getPort() );
+	}
+	
+	@Override
+	public boolean equals( Object o ){
+		if( o instanceof TableEntry ){
+			return equals( (TableEntry) o );
+		}
+		return false;
+	}
+	
+	public boolean equals( TableEntry te ){
+		// ports and addresses must be the same.
+		return this.port == te.port && Util.sameContents( this.address, te.address );
+	}
+	
+	@Override
+	public int hashCode(){
+		int code = 0;
+		int i=0;
+		while( i < address.length ){
+			code = code << 8;
+			code += address[i];
+			i++;
+		}
+		code += port;
+		return code;
 	}
 	
 }

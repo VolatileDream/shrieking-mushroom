@@ -1,6 +1,6 @@
 package protocol;
 
-import core.Tupple;
+import core.util.Tupple;
 
 public interface IMessageFactory<M extends IMessage> {
 	

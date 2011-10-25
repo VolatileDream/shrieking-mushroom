@@ -1,11 +1,11 @@
 package demoApp.protocol;
 
 import protocol.IMessageFactory;
-import core.ByteBuilder;
-import core.Tupple;
-import core.Util;
 import core.logging.ILogger;
 import core.logging.ILogger.LogLevel;
+import core.util.ByteBuilder;
+import core.util.Tupple;
+import core.util.Util;
 import demoApp.protocol.interfaces.MyMessage;
 
 public class MessageFactory implements IMessageFactory<MyMessage> {
@@ -106,7 +106,7 @@ public class MessageFactory implements IMessageFactory<MyMessage> {
 		int index = -1;
 		while( index < contents.length ){
 
-			index = core.Util.firstIndex( START, contents, index+1 );
+			index = core.util.Util.firstIndex( START, contents, index+1 );
 
 			if( index < 0 ) return -1;
 
@@ -130,7 +130,7 @@ public class MessageFactory implements IMessageFactory<MyMessage> {
 			throw new IllegalArgumentException("Offset value must be less then byte[] length");
 		}
 
-		if( contents[start-1] != END ){
+		if( start > 0 && contents[start-1] != END ){
 			return false;
 		}
 		

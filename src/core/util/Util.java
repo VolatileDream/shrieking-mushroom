@@ -1,4 +1,4 @@
-package core;
+package core.util;
 
 
 public class Util {
@@ -35,6 +35,35 @@ public class Util {
 		}
 		return -1;
 	}
+	
+	public static <T> boolean sameContents( T[] t1, T[] t2 ){
+		if( t1.length != t2.length ){
+			return false;
+		}
+		
+		for( int i=0; i < t1.length; i++ ){
+			if( ! t1[i].equals(t2[i]) ){
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	public static boolean sameContents( byte[] t1, byte[] t2 ){
+		if( t1.length != t2.length ){
+			return false;
+		}
+		
+		for( int i=0; i < t1.length; i++ ){
+			if( t1[i] != t2[i] ){
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
 	
 	public static byte[] shift( int i, byte[] array ){
 		byte[] results = new byte[ array.length - i ];

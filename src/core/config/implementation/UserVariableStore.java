@@ -2,9 +2,9 @@ package core.config.implementation;
 
 import java.util.Hashtable;
 
-import core.Util;
 import core.config.IVariable;
 import core.config.IVariableStore;
+import core.util.Util;
 
 
 public class UserVariableStore implements IVariableStore {
