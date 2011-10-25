@@ -11,6 +11,7 @@ import protocol.IMessageFactory;
 import protocol.INetworkEventsHandler;
 import protocol.IProtocolConnection;
 import protocol.events.IProtoConnectEvent;
+import protocol.events.IProtoReadEvent;
 import protocol.events.IProtocolEvent;
 import protocol.implementation.ProtocolSetup;
 import core.CommonAccessObject;
@@ -137,6 +138,17 @@ public class DemoApp {
 					MyMessage m = new Message( "Hello World".getBytes(), text );
 					
 					c.write( m );
+					
+				}else if( event instanceof IProtoReadEvent<?> ){
+					
+					IProtoReadEvent<MyMessage> pr = (IProtoReadEvent<MyMessage>) event;
+					IProtocolConnection<MyMessage> c = pr.getConnection();
+					
+					System.out.println(
+							"Sent from(" + c.getAddress() + ":"+ c.getPort()+"):"
+							+ new String(pr.getMessage().getContents())
+					);
+					
 					
 				}else{
 					
