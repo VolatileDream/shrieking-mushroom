@@ -28,7 +28,7 @@ public interface IProtocolConnection<M extends IMessage> {
 	public long lastSent();
 
 	/**
-	 * Queues the message for writting to this connection.
+	 * Queues the message for writing to this connection.
 	 * @param m The message to write.
 	 * @return Returns true if the message was properly queued.
 	 * @throws ConnectionClosedException If the connection was already closed

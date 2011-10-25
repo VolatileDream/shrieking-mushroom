@@ -7,13 +7,11 @@ import java.net.SocketTimeoutException;
 
 import networking.events.INetworkEvent;
 import core.CommonAccessObject;
-import core.CommonVarFetch;
 import core.events.IEventQueue;
 import core.logging.ILogger.LogLevel;
 import core.threading.IResetableStopper;
 import core.threading.IRunner;
 import core.threading.IStopper;
-import core.threading.IWaiter;
 import core.threading.implementation.DisjointStopper;
 import core.threading.implementation.Stopper;
 

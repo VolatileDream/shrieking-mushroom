@@ -11,6 +11,7 @@ import protocol.events.IProtocolEvent;
 import core.events.IEventQueue;
 import core.threading.IResetableStopper;
 import core.threading.IRunner;
+import core.threading.IWaiter;
 import core.threading.implementation.Stopper;
 
 class MessageMover<M extends IMessage> implements Runnable, IRunner {
@@ -20,15 +21,20 @@ class MessageMover<M extends IMessage> implements Runnable, IRunner {
 	private final IEventQueue<INetworkEvent> networkQueue;
 	private final IEventQueue<IProtocolEvent<M>> protocolQueue;
 
+	private final IWaiter waiter;
 	private final IResetableStopper stopper;
 
 	private Thread thread;
 
-	public MessageMover( INetworkEventsHandler<M> h, IEventQueue<INetworkEvent> e, IEventQueue<IProtocolEvent<M>> e2 ){
+	public MessageMover( IWaiter wait, INetworkEventsHandler<M> h, IEventQueue<INetworkEvent> e, IEventQueue<IProtocolEvent<M>> e2 ){
+		if( wait == null || h == null || e == null || e2 == null ){
+			throw new RuntimeException("An argument was null: (IWaiter "+wait+", INetworkEventsHandler "+h+", IEventQueue "+e+", IEventQueue "+e2+" )");
+		}
 		handler = h;
 		networkQueue = e;
 		protocolQueue = e2;
 		stopper = new Stopper();
+		waiter = wait;
 	}
 
 	@Override
@@ -37,7 +43,7 @@ class MessageMover<M extends IMessage> implements Runnable, IRunner {
 
 			if( !networkQueue.poll() ){
 				try {
-					Thread.sleep(1000);
+					waiter.doWait();
 				} catch ( InterruptedException e) {}
 				continue;
 			}

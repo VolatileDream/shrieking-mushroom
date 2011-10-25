@@ -5,7 +5,7 @@ import core.config.IVariableStore;
 
 public class JointVariableStore implements IVariableStore {
 
-	private IVariableStore store;
+	private IVariableStore store = new UserVariableStore();
 	
 	public JointVariableStore( IVariableStore ... vars ){
 		for( IVariableStore s : vars ){

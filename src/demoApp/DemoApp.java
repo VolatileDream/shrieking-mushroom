@@ -17,8 +17,10 @@ import core.CommonAccessObject;
 import core.config.IVariable;
 import core.config.IVariableHandler;
 import core.config.IVariableStore;
+import core.config.implementation.JointVariableStore;
 import core.config.implementation.UserVariableHandler;
 import core.config.implementation.def.DefaultNetworkingVariableStore;
+import core.config.implementation.def.DefaultProtocolVariableStore;
 import core.events.IEventQueue;
 import core.events.implementation.EventQueue;
 import core.logging.ILogger;
@@ -26,7 +28,10 @@ import core.logging.implementation.JoinedLogger;
 import core.logging.implementation.LocalTextLogger;
 import core.logging.implementation.StandardErrorLogger;
 import core.threading.IRunner;
+import core.threading.IWaiter;
+import core.threading.implementation.CommonWaitTime;
 import demoApp.protocol.Handlers;
+import demoApp.protocol.Message;
 import demoApp.protocol.MessageFactory;
 import demoApp.protocol.MessageType;
 import demoApp.protocol.interfaces.MyMessage;
@@ -41,7 +46,9 @@ public class DemoApp {
 		
 		// General Setup
 		
-		IVariableStore store = new DefaultNetworkingVariableStore();
+		DefaultNetworkingVariableStore netStore = new DefaultNetworkingVariableStore();
+		DefaultProtocolVariableStore protoStore = new DefaultProtocolVariableStore();
+		IVariableStore store = new JointVariableStore( netStore, protoStore );
 		IVariableHandler handler = new UserVariableHandler();
 		
 		IVariable logFile = handler.GetRequiredVariable( "logging.logFile", store );
@@ -58,7 +65,11 @@ public class DemoApp {
 		
 		// Network Layer Setup
 		
-		TCPNetworkAccess netAccess = new TCPConnectionPool( cao );
+		long netSleep = cao.handler.GetRequiredVariableAsInt("threading.default_sleep_millis", cao.store);
+		
+		IWaiter netWait = new CommonWaitTime( netSleep );
+		
+		TCPNetworkAccess netAccess = new TCPConnectionPool( cao, netWait );
 				
 		TCPConnectionBuilder netF = new TCPConnectionBuilder( netAccess );
 		
@@ -78,7 +89,7 @@ public class DemoApp {
 		
 		INetworkEventsHandler<MyMessage> pHandler = new Handlers( cao, msgF );
 		
-		ProtocolSetup<MyMessage> pSetup = new ProtocolSetup<MyMessage>( pHandler );
+		ProtocolSetup<MyMessage> pSetup = new ProtocolSetup<MyMessage>( cao, pHandler );
 		IEventQueue<IProtocolEvent<MyMessage>> pQueue = new EventQueue<IProtocolEvent<MyMessage>>();
 		IRunner mover = pSetup.build( nQueue, pQueue );
 		
@@ -122,6 +133,13 @@ public class DemoApp {
 					IProtocolConnection<MyMessage> c = pc.getConnection();
 					System.out.println("Connected to: " + c.getAddress() + ":"
 							+ c.getPort());
+					
+					//MyMessage m = new Message( );
+					
+				}else{
+					
+					System.out.println( event.getClass() );
+					
 				}
 			}
 			sleep(200);

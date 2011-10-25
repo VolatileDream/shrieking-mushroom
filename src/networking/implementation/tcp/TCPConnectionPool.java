@@ -19,6 +19,7 @@ import core.events.IEventQueue;
 import core.logging.ILogger.LogLevel;
 import core.threading.IResetableStopper;
 import core.threading.IRunner;
+import core.threading.IWaiter;
 import core.threading.implementation.Stopper;
 
 public class TCPConnectionPool implements TCPNetworkAccess {
@@ -29,10 +30,12 @@ public class TCPConnectionPool implements TCPNetworkAccess {
 	private final ArrayList<ConnectionThread> threads = new ArrayList<ConnectionThread>();
 	
 	private final IResetableStopper stop = new Stopper();
+	private final IWaiter wait;
 	
-	public TCPConnectionPool( CommonAccessObject c ){
+	public TCPConnectionPool( CommonAccessObject c, IWaiter w ){
 		cao = c;
 		fac = new ConnectionFactory( cao );
+		wait = w;
 	}
 	
 	void addConnection( final InternalConnection con, IEventQueue<INetworkEvent> queue ){
@@ -69,7 +72,7 @@ public class TCPConnectionPool implements TCPNetworkAccess {
 	}
 
 	private ConnectionThread newThread( ArrayList<ConnectionThread> threads, IEventQueue<INetworkEvent> e ){
-		ConnectionThread ct = new ConnectionThread( cao, e, stop );
+		ConnectionThread ct = new ConnectionThread( cao, wait, e, stop );
 		
 		Thread t = new Thread( ct );
 		t.start();

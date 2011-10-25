@@ -16,6 +16,7 @@ import core.events.IEventQueue;
 import core.logging.ILogger.LogLevel;
 import core.threading.IResetableStopper;
 import core.threading.IStopper;
+import core.threading.IWaiter;
 import core.threading.implementation.DisjointStopper;
 import core.threading.implementation.Stopper;
 
@@ -27,10 +28,12 @@ public class ConnectionThread implements Runnable {
 
 	private final IResetableStopper localStop = new Stopper();
 	private final IStopper allStop;
+	private final IWaiter wait;
 
-	public ConnectionThread( CommonAccessObject c, IEventQueue<INetworkEvent> eq, IStopper s ){
+	public ConnectionThread( CommonAccessObject c, IWaiter w, IEventQueue<INetworkEvent> eq, IStopper s ){
 		cao = c;
 		eventQueue = eq;
+		wait = w;
 		allStop = new DisjointStopper( localStop, s );
 	}
 
@@ -80,7 +83,7 @@ public class ConnectionThread implements Runnable {
 			}
 
 			try {
-				Thread.sleep( 100 );
+				wait.doWait();
 			} catch (InterruptedException e) {
 				cao.log.Log( e, LogLevel.Warn );
 			}
