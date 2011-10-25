@@ -1,6 +1,5 @@
 package demoApp.protocol;
 
-import networking.IConnection;
 import protocol.IMessageFactory;
 import core.ByteBuilder;
 import core.Tupple;
@@ -49,8 +48,8 @@ public class MessageFactory implements IMessageFactory<MyMessage> {
 	}
 	
 	@Override
-	public Tupple<MyMessage,Integer> transformToMessage( IConnection con, byte[] array ) {
-		Message result = new Message( con );
+	public Tupple<MyMessage,Integer> transformToMessage( byte[] array ) {
+		Message result = new Message();
 		int iStart = getFirstValidMessageStart( array );
 
 		if( iStart != 0 ){

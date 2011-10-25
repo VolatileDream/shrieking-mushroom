@@ -71,7 +71,7 @@ public class Handlers implements INetworkEventsHandler<MyMessage> {
 			table.put( te, info );
 		}
 		info.buffer = Util.concat( info.buffer, e.getRead() );
-		Tupple<MyMessage,Integer> result = msgFact.transformToMessage( con, info.buffer );
+		Tupple<MyMessage,Integer> result = msgFact.transformToMessage( info.buffer );
 		
 		if( result.Item2 > 0 ){
 			//shift the buffer if we get a non zero return, they might want to clean it.

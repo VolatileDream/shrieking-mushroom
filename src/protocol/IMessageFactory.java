@@ -1,6 +1,5 @@
 package protocol;
 
-import networking.IConnection;
 import core.Tupple;
 
 public interface IMessageFactory<M extends IMessage> {
@@ -11,7 +10,7 @@ public interface IMessageFactory<M extends IMessage> {
 	 * @return Returns a tupple with the parsed message ( null if not possible )
 	 * and the number of bytes read from the array ( > 0 if a message was parsed )
 	 */
-	public Tupple<M,Integer> transformToMessage( IConnection c, byte[] b );
+	public Tupple<M,Integer> transformToMessage( byte[] b );
 	
 	/**
 	 * Turns a message into an array of bytes for writing to IO

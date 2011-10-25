@@ -1,20 +1,15 @@
 package demoApp.protocol;
 
-import networking.IConnection;
 import demoApp.protocol.interfaces.MyMessage;
 
 public class Message implements MyMessage {
 
-	public final IConnection con;
 	MessageType type;
 	byte[] contents;
 	
-	public Message( IConnection c ){
-		con = c;
-	}
+	Message(){}
 	
-	public Message( IConnection c, byte[] insides, MessageType t ){
-		con = c;
+	public Message( byte[] insides, MessageType t ){
 		contents = insides;
 		type = t;
 	}
@@ -22,11 +17,6 @@ public class Message implements MyMessage {
 	@Override
 	public MessageType getType(){
 		return type;
-	}
-	
-	@Override
-	public IConnection getConnection() {
-		return con;
 	}
 
 	@Override

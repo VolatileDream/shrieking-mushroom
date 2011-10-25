@@ -134,7 +134,7 @@ public class DemoApp {
 					System.out.println("Connected to: " + c.getAddress() + ":"
 							+ c.getPort());
 					
-					//MyMessage m = new Message( );
+					//MyMessage m = new Message( null, null, text );
 					
 				}else{
 					
