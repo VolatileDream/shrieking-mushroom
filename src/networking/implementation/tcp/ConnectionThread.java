@@ -45,8 +45,10 @@ public class ConnectionThread implements Runnable {
 			ArrayList<InternalConnection> removals = new ArrayList<InternalConnection>();
 
 			//go through all the connections
-			for( InternalConnection con : connections ){
+			for( int i=0; i < connections.size() ; i++ ){
 
+				InternalConnection con = connections.get(i);
+				
 				if( con.isClosed() ){
 					removals.add( con );
 					continue;
