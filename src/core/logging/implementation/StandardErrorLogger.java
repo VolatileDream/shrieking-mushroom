@@ -5,10 +5,8 @@ import core.logging.LoggingFailedException;
 
 public class StandardErrorLogger extends BaseLogger implements ILogger {
 
-	
-	
-	public StandardErrorLogger( int flags ){
-		super( flags );
+	public StandardErrorLogger(int flags) {
+		super(flags);
 	}
 
 	@Override
@@ -16,6 +14,4 @@ public class StandardErrorLogger extends BaseLogger implements ILogger {
 		System.err.println(s);
 	}
 
-	
-	
 }

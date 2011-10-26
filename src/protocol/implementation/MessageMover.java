@@ -26,9 +26,12 @@ class MessageMover<M extends IMessage> implements Runnable, IRunner {
 
 	private Thread thread;
 
-	public MessageMover( IWaiter wait, INetworkEventsHandler<M> h, IEventQueue<INetworkEvent> e, IEventQueue<IProtocolEvent<M>> e2 ){
-		if( wait == null || h == null || e == null || e2 == null ){
-			throw new RuntimeException("An argument was null: (IWaiter "+wait+", INetworkEventsHandler "+h+", IEventQueue "+e+", IEventQueue "+e2+" )");
+	public MessageMover(IWaiter wait, INetworkEventsHandler<M> h,
+			IEventQueue<INetworkEvent> e, IEventQueue<IProtocolEvent<M>> e2) {
+		if (wait == null || h == null || e == null || e2 == null) {
+			throw new RuntimeException("An argument was null: (IWaiter " + wait
+					+ ", INetworkEventsHandler " + h + ", IEventQueue " + e
+					+ ", IEventQueue " + e2 + " )");
 		}
 		handler = h;
 		networkQueue = e;
@@ -38,61 +41,63 @@ class MessageMover<M extends IMessage> implements Runnable, IRunner {
 	}
 
 	@Override
-	public void run(){
-		while( !stopper.hasStopped() ){
+	public void run() {
+		while (!stopper.hasStopped()) {
 
-			if( !networkQueue.poll() ){
+			if (!networkQueue.poll()) {
 				try {
 					waiter.doWait();
-				} catch ( InterruptedException e) {}
+				} catch (InterruptedException e) {
+				}
 				continue;
 			}
 			INetworkEvent ev = networkQueue.remove();
 
 			IProtocolEvent<M> returnEvent = null;
-			
-			if( ev instanceof INetConnectEvent ){
 
-				returnEvent = handler.handleConnect( (INetConnectEvent)ev );
+			if (ev instanceof INetConnectEvent) {
 
-			} else if( ev instanceof INetCloseEvent ){
+				returnEvent = handler.handleConnect((INetConnectEvent) ev);
 
-				returnEvent = handler.handleClose( (INetCloseEvent) ev );
+			} else if (ev instanceof INetCloseEvent) {
 
-			} else if( ev instanceof INetErrorEvent ){
+				returnEvent = handler.handleClose((INetCloseEvent) ev);
 
-				returnEvent = handler.handleError( (INetErrorEvent) ev );
+			} else if (ev instanceof INetErrorEvent) {
 
-			} else if( ev instanceof INetReadEvent ){
+				returnEvent = handler.handleError((INetErrorEvent) ev);
 
-				returnEvent = handler.handleRead( (INetReadEvent) ev );
+			} else if (ev instanceof INetReadEvent) {
+
+				returnEvent = handler.handleRead((INetReadEvent) ev);
 
 			} else {
 
-				returnEvent = handler.handleUnknown( ev );
+				returnEvent = handler.handleUnknown(ev);
 			}
 
-			if( returnEvent != null ){
-				protocolQueue.offer( returnEvent );
+			if (returnEvent != null) {
+				protocolQueue.offer(returnEvent);
 			}
-			
+
 		}
 	}
 
 	@Override
-	public void start(){
-		synchronized( threadLock ){
-			if( thread != null ){
-				throw new RuntimeException("Can't start a thread more then once.");
+	public void start() {
+		synchronized (threadLock) {
+			if (thread != null) {
+				throw new RuntimeException(
+						"Can't start a thread more then once.");
 			}
-			thread = new Thread( this );
+			thread = new Thread(this);
 			thread.start();
 		}
 	}
 
 	@Override
-	public void stop(){
-		synchronized( threadLock ){
+	public void stop() {
+		synchronized (threadLock) {
 			stopper.setStop();
 		}
 	}

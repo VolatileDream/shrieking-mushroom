@@ -8,12 +8,12 @@ public class NullConnection implements IConnection {
 
 	private final InetAddress netAdr;
 	private final int portNum;
-	
-	public NullConnection( InetAddress net, int port ){
+
+	public NullConnection(InetAddress net, int port) {
 		netAdr = net;
 		portNum = port;
 	}
-	
+
 	@Override
 	public InetAddress getAddress() {
 		return netAdr;

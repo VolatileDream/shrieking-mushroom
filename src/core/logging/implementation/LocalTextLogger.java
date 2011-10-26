@@ -10,28 +10,28 @@ import core.logging.LoggingFailedException;
 public class LocalTextLogger extends BaseLogger implements ILogger {
 
 	private FileOutputStream out = null;
-	
-	public LocalTextLogger( String logFile, int logFlags ) throws IOException {
-		super( logFlags );
+
+	public LocalTextLogger(String logFile, int logFlags) throws IOException {
+		super(logFlags);
 		Exception err = null;
 		try {
-			//open in append mode
-			out = new FileOutputStream( logFile, true );
-		} catch ( FileNotFoundException e ){
+			// open in append mode
+			out = new FileOutputStream(logFile, true);
+		} catch (FileNotFoundException e) {
 			err = e;
-		} catch (SecurityException e ) {
+		} catch (SecurityException e) {
 			err = e;
 		}
 
-		if( err != null ){
+		if (err != null) {
 			throw new IOException("Couldn't create logger", err);
 		}
 	}
 
 	@Override
-	public void log( String s ) throws LoggingFailedException {
+	public void log(String s) throws LoggingFailedException {
 		try {
-			out.write( s.getBytes() );
+			out.write(s.getBytes());
 		} catch (IOException e) {
 			throw new LoggingFailedException(e);
 		}

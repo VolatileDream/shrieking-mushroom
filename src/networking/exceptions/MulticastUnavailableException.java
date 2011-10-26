@@ -9,7 +9,8 @@ public class MulticastUnavailableException extends IOException {
 	 */
 	private static final long serialVersionUID = 128017867844560142L;
 
-	public MulticastUnavailableException() {}
+	public MulticastUnavailableException() {
+	}
 
 	public MulticastUnavailableException(String message) {
 		super(message);

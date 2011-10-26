@@ -10,7 +10,7 @@ public class Stopper implements IResetableStopper {
 	public synchronized boolean hasStopped() {
 		return !running;
 	}
-	
+
 	@Override
 	public synchronized void reset() {
 		running = true;

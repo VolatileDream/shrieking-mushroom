@@ -8,18 +8,18 @@ import core.config.implementation.UserVariableStore;
 public class DefaultProtocolVariableStore implements IVariableStore {
 
 	private IVariableStore store = new UserVariableStore();
-	
-	public DefaultProtocolVariableStore(){
+
+	public DefaultProtocolVariableStore() {
 		this("");
 	}
-	
-	public DefaultProtocolVariableStore( String str ){
+
+	public DefaultProtocolVariableStore(String str) {
 		queue(str);
 	}
-	
+
 	@Override
 	public void AddOrChangeValue(IVariable var) {
-		store.AddOrChangeValue( var );
+		store.AddOrChangeValue(var);
 	}
 
 	@Override
@@ -32,16 +32,17 @@ public class DefaultProtocolVariableStore implements IVariableStore {
 		return store.TryGetVariable(name, array);
 	}
 
-	//----------------------------------- Variable setup -----------------------------------
-	
-	private void queue(String root){
+	// ----------------------------------- Variable setup
+	// -----------------------------------
+
+	private void queue(String root) {
 		String queueNameSpace = root + "queue.";
-		
+
 		IVariable var = null;
-		
-		var = new UserVariable( queueNameSpace + "poll_time_milli", "200");
-		this.AddOrChangeValue( var );
-		
+
+		var = new UserVariable(queueNameSpace + "poll_time_milli", "200");
+		this.AddOrChangeValue(var);
+
 	}
-	
+
 }

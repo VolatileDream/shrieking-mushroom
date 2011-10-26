@@ -7,7 +7,8 @@ public class TryGetException extends IllegalArgumentException {
 	 */
 	private static final long serialVersionUID = 6688329203633496849L;
 
-	public TryGetException() {}
+	public TryGetException() {
+	}
 
 	public TryGetException(String s) {
 		super(s);

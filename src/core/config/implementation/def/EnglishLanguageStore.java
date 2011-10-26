@@ -6,20 +6,18 @@ import core.config.IVariableStore;
 public class EnglishLanguageStore implements IVariableStore {
 
 	private IVariableStore store;
-	
-	public EnglishLanguageStore(){
+
+	public EnglishLanguageStore() {
 		this("language");
 	}
-	
-	public EnglishLanguageStore( String root ){
-		
+
+	public EnglishLanguageStore(String root) {
+
 	}
-	
-	
-	
+
 	@Override
 	public void AddOrChangeValue(IVariable var) {
-		store.AddOrChangeValue( var );
+		store.AddOrChangeValue(var);
 	}
 
 	@Override
@@ -29,11 +27,7 @@ public class EnglishLanguageStore implements IVariableStore {
 
 	@Override
 	public boolean TryGetVariable(String name, IVariable[] array) {
-		return store.TryGetVariable( name, array );
+		return store.TryGetVariable(name, array);
 	}
-	
-	
-	
-	
-	
+
 }

@@ -1,9 +1,9 @@
 
-#setup source files for use as a library
-SOURCE = $(shell find ./src/core ./src/protocol ./src/networking -type f -iname '*.java' -print | sed 's_/src__' )
-
 # setup source files for use with an executable demo
-DEMO_SOURCE = $(shell echo "$(SOURCE)" | sed 's_*demoApp*__' )
+DEMO_SOURCE = $(shell find ./src -type f -iname '*.java' -print | sed 's_/src__' )
+
+#setup source files for use as a library
+SOURCE = $(shell echo "$(DEMO_SOURCE)" | sed 's_*demoApp*__' )
 
 # make everything, package into 2 jar files ( one with demo, one without )
 all : run bin
@@ -26,3 +26,4 @@ all : run bin
 clean : 
 	@echo "Removing compiled files"
 	@rm ./bin -r
+	@rm ./run -r

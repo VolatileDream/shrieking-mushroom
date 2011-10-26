@@ -29,120 +29,126 @@ public class ConnectionThread implements Runnable {
 	private final IStopper allStop;
 	private final IWaiter wait;
 
-	public ConnectionThread( CommonAccessObject c, IWaiter w, IEventQueue<INetworkEvent> eq, IStopper s ){
+	public ConnectionThread(CommonAccessObject c, IWaiter w,
+			IEventQueue<INetworkEvent> eq, IStopper s) {
 		cao = c;
 		eventQueue = eq;
 		wait = w;
-		allStop = new DisjointStopper( localStop, s );
+		allStop = new DisjointStopper(localStop, s);
 	}
 
 	@Override
-	public void run(){
+	public void run() {
 
-		while( !allStop.hasStopped() ){
+		while (!allStop.hasStopped()) {
 
 			ArrayList<InternalConnection> removals = new ArrayList<InternalConnection>();
 
-			//go through all the connections
-			for( int i=0; i < connections.size() ; i++ ){
+			// go through all the connections
+			for (int i = 0; i < connections.size(); i++) {
 
 				InternalConnection con = connections.get(i);
-				
-				if( con.isClosed() ){
-					removals.add( con );
+
+				if (con.isClosed()) {
+					removals.add(con);
 					continue;
 				}
 
 				try {
 
-					handleConnection( con );
+					handleConnection(con);
 
 				} catch (IOException e) {
 
-					removals.add( con );
+					removals.add(con);
 
-					cao.log.Log( e, LogLevel.Error );
+					cao.log.Log(e, LogLevel.Error);
 
-					INetErrorEvent er = new ErrorEvent( con );
+					INetErrorEvent er = new ErrorEvent(con);
 
-					if( !eventQueue.offer( er ) ){
-						cao.log.Log( "Couldn't add error event to queue", LogLevel.Error );
+					if (!eventQueue.offer(er)) {
+						cao.log.Log("Couldn't add error event to queue",
+								LogLevel.Error);
 					}
 
 					try {
 						con.close();
-					} catch (IOException e1) {}
+					} catch (IOException e1) {
+					}
 
 				}// end error handling
 
-			}//end loop through all connections
+			}// end loop through all connections
 
-			synchronized( connections ){
-				for( InternalConnection con : removals ){
-					connections.remove( con );	
+			synchronized (connections) {
+				for (InternalConnection con : removals) {
+					connections.remove(con);
 				}
 			}
 
 			try {
 				wait.doWait();
 			} catch (InterruptedException e) {
-				cao.log.Log( e, LogLevel.Warn );
+				cao.log.Log(e, LogLevel.Warn);
 			}
 
-		}//end running loop
+		}// end running loop
 
-		//TODO cleanup connections
+		// TODO cleanup connections
 
 	}
 
 	/**
 	 * Handles the connection
-	 * @param con the connection to handle
+	 * 
+	 * @param con
+	 *            the connection to handle
 	 * @throws IOException
 	 */
-	private void handleConnection( InternalConnection con ) throws IOException {
+	private void handleConnection(InternalConnection con) throws IOException {
 
-		if( con.numSend() > 0 ){
+		if (con.numSend() > 0) {
 			con.flush();
 		}// end send check
 
 		byte[] read = con.read();
-		if( read != null && read.length > 0 ){
-			INetReadEvent evt = new ReadEvent( con, read );
-			if( ! eventQueue.offer( evt ) ){
-				cao.log.Log( "Couldn't add read event to the queue", LogLevel.Error );
+		if (read != null && read.length > 0) {
+			INetReadEvent evt = new ReadEvent(con, read);
+			if (!eventQueue.offer(evt)) {
+				cao.log.Log("Couldn't add read event to the queue",
+						LogLevel.Error);
 			}
 		}
 	}
 
-	public void close(){
+	public void close() {
 		localStop.setStop();
 	}
 
-	public boolean addConnection( InternalConnection c ){
-		synchronized( connections ){
-			if( connections.size() >= maxConnectionPerThread() ){
+	public boolean addConnection(InternalConnection c) {
+		synchronized (connections) {
+			if (connections.size() >= maxConnectionPerThread()) {
 				return false;
-			}else{
-				connections.add( c );
+			} else {
+				connections.add(c);
 				return true;
 			}
 		}
 	}
 
-	public int numConnections(){
+	public int numConnections() {
 		return connections.size();
 	}
 
-	public ArrayList<IConnection> getConnections(){
+	public ArrayList<IConnection> getConnections() {
 		ArrayList<IConnection> result = new ArrayList<IConnection>();
-		result.addAll( connections );
+		result.addAll(connections);
 		return result;
 	}
 
-	private int maxConnectionPerThread(){
+	private int maxConnectionPerThread() {
 		String var = "networking.unicast.max_thread_connections";
-		return cao.handler.GetRequiredVariableAsInt( var, cao.store );
+		return cao.handler.GetRequiredVariableAsInt(var, cao.store);
 	}
 
 }

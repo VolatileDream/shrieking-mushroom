@@ -7,17 +7,16 @@ import core.events.IEvent;
 import core.events.IEventQueue;
 import core.threading.IStopper;
 
-
 public class EventQueue<M extends IEvent> implements IEventQueue<M> {
 
 	private final Queue<M> queue = new LinkedList<M>();
-	
-	public synchronized boolean offer( M e ){
+
+	public synchronized boolean offer(M e) {
 		boolean result = false;
-		synchronized( queue ){
-			result = queue.offer( e );
+		synchronized (queue) {
+			result = queue.offer(e);
 		}
-		if( result ){
+		if (result) {
 			notifyAll();
 		}
 		return result;
@@ -25,29 +24,26 @@ public class EventQueue<M extends IEvent> implements IEventQueue<M> {
 
 	@Override
 	public synchronized boolean poll() {
-		synchronized( queue ){
+		synchronized (queue) {
 			return !queue.isEmpty();
 		}
 	}
 
 	@Override
 	public synchronized M remove() {
-		synchronized( queue ){
+		synchronized (queue) {
 			return queue.poll();
 		}
 	}
 
 	@Override
-	public synchronized void waitFor( IStopper stop ){
-		while(
-			! poll()
-			&& (	stop == null
-					|| !stop.hasStopped() )
-		){
+	public synchronized void waitFor(IStopper stop) {
+		while (!poll() && (stop == null || !stop.hasStopped())) {
 			try {
 				wait();
-			} catch (InterruptedException e) {}
+			} catch (InterruptedException e) {
+			}
 		}
 	}
-	
+
 }

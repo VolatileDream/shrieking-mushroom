@@ -7,11 +7,11 @@ import core.events.implementation.Event;
 public abstract class NetworkEvent extends Event implements INetworkEvent {
 
 	private final IConnection con;
-	
-	public NetworkEvent( IConnection c ){
+
+	public NetworkEvent(IConnection c) {
 		con = c;
 	}
-	
+
 	@Override
 	public IConnection getConnection() {
 		return con;

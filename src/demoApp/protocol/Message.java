@@ -6,16 +6,17 @@ public class Message implements MyMessage {
 
 	MessageType type;
 	byte[] contents;
-	
-	Message(){}
-	
-	public Message( byte[] insides, MessageType t ){
+
+	Message() {
+	}
+
+	public Message(byte[] insides, MessageType t) {
 		contents = insides;
 		type = t;
 	}
-	
+
 	@Override
-	public MessageType getType(){
+	public MessageType getType() {
 		return type;
 	}
 

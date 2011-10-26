@@ -19,14 +19,14 @@ public class LocalTextVariableFactory implements IVariableFactory {
 
 	@Override
 	public IVariable FromSaveString(String str) {
-		int index = str.indexOf( delimiter );
-		String name = str.substring( 0, index );
-		String value = str.substring( index+1 );
-		return new UserVariable( name, value );
+		int index = str.indexOf(delimiter);
+		String name = str.substring(0, index);
+		String value = str.substring(index + 1);
+		return new UserVariable(name, value);
 	}
 
 	@Override
-	public String ToSaveString( IVariable var ) {
+	public String ToSaveString(IVariable var) {
 		return var.GetName() + delimiter + var.GetValue();
 	}
 
@@ -37,12 +37,13 @@ public class LocalTextVariableFactory implements IVariableFactory {
 		try {
 			FileOutputStream fout = new FileOutputStream(uri);
 
-			BufferedWriter bwrite = new BufferedWriter( new OutputStreamWriter( fout ) );
+			BufferedWriter bwrite = new BufferedWriter(new OutputStreamWriter(
+					fout));
 
 			IVariable[] vars = store.GetVariables();
 
-			for( IVariable v : vars ){
-				bwrite.write( this.ToSaveString( v ) );
+			for (IVariable v : vars) {
+				bwrite.write(this.ToSaveString(v));
 				bwrite.write('\n');
 			}
 			bwrite.flush();
@@ -59,34 +60,37 @@ public class LocalTextVariableFactory implements IVariableFactory {
 	}
 
 	@Override
-	public boolean TryGetVariablesFromLocation( String uri, IVariableStore[] store ) {
-		Util.TryGetArrayCheck( store );
+	public boolean TryGetVariablesFromLocation(String uri,
+			IVariableStore[] store) {
+		Util.TryGetArrayCheck(store);
 
 		try {
-			FileInputStream conn = new FileInputStream( uri );
+			FileInputStream conn = new FileInputStream(uri);
 
-			BufferedReader bRead = new BufferedReader( new InputStreamReader( conn ) );
+			BufferedReader bRead = new BufferedReader(new InputStreamReader(
+					conn));
 
 			store[0] = new UserVariableStore();
 
 			String input = null;
 
-			while( true ){
+			while (true) {
 
-				if( !bRead.ready() ){
+				if (!bRead.ready()) {
 					try {
-						Thread.sleep( 100 );
-					} catch (InterruptedException e) {}
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+					}
 				}
 
 				input = bRead.readLine();
 
-				if( input == null ){
+				if (input == null) {
 					break;
 				}
 
-				IVariable var = this.FromSaveString( input );
-				store[0].AddOrChangeValue( var );
+				IVariable var = this.FromSaveString(input);
+				store[0].AddOrChangeValue(var);
 
 				input = null;
 			}

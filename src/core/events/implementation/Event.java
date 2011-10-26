@@ -5,15 +5,15 @@ import core.events.IEvent;
 public abstract class Event implements IEvent {
 
 	private final long time;
-	
-	public Event(){
+
+	public Event() {
 		time = System.currentTimeMillis();
 	}
 
-	protected Event( long l ){
+	protected Event(long l) {
 		time = l;
 	}
-	
+
 	@Override
 	public long getTimestamp() {
 		return time;
