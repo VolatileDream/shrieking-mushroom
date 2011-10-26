@@ -31,11 +31,11 @@ import shriekingMushroom.protocol.events.IProtoConnectEvent;
 import shriekingMushroom.protocol.events.IProtoReadEvent;
 import shriekingMushroom.protocol.events.IProtocolEvent;
 import shriekingMushroom.protocol.implementation.ProtocolSetup;
-import demoApp.protocol.Handlers;
-import demoApp.protocol.Message;
-import demoApp.protocol.MessageFactory;
-import demoApp.protocol.MessageType;
-import demoApp.protocol.interfaces.MyMessage;
+import demoApp.protocol.DemoHandlers;
+import demoApp.protocol.DemoMessage;
+import demoApp.protocol.DemoMessageFactory;
+import demoApp.protocol.DemoMessageType;
+import demoApp.protocol.interfaces.DemoMyMessage;
 
 public class DemoApp {
 
@@ -85,18 +85,18 @@ public class DemoApp {
 
 		// Protocol Layer setup
 
-		MessageType text = new MessageType("TEXT");
-		MessageType con = new MessageType("CONNECTION");
-		MessageType data = new MessageType("DATA");
+		DemoMessageType text = new DemoMessageType("TEXT");
+		DemoMessageType con = new DemoMessageType("CONNECTION");
+		DemoMessageType data = new DemoMessageType("DATA");
 
-		IMessageFactory<MyMessage> msgF = new MessageFactory(cao.log, text,
+		IMessageFactory<DemoMyMessage> msgF = new DemoMessageFactory(cao.log, text,
 				con, data);
 
-		INetworkEventsHandler<MyMessage> pHandler = new Handlers(cao, msgF);
+		INetworkEventsHandler<DemoMyMessage> pHandler = new DemoHandlers(cao, msgF);
 
-		ProtocolSetup<MyMessage> pSetup = new ProtocolSetup<MyMessage>(cao,
+		ProtocolSetup<DemoMyMessage> pSetup = new ProtocolSetup<DemoMyMessage>(cao,
 				pHandler);
-		IEventQueue<IProtocolEvent<MyMessage>> pQueue = new EventQueue<IProtocolEvent<MyMessage>>();
+		IEventQueue<IProtocolEvent<DemoMyMessage>> pQueue = new EventQueue<IProtocolEvent<DemoMyMessage>>();
 		IRunner mover = pSetup.build(nQueue, pQueue);
 
 		System.out.println("Protocol layer setup completed...");
@@ -132,22 +132,22 @@ public class DemoApp {
 
 			if (pQueue.poll()) {
 
-				IProtocolEvent<MyMessage> event = pQueue.remove();
+				IProtocolEvent<DemoMyMessage> event = pQueue.remove();
 				if (event instanceof IProtoConnectEvent<?>) {
 
-					IProtoConnectEvent<MyMessage> pc = (IProtoConnectEvent<MyMessage>) event;
-					IProtocolConnection<MyMessage> c = pc.getConnection();
+					IProtoConnectEvent<DemoMyMessage> pc = (IProtoConnectEvent<DemoMyMessage>) event;
+					IProtocolConnection<DemoMyMessage> c = pc.getConnection();
 					System.out.println("Connected to: " + c.getAddress() + ":"
 							+ c.getPort());
 
-					MyMessage m = new Message("Hello World".getBytes(), text);
+					DemoMyMessage m = new DemoMessage("Hello World".getBytes(), text);
 
 					c.write(m);
 
 				} else if (event instanceof IProtoReadEvent<?>) {
 
-					IProtoReadEvent<MyMessage> pr = (IProtoReadEvent<MyMessage>) event;
-					IProtocolConnection<MyMessage> c = pr.getConnection();
+					IProtoReadEvent<DemoMyMessage> pr = (IProtoReadEvent<DemoMyMessage>) event;
+					IProtocolConnection<DemoMyMessage> c = pr.getConnection();
 
 					System.out.println("Sent from(" + c.getAddress() + ":"
 							+ c.getPort() + "):"

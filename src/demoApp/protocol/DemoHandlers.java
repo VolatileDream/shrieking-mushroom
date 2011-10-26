@@ -20,58 +20,58 @@ import shriekingMushroom.protocol.implementation.ProtocolConnectionFactory;
 import shriekingMushroom.protocol.implementation.events.ProtocolCloseEvent;
 import shriekingMushroom.protocol.implementation.events.ProtocolConnectEvent;
 import shriekingMushroom.protocol.implementation.events.ProtocolReadEvent;
-import demoApp.protocol.interfaces.MyMessage;
+import demoApp.protocol.interfaces.DemoMyMessage;
 
-public class Handlers implements INetworkEventsHandler<MyMessage> {
+public class DemoHandlers implements INetworkEventsHandler<DemoMyMessage> {
 
 	private final CommonAccessObject cao;
-	private final ProtocolConnectionFactory<MyMessage> protoFact;
-	private final IMessageFactory<MyMessage> msgFact;
+	private final ProtocolConnectionFactory<DemoMyMessage> protoFact;
+	private final IMessageFactory<DemoMyMessage> msgFact;
 
-	private final Hashtable<TableEntry, ConnectionInfo> table = new Hashtable<TableEntry, ConnectionInfo>();
+	private final Hashtable<TableEntry, DemoConnectionInfo> table = new Hashtable<TableEntry, DemoConnectionInfo>();
 
-	public Handlers(CommonAccessObject c, IMessageFactory<MyMessage> f) {
+	public DemoHandlers(CommonAccessObject c, IMessageFactory<DemoMyMessage> f) {
 		cao = c;
 		msgFact = f;
-		protoFact = new ProtocolConnectionFactory<MyMessage>(msgFact);
+		protoFact = new ProtocolConnectionFactory<DemoMyMessage>(msgFact);
 	}
 
 	@Override
-	public IProtocolEvent<MyMessage> handleClose(INetCloseEvent e) {
+	public IProtocolEvent<DemoMyMessage> handleClose(INetCloseEvent e) {
 		IConnection c = e.getConnection();
 		TableEntry te = TableEntry.getEntry(c);
 		table.remove(te);
-		return new ProtocolCloseEvent<MyMessage>(e, protoFact.transform(c));
+		return new ProtocolCloseEvent<DemoMyMessage>(e, protoFact.transform(c));
 	}
 
 	@Override
-	public IProtocolEvent<MyMessage> handleConnect(INetConnectEvent e) {
+	public IProtocolEvent<DemoMyMessage> handleConnect(INetConnectEvent e) {
 		IConnection c = e.getConnection();
 		TableEntry te = TableEntry.getEntry(c);
-		table.put(te, new ConnectionInfo());
-		return new ProtocolConnectEvent<MyMessage>(e, protoFact.transform(c));
+		table.put(te, new DemoConnectionInfo());
+		return new ProtocolConnectEvent<DemoMyMessage>(e, protoFact.transform(c));
 	}
 
 	@Override
-	public IProtocolEvent<MyMessage> handleError(INetErrorEvent e) {
+	public IProtocolEvent<DemoMyMessage> handleError(INetErrorEvent e) {
 		return null;
 	}
 
 	@Override
-	public IProtocolEvent<MyMessage> handleRead(INetReadEvent e) {
+	public IProtocolEvent<DemoMyMessage> handleRead(INetReadEvent e) {
 		IConnection con = e.getConnection();
 		TableEntry te = TableEntry.getEntry(con);
 
-		ConnectionInfo info = table.get(te);
+		DemoConnectionInfo info = table.get(te);
 
 		if (info == null) {
 			cao.log.Log("Couldn't find connection info for connection",
 					LogLevel.Error);
-			info = new ConnectionInfo();
+			info = new DemoConnectionInfo();
 			table.put(te, info);
 		}
 		info.buffer = Util.concat(info.buffer, e.getRead());
-		Tupple<MyMessage, Integer> result = msgFact
+		Tupple<DemoMyMessage, Integer> result = msgFact
 				.transformToMessage(info.buffer);
 
 		if (result.Item2 > 0) {
@@ -84,13 +84,13 @@ public class Handlers implements INetworkEventsHandler<MyMessage> {
 			return null;
 		}
 
-		IProtoReadEvent<MyMessage> event = new ProtocolReadEvent<MyMessage>(e,
+		IProtoReadEvent<DemoMyMessage> event = new ProtocolReadEvent<DemoMyMessage>(e,
 				protoFact.transform(con), result.Item1);
 		return event;
 	}
 
 	@Override
-	public IProtocolEvent<MyMessage> handleUnknown(INetworkEvent e) {
+	public IProtocolEvent<DemoMyMessage> handleUnknown(INetworkEvent e) {
 		cao.log.Log("Unknown INetworkEvent type: " + e.getClass().getName(),
 				LogLevel.Warn);
 		return null;

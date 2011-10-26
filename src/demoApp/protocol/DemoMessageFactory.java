@@ -6,9 +6,9 @@ import shriekingMushroom.core.util.ByteBuilder;
 import shriekingMushroom.core.util.Tupple;
 import shriekingMushroom.core.util.Util;
 import shriekingMushroom.protocol.IMessageFactory;
-import demoApp.protocol.interfaces.MyMessage;
+import demoApp.protocol.interfaces.DemoMyMessage;
 
-public class MessageFactory implements IMessageFactory<MyMessage> {
+public class DemoMessageFactory implements IMessageFactory<DemoMyMessage> {
 
 	/*
 	 * Message Format: <{TYPE}:{LENGTH}@{CONTENTS}>
@@ -20,21 +20,21 @@ public class MessageFactory implements IMessageFactory<MyMessage> {
 	private static final byte END = '>';
 
 	private final ILogger logger;
-	private final Tupple<MessageType, Integer>[] handleTypes;
+	private final Tupple<DemoMessageType, Integer>[] handleTypes;
 
 	@SuppressWarnings("unchecked")
-	public MessageFactory(ILogger log, MessageType... types) {
+	public DemoMessageFactory(ILogger log, DemoMessageType... types) {
 		logger = log;
 		handleTypes = new Tupple[types.length];
 		for (int i = 0; i < types.length; i++) {
-			handleTypes[i] = new Tupple<MessageType, Integer>(types[i],
+			handleTypes[i] = new Tupple<DemoMessageType, Integer>(types[i],
 					types[i].typeName.length());
 
 		}
 	}
 
 	@Override
-	public byte[] transformToBytes(MyMessage m) {
+	public byte[] transformToBytes(DemoMyMessage m) {
 		ByteBuilder bb = new ByteBuilder();
 		bb.append(START);
 		bb.append(m.getType().typeName);
@@ -48,8 +48,8 @@ public class MessageFactory implements IMessageFactory<MyMessage> {
 	}
 
 	@Override
-	public Tupple<MyMessage, Integer> transformToMessage(byte[] array) {
-		Message result = new Message();
+	public Tupple<DemoMyMessage, Integer> transformToMessage(byte[] array) {
+		DemoMessage result = new DemoMessage();
 		int iStart = getFirstValidMessageStart(array);
 
 		if (iStart != 0) {
@@ -70,7 +70,7 @@ public class MessageFactory implements IMessageFactory<MyMessage> {
 		}
 
 		byte[] type = Util.sub(iStart + 1, typeLength, array);
-		result.type = new MessageType(new String(type));
+		result.type = new DemoMessageType(new String(type));
 
 		int iSize = Util.firstIndex(SIZE, array, iDelim);
 		int sizeLength = iSize - iDelim - 1;
@@ -94,7 +94,7 @@ public class MessageFactory implements IMessageFactory<MyMessage> {
 
 		result.contents = contents;
 
-		return new Tupple<MyMessage, Integer>(result, iSize + size + 2);
+		return new Tupple<DemoMyMessage, Integer>(result, iSize + size + 2);
 	}
 
 	/**
