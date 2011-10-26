@@ -3,8 +3,8 @@ package shriekingMushroom.networking.implementation.tcp;
 import java.io.IOException;
 import java.net.InetAddress;
 
-import shriekingMushroom.core.CommonAccessObject;
-import shriekingMushroom.core.logging.ILogger.LogLevel;
+import shriekingMushroom.CommonAccessObject;
+import shriekingMushroom.logging.ILogger.LogLevel;
 import shriekingMushroom.networking.implementation.ConnectionFactory;
 import shriekingMushroom.networking.implementation.interfaces.InternalConnection;
 

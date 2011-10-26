@@ -6,7 +6,7 @@ import java.net.NetworkInterface;
 import java.net.Socket;
 import java.net.SocketException;
 
-import shriekingMushroom.core.CommonAccessObject;
+import shriekingMushroom.CommonAccessObject;
 import shriekingMushroom.networking.implementation.interfaces.InternalConnection;
 import shriekingMushroom.networking.implementation.multicast.MulticastConnection;
 import shriekingMushroom.networking.implementation.tcp.TCPConnection;

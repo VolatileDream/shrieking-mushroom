@@ -1,16 +1,16 @@
 package shriekingMushroom.protocol.implementation;
 
-import shriekingMushroom.core.CommonAccessObject;
-import shriekingMushroom.core.events.IEventQueue;
-import shriekingMushroom.core.events.implementation.EventQueue;
-import shriekingMushroom.core.threading.IRunner;
-import shriekingMushroom.core.threading.IWaiter;
-import shriekingMushroom.core.threading.implementation.CommonWaitTime;
-import shriekingMushroom.core.util.Tupple;
+import shriekingMushroom.CommonAccessObject;
+import shriekingMushroom.events.IEventQueue;
+import shriekingMushroom.events.implementation.EventQueue;
 import shriekingMushroom.networking.events.INetworkEvent;
 import shriekingMushroom.protocol.IMessage;
 import shriekingMushroom.protocol.INetworkEventsHandler;
 import shriekingMushroom.protocol.events.IProtocolEvent;
+import shriekingMushroom.threading.IRunner;
+import shriekingMushroom.threading.IWaiter;
+import shriekingMushroom.threading.implementation.CommonWaitTime;
+import shriekingMushroom.util.Tupple;
 
 public class ProtocolSetup<M extends IMessage> {
 

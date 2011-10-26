@@ -4,11 +4,11 @@ import java.net.InetAddress;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import shriekingMushroom.core.CommonAccessObject;
-import shriekingMushroom.core.threading.ITimeMarker;
-import shriekingMushroom.core.threading.implementation.TimeMark;
+import shriekingMushroom.CommonAccessObject;
 import shriekingMushroom.networking.exceptions.ConnectionClosedException;
 import shriekingMushroom.networking.implementation.interfaces.InternalConnection;
+import shriekingMushroom.threading.ITimeMarker;
+import shriekingMushroom.threading.implementation.TimeMark;
 
 
 public abstract class Connection implements InternalConnection {

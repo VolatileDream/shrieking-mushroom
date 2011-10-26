@@ -1,6 +1,6 @@
 package shriekingMushroom.protocol;
 
-import shriekingMushroom.core.util.Tupple;
+import shriekingMushroom.util.Tupple;
 
 public interface IMessageFactory<M extends IMessage> {
 

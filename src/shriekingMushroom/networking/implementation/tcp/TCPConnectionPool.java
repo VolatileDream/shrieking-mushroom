@@ -4,13 +4,9 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.util.ArrayList;
 
-import shriekingMushroom.core.CommonAccessObject;
-import shriekingMushroom.core.events.IEventQueue;
-import shriekingMushroom.core.logging.ILogger.LogLevel;
-import shriekingMushroom.core.threading.IResetableStopper;
-import shriekingMushroom.core.threading.IRunner;
-import shriekingMushroom.core.threading.IWaiter;
-import shriekingMushroom.core.threading.implementation.Stopper;
+import shriekingMushroom.CommonAccessObject;
+import shriekingMushroom.events.IEventQueue;
+import shriekingMushroom.logging.ILogger.LogLevel;
 import shriekingMushroom.networking.IConnection;
 import shriekingMushroom.networking.TCPNetworkAccess;
 import shriekingMushroom.networking.events.INetConnectEvent;
@@ -21,6 +17,10 @@ import shriekingMushroom.networking.implementation.NullConnection;
 import shriekingMushroom.networking.implementation.events.ConnectEvent;
 import shriekingMushroom.networking.implementation.events.ErrorEvent;
 import shriekingMushroom.networking.implementation.interfaces.InternalConnection;
+import shriekingMushroom.threading.IResetableStopper;
+import shriekingMushroom.threading.IRunner;
+import shriekingMushroom.threading.IWaiter;
+import shriekingMushroom.threading.implementation.Stopper;
 
 
 public class TCPConnectionPool implements TCPNetworkAccess {

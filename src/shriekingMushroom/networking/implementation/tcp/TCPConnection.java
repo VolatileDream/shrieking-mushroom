@@ -3,7 +3,7 @@ package shriekingMushroom.networking.implementation.tcp;
 import java.io.IOException;
 import java.net.Socket;
 
-import shriekingMushroom.core.CommonAccessObject;
+import shriekingMushroom.CommonAccessObject;
 import shriekingMushroom.networking.implementation.Connection;
 import shriekingMushroom.networking.implementation.interfaces.INetworkIO;
 

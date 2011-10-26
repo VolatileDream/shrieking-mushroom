@@ -5,15 +5,15 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
-import shriekingMushroom.core.CommonAccessObject;
-import shriekingMushroom.core.events.IEventQueue;
-import shriekingMushroom.core.logging.ILogger.LogLevel;
-import shriekingMushroom.core.threading.IResetableStopper;
-import shriekingMushroom.core.threading.IRunner;
-import shriekingMushroom.core.threading.IStopper;
-import shriekingMushroom.core.threading.implementation.DisjointStopper;
-import shriekingMushroom.core.threading.implementation.Stopper;
+import shriekingMushroom.CommonAccessObject;
+import shriekingMushroom.events.IEventQueue;
+import shriekingMushroom.logging.ILogger.LogLevel;
 import shriekingMushroom.networking.events.INetworkEvent;
+import shriekingMushroom.threading.IResetableStopper;
+import shriekingMushroom.threading.IRunner;
+import shriekingMushroom.threading.IStopper;
+import shriekingMushroom.threading.implementation.DisjointStopper;
+import shriekingMushroom.threading.implementation.Stopper;
 
 
 public class Server implements Runnable, IRunner {

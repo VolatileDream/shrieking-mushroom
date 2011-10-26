@@ -1,6 +1,6 @@
 package shriekingMushroom.networking.implementation.events;
 
-import shriekingMushroom.core.events.implementation.Event;
+import shriekingMushroom.events.implementation.Event;
 import shriekingMushroom.networking.IConnection;
 import shriekingMushroom.networking.events.INetworkEvent;
 

@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 
-import shriekingMushroom.core.CommonAccessObject;
+import shriekingMushroom.CommonAccessObject;
 import shriekingMushroom.networking.implementation.Connection;
 import shriekingMushroom.networking.implementation.interfaces.INetworkIO;
 

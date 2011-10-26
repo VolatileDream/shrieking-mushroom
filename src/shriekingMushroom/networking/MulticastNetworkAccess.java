@@ -2,9 +2,9 @@ package shriekingMushroom.networking;
 
 import java.net.InetAddress;
 
-import shriekingMushroom.core.events.IEventQueue;
-import shriekingMushroom.core.threading.IRunner;
+import shriekingMushroom.events.IEventQueue;
 import shriekingMushroom.networking.events.INetworkEvent;
+import shriekingMushroom.threading.IRunner;
 
 
 public interface MulticastNetworkAccess {

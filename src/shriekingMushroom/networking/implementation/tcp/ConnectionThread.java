@@ -3,14 +3,9 @@ package shriekingMushroom.networking.implementation.tcp;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import shriekingMushroom.core.CommonAccessObject;
-import shriekingMushroom.core.events.IEventQueue;
-import shriekingMushroom.core.logging.ILogger.LogLevel;
-import shriekingMushroom.core.threading.IResetableStopper;
-import shriekingMushroom.core.threading.IStopper;
-import shriekingMushroom.core.threading.IWaiter;
-import shriekingMushroom.core.threading.implementation.DisjointStopper;
-import shriekingMushroom.core.threading.implementation.Stopper;
+import shriekingMushroom.CommonAccessObject;
+import shriekingMushroom.events.IEventQueue;
+import shriekingMushroom.logging.ILogger.LogLevel;
 import shriekingMushroom.networking.IConnection;
 import shriekingMushroom.networking.events.INetErrorEvent;
 import shriekingMushroom.networking.events.INetReadEvent;
@@ -18,6 +13,11 @@ import shriekingMushroom.networking.events.INetworkEvent;
 import shriekingMushroom.networking.implementation.events.ErrorEvent;
 import shriekingMushroom.networking.implementation.events.ReadEvent;
 import shriekingMushroom.networking.implementation.interfaces.InternalConnection;
+import shriekingMushroom.threading.IResetableStopper;
+import shriekingMushroom.threading.IStopper;
+import shriekingMushroom.threading.IWaiter;
+import shriekingMushroom.threading.implementation.DisjointStopper;
+import shriekingMushroom.threading.implementation.Stopper;
 
 
 public class ConnectionThread implements Runnable {

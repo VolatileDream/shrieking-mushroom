@@ -1,10 +1,6 @@
 package shriekingMushroom.protocol.implementation;
 
-import shriekingMushroom.core.events.IEventQueue;
-import shriekingMushroom.core.threading.IResetableStopper;
-import shriekingMushroom.core.threading.IRunner;
-import shriekingMushroom.core.threading.IWaiter;
-import shriekingMushroom.core.threading.implementation.Stopper;
+import shriekingMushroom.events.IEventQueue;
 import shriekingMushroom.networking.events.INetCloseEvent;
 import shriekingMushroom.networking.events.INetConnectEvent;
 import shriekingMushroom.networking.events.INetErrorEvent;
@@ -13,6 +9,10 @@ import shriekingMushroom.networking.events.INetworkEvent;
 import shriekingMushroom.protocol.IMessage;
 import shriekingMushroom.protocol.INetworkEventsHandler;
 import shriekingMushroom.protocol.events.IProtocolEvent;
+import shriekingMushroom.threading.IResetableStopper;
+import shriekingMushroom.threading.IRunner;
+import shriekingMushroom.threading.IWaiter;
+import shriekingMushroom.threading.implementation.Stopper;
 
 class MessageMover<M extends IMessage> implements Runnable, IRunner {
 

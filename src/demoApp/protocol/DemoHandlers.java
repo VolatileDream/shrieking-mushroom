@@ -2,10 +2,8 @@ package demoApp.protocol;
 
 import java.util.Hashtable;
 
-import shriekingMushroom.core.CommonAccessObject;
-import shriekingMushroom.core.logging.ILogger.LogLevel;
-import shriekingMushroom.core.util.Tupple;
-import shriekingMushroom.core.util.Util;
+import shriekingMushroom.CommonAccessObject;
+import shriekingMushroom.logging.ILogger.LogLevel;
 import shriekingMushroom.networking.IConnection;
 import shriekingMushroom.networking.events.INetCloseEvent;
 import shriekingMushroom.networking.events.INetConnectEvent;
@@ -20,6 +18,8 @@ import shriekingMushroom.protocol.implementation.ProtocolConnectionFactory;
 import shriekingMushroom.protocol.implementation.events.ProtocolCloseEvent;
 import shriekingMushroom.protocol.implementation.events.ProtocolConnectEvent;
 import shriekingMushroom.protocol.implementation.events.ProtocolReadEvent;
+import shriekingMushroom.util.Tupple;
+import shriekingMushroom.util.Util;
 import demoApp.protocol.interfaces.DemoMyMessage;
 
 public class DemoHandlers implements INetworkEventsHandler<DemoMyMessage> {
