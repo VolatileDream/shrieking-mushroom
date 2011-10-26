@@ -1,9 +1,9 @@
 package protocol.implementation;
 
+import networking.IConnection;
 import protocol.IMessage;
 import protocol.IMessageFactory;
 import protocol.IProtocolConnection;
-import networking.IConnection;
 
 public class ProtocolConnectionFactory<M extends IMessage> {
 

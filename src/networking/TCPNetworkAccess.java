@@ -4,8 +4,7 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 
 import networking.events.INetworkEvent;
-
-import core.events.*;
+import core.events.IEventQueue;
 import core.threading.IRunner;
 
 

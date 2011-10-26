@@ -1,7 +1,7 @@
 package networking.events;
 
-import core.events.IEvent;
 import networking.IConnection;
+import core.events.IEvent;
 
 public interface INetworkEvent extends IEvent {
 

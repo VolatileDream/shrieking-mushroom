@@ -1,11 +1,11 @@
 package protocol;
 
-import protocol.events.IProtocolEvent;
 import networking.events.INetCloseEvent;
 import networking.events.INetConnectEvent;
 import networking.events.INetErrorEvent;
-import networking.events.INetworkEvent;
 import networking.events.INetReadEvent;
+import networking.events.INetworkEvent;
+import protocol.events.IProtocolEvent;
 
 public interface INetworkEventsHandler<M extends IMessage> {
 	

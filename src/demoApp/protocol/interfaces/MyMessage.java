@@ -1,7 +1,7 @@
 package demoApp.protocol.interfaces;
 
-import demoApp.protocol.MessageType;
 import protocol.IMessage;
+import demoApp.protocol.MessageType;
 
 public interface MyMessage extends IMessage {
 	

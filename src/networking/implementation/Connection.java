@@ -6,7 +6,6 @@ import java.util.Queue;
 
 import networking.exceptions.ConnectionClosedException;
 import networking.implementation.interfaces.InternalConnection;
-
 import core.CommonAccessObject;
 import core.threading.ITimeMarker;
 import core.threading.implementation.TimeMark;

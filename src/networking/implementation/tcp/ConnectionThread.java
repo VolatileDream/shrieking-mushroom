@@ -5,12 +5,11 @@ import java.util.ArrayList;
 
 import networking.IConnection;
 import networking.events.INetErrorEvent;
-import networking.events.INetworkEvent;
 import networking.events.INetReadEvent;
+import networking.events.INetworkEvent;
 import networking.implementation.events.ErrorEvent;
 import networking.implementation.events.ReadEvent;
 import networking.implementation.interfaces.InternalConnection;
-
 import core.CommonAccessObject;
 import core.events.IEventQueue;
 import core.logging.ILogger.LogLevel;
