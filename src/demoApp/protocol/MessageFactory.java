@@ -1,11 +1,11 @@
 package demoApp.protocol;
 
-import protocol.IMessageFactory;
-import core.logging.ILogger;
-import core.logging.ILogger.LogLevel;
-import core.util.ByteBuilder;
-import core.util.Tupple;
-import core.util.Util;
+import shriekingMushroom.core.logging.ILogger;
+import shriekingMushroom.core.logging.ILogger.LogLevel;
+import shriekingMushroom.core.util.ByteBuilder;
+import shriekingMushroom.core.util.Tupple;
+import shriekingMushroom.core.util.Util;
+import shriekingMushroom.protocol.IMessageFactory;
 import demoApp.protocol.interfaces.MyMessage;
 
 public class MessageFactory implements IMessageFactory<MyMessage> {
@@ -113,7 +113,7 @@ public class MessageFactory implements IMessageFactory<MyMessage> {
 		int index = -1;
 		while (index < contents.length) {
 
-			index = core.util.Util.firstIndex(START, contents, index + 1);
+			index = shriekingMushroom.core.util.Util.firstIndex(START, contents, index + 1);
 
 			if (index < 0)
 				return -1;

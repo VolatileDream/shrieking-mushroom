@@ -2,24 +2,24 @@ package demoApp.protocol;
 
 import java.util.Hashtable;
 
-import networking.IConnection;
-import networking.events.INetCloseEvent;
-import networking.events.INetConnectEvent;
-import networking.events.INetErrorEvent;
-import networking.events.INetReadEvent;
-import networking.events.INetworkEvent;
-import protocol.IMessageFactory;
-import protocol.INetworkEventsHandler;
-import protocol.events.IProtoReadEvent;
-import protocol.events.IProtocolEvent;
-import protocol.implementation.ProtocolConnectionFactory;
-import protocol.implementation.events.ProtocolCloseEvent;
-import protocol.implementation.events.ProtocolConnectEvent;
-import protocol.implementation.events.ProtocolReadEvent;
-import core.CommonAccessObject;
-import core.logging.ILogger.LogLevel;
-import core.util.Tupple;
-import core.util.Util;
+import shriekingMushroom.core.CommonAccessObject;
+import shriekingMushroom.core.logging.ILogger.LogLevel;
+import shriekingMushroom.core.util.Tupple;
+import shriekingMushroom.core.util.Util;
+import shriekingMushroom.networking.IConnection;
+import shriekingMushroom.networking.events.INetCloseEvent;
+import shriekingMushroom.networking.events.INetConnectEvent;
+import shriekingMushroom.networking.events.INetErrorEvent;
+import shriekingMushroom.networking.events.INetReadEvent;
+import shriekingMushroom.networking.events.INetworkEvent;
+import shriekingMushroom.protocol.IMessageFactory;
+import shriekingMushroom.protocol.INetworkEventsHandler;
+import shriekingMushroom.protocol.events.IProtoReadEvent;
+import shriekingMushroom.protocol.events.IProtocolEvent;
+import shriekingMushroom.protocol.implementation.ProtocolConnectionFactory;
+import shriekingMushroom.protocol.implementation.events.ProtocolCloseEvent;
+import shriekingMushroom.protocol.implementation.events.ProtocolConnectEvent;
+import shriekingMushroom.protocol.implementation.events.ProtocolReadEvent;
 import demoApp.protocol.interfaces.MyMessage;
 
 public class Handlers implements INetworkEventsHandler<MyMessage> {

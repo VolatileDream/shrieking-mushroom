@@ -1,6 +1,6 @@
 package demoApp.protocol.interfaces;
 
-import protocol.IMessage;
+import shriekingMushroom.protocol.IMessage;
 import demoApp.protocol.MessageType;
 
 public interface MyMessage extends IMessage {
