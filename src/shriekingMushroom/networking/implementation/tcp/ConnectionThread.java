@@ -2,9 +2,9 @@ package shriekingMushroom.networking.implementation.tcp;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.BlockingQueue;
 
 import shriekingMushroom.CommonAccessObject;
-import shriekingMushroom.events.IEventQueue;
 import shriekingMushroom.logging.ILogger.LogLevel;
 import shriekingMushroom.networking.IConnection;
 import shriekingMushroom.networking.events.INetErrorEvent;
@@ -23,7 +23,7 @@ import shriekingMushroom.threading.implementation.Stopper;
 public class ConnectionThread implements Runnable {
 
 	private final CommonAccessObject cao;
-	private final IEventQueue<INetworkEvent> eventQueue;
+	private final BlockingQueue<INetworkEvent> eventQueue;
 	private final ArrayList<InternalConnection> connections = new ArrayList<InternalConnection>();
 
 	private final IResetableStopper localStop = new Stopper();
@@ -31,7 +31,7 @@ public class ConnectionThread implements Runnable {
 	private final IWaiter wait;
 
 	public ConnectionThread(CommonAccessObject c, IWaiter w,
-			IEventQueue<INetworkEvent> eq, IStopper s) {
+			BlockingQueue<INetworkEvent> eq, IStopper s) {
 		cao = c;
 		eventQueue = eq;
 		wait = w;

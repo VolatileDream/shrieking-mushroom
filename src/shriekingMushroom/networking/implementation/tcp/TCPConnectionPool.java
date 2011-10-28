@@ -3,9 +3,9 @@ package shriekingMushroom.networking.implementation.tcp;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.concurrent.BlockingQueue;
 
 import shriekingMushroom.CommonAccessObject;
-import shriekingMushroom.events.IEventQueue;
 import shriekingMushroom.logging.ILogger.LogLevel;
 import shriekingMushroom.networking.IConnection;
 import shriekingMushroom.networking.TCPNetworkAccess;
@@ -40,7 +40,7 @@ public class TCPConnectionPool implements TCPNetworkAccess {
 	}
 
 	void addConnection(final InternalConnection con,
-			IEventQueue<INetworkEvent> queue) {
+			BlockingQueue<INetworkEvent> queue) {
 
 		boolean added = false;
 
@@ -76,7 +76,7 @@ public class TCPConnectionPool implements TCPNetworkAccess {
 	}
 
 	private ConnectionThread newThread(ArrayList<ConnectionThread> threads,
-			IEventQueue<INetworkEvent> e) {
+			BlockingQueue<INetworkEvent> e) {
 		ConnectionThread ct = new ConnectionThread(cao, wait, e, stop);
 
 		Thread t = new Thread(ct);
@@ -91,7 +91,7 @@ public class TCPConnectionPool implements TCPNetworkAccess {
 
 	@Override
 	public void connect(InetAddress net, int port,
-			IEventQueue<INetworkEvent> queue) {
+			BlockingQueue<INetworkEvent> queue) {
 		Client c = new Client(fac, cao, net, port);
 
 		try {
@@ -108,7 +108,7 @@ public class TCPConnectionPool implements TCPNetworkAccess {
 	}
 
 	@Override
-	public IRunner allowConnection(int port, IEventQueue<INetworkEvent> q) {
+	public IRunner allowConnection(int port, BlockingQueue<INetworkEvent> q) {
 		return new Server(this, stop, cao, port, q);
 	}
 

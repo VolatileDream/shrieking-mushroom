@@ -2,8 +2,8 @@ package shriekingMushroom.networking;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.concurrent.BlockingQueue;
 
-import shriekingMushroom.events.IEventQueue;
 import shriekingMushroom.networking.events.INetworkEvent;
 import shriekingMushroom.threading.IRunner;
 
@@ -12,7 +12,7 @@ public interface TCPNetworkAccess {
 
 	public ArrayList<IConnection> getConnections();
 
-	public void connect(InetAddress net, int port, IEventQueue<INetworkEvent> e);
+	public void connect(InetAddress net, int port, BlockingQueue<INetworkEvent> e);
 
 	/**
 	 * Open a port on the machine to accept connections, and puts events into
@@ -24,7 +24,7 @@ public interface TCPNetworkAccess {
 	 *            Event Queue to use
 	 * @return Returns an IRunner that controls the server
 	 */
-	public IRunner allowConnection(int port, IEventQueue<INetworkEvent> e);
+	public IRunner allowConnection(int port, BlockingQueue<INetworkEvent> e);
 
 	/**
 	 * Closes all connections that this TCP Network Access has created using

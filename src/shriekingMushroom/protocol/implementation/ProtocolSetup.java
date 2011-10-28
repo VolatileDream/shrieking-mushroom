@@ -1,8 +1,9 @@
 package shriekingMushroom.protocol.implementation;
 
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+
 import shriekingMushroom.CommonAccessObject;
-import shriekingMushroom.events.IEventQueue;
-import shriekingMushroom.events.implementation.EventQueue;
 import shriekingMushroom.networking.events.INetworkEvent;
 import shriekingMushroom.protocol.IMessage;
 import shriekingMushroom.protocol.INetworkEventsHandler;
@@ -22,15 +23,15 @@ public class ProtocolSetup<M extends IMessage> {
 		cao = c;
 	}
 
-	public Tupple<IRunner, IEventQueue<IProtocolEvent<M>>> build(
-			IEventQueue<INetworkEvent> queue) {
-		IEventQueue<IProtocolEvent<M>> q = new EventQueue<IProtocolEvent<M>>();
+	public Tupple<IRunner, BlockingQueue<IProtocolEvent<M>>> build(
+			BlockingQueue<INetworkEvent> queue) {
+		BlockingQueue<IProtocolEvent<M>> q = new LinkedBlockingQueue<IProtocolEvent<M>>();
 		IRunner run = this.build(queue, q);
-		return new Tupple<IRunner, IEventQueue<IProtocolEvent<M>>>(run, q);
+		return new Tupple<IRunner, BlockingQueue<IProtocolEvent<M>>>(run, q);
 	}
 
-	public IRunner build(IEventQueue<INetworkEvent> queue,
-			IEventQueue<IProtocolEvent<M>> outEvents) {
+	public IRunner build(BlockingQueue<INetworkEvent> queue,
+			BlockingQueue<IProtocolEvent<M>> outEvents) {
 		INetworkEventsHandler<M> eventHandle = new EventHandler<M>(handle);
 
 		int queueWaitTime = cao.handler.GetRequiredVariableAsInt(

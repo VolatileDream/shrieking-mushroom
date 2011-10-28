@@ -1,17 +1,16 @@
 package shriekingMushroom.networking;
 
 import java.net.InetAddress;
+import java.util.concurrent.BlockingQueue;
 
-import shriekingMushroom.events.IEventQueue;
 import shriekingMushroom.networking.events.INetworkEvent;
 import shriekingMushroom.threading.IRunner;
-
 
 public class MulticastConnectionBuilder {
 
 	private final MulticastNetworkAccess access;
 	private int port;
-	private IEventQueue<INetworkEvent> queue;
+	private BlockingQueue<INetworkEvent> queue;
 
 	public MulticastConnectionBuilder(MulticastNetworkAccess a) {
 		access = a;
@@ -21,7 +20,7 @@ public class MulticastConnectionBuilder {
 		port = p;
 	}
 
-	public void withQueue(IEventQueue<INetworkEvent> q) {
+	public void withQueue(BlockingQueue<INetworkEvent> q) {
 		queue = q;
 	}
 

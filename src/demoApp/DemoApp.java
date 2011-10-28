@@ -2,6 +2,7 @@ package demoApp;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.concurrent.BlockingQueue;
 
 import shriekingMushroom.CommonAccessObject;
 import shriekingMushroom.config.IVariable;
@@ -11,8 +12,7 @@ import shriekingMushroom.config.implementation.JointVariableStore;
 import shriekingMushroom.config.implementation.UserVariableHandler;
 import shriekingMushroom.config.implementation.def.DefaultNetworkingVariableStore;
 import shriekingMushroom.config.implementation.def.DefaultProtocolVariableStore;
-import shriekingMushroom.events.IEventQueue;
-import shriekingMushroom.events.implementation.EventQueue;
+import shriekingMushroom.events.implementation.QueueBuilder;
 import shriekingMushroom.logging.ILogger;
 import shriekingMushroom.logging.implementation.JoinedLogger;
 import shriekingMushroom.logging.implementation.LocalTextLogger;
@@ -64,6 +64,8 @@ public class DemoApp {
 
 		CommonAccessObject cao = new CommonAccessObject(store, handler, log);
 
+		QueueBuilder qBuilder = new QueueBuilder();
+
 		System.out.println("General Setup completed...");
 
 		// Network Layer Setup
@@ -78,7 +80,7 @@ public class DemoApp {
 		TCPConnectionBuilder netF = new TCPConnectionBuilder(netAccess);
 
 		netF.withPort(54444);
-		IEventQueue<INetworkEvent> nQueue = new EventQueue<INetworkEvent>();
+		BlockingQueue<INetworkEvent> nQueue = qBuilder.buildQueue();
 		netF.withQueue(nQueue);
 
 		System.out.println("Network layer setup completed...");
@@ -96,7 +98,7 @@ public class DemoApp {
 
 		ProtocolSetup<DemoMyMessage> pSetup = new ProtocolSetup<DemoMyMessage>(cao,
 				pHandler);
-		IEventQueue<IProtocolEvent<DemoMyMessage>> pQueue = new EventQueue<IProtocolEvent<DemoMyMessage>>();
+		BlockingQueue<IProtocolEvent<DemoMyMessage>> pQueue = qBuilder.buildQueue();
 		IRunner mover = pSetup.build(nQueue, pQueue);
 
 		System.out.println("Protocol layer setup completed...");
@@ -128,38 +130,42 @@ public class DemoApp {
 		System.out.println("Starting to wait");
 
 		while (start + timeOut > current) {
+
 			current = System.currentTimeMillis();
 
-			if (pQueue.poll()) {
-
-				IProtocolEvent<DemoMyMessage> event = pQueue.remove();
-				if (event instanceof IProtoConnectEvent<?>) {
-
-					IProtoConnectEvent<DemoMyMessage> pc = (IProtoConnectEvent<DemoMyMessage>) event;
-					IProtocolConnection<DemoMyMessage> c = pc.getConnection();
-					System.out.println("Connected to: " + c.getAddress() + ":"
-							+ c.getPort());
-
-					DemoMyMessage m = new DemoMessage("Hello World".getBytes(), text);
-
-					c.write(m);
-
-				} else if (event instanceof IProtoReadEvent<?>) {
-
-					IProtoReadEvent<DemoMyMessage> pr = (IProtoReadEvent<DemoMyMessage>) event;
-					IProtocolConnection<DemoMyMessage> c = pr.getConnection();
-
-					System.out.println("Sent from(" + c.getAddress() + ":"
-							+ c.getPort() + "):"
-							+ new String(pr.getMessage().getContents()));
-
-				} else {
-
-					System.out.println(event.getClass());
-
-				}
+			if (pQueue.isEmpty()) {
+				sleep(200);
+				continue;
 			}
-			sleep(200);
+
+			IProtocolEvent<DemoMyMessage> event = pQueue.remove();
+			if (event instanceof IProtoConnectEvent<?>) {
+
+				IProtoConnectEvent<DemoMyMessage> pc = (IProtoConnectEvent<DemoMyMessage>) event;
+				IProtocolConnection<DemoMyMessage> c = pc.getConnection();
+				System.out.println("Connected to: " + c.getAddress() + ":"
+						+ c.getPort());
+
+				DemoMyMessage m = new DemoMessage("Hello World".getBytes(), text);
+
+				c.write(m);
+
+			} else if (event instanceof IProtoReadEvent<?>) {
+
+				IProtoReadEvent<DemoMyMessage> pr = (IProtoReadEvent<DemoMyMessage>) event;
+				IProtocolConnection<DemoMyMessage> c = pr.getConnection();
+
+				System.out.println("Sent from(" + c.getAddress() + ":"
+						+ c.getPort() + "):"
+						+ new String(pr.getMessage().getContents()));
+
+			} else {
+
+				System.out.println(event.getClass());
+
+			}
+
+
 		}
 
 		System.out.println("Done waiting");

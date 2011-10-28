@@ -1,6 +1,7 @@
 package shriekingMushroom.protocol.implementation;
 
-import shriekingMushroom.events.IEventQueue;
+import java.util.concurrent.BlockingQueue;
+
 import shriekingMushroom.networking.events.INetCloseEvent;
 import shriekingMushroom.networking.events.INetConnectEvent;
 import shriekingMushroom.networking.events.INetErrorEvent;
@@ -18,8 +19,8 @@ class MessageMover<M extends IMessage> implements Runnable, IRunner {
 
 	private final Object threadLock = new Object();
 	private final INetworkEventsHandler<M> handler;
-	private final IEventQueue<INetworkEvent> networkQueue;
-	private final IEventQueue<IProtocolEvent<M>> protocolQueue;
+	private final BlockingQueue<INetworkEvent> networkQueue;
+	private final BlockingQueue<IProtocolEvent<M>> protocolQueue;
 
 	private final IWaiter waiter;
 	private final IResetableStopper stopper;
@@ -27,7 +28,7 @@ class MessageMover<M extends IMessage> implements Runnable, IRunner {
 	private Thread thread;
 
 	public MessageMover(IWaiter wait, INetworkEventsHandler<M> h,
-			IEventQueue<INetworkEvent> e, IEventQueue<IProtocolEvent<M>> e2) {
+			BlockingQueue<INetworkEvent> e, BlockingQueue<IProtocolEvent<M>> e2) {
 		if (wait == null || h == null || e == null || e2 == null) {
 			throw new RuntimeException("An argument was null: (IWaiter " + wait
 					+ ", INetworkEventsHandler " + h + ", IEventQueue " + e
@@ -44,7 +45,7 @@ class MessageMover<M extends IMessage> implements Runnable, IRunner {
 	public void run() {
 		while (!stopper.hasStopped()) {
 
-			if (!networkQueue.poll()) {
+			if (networkQueue.isEmpty()) {
 				try {
 					waiter.doWait();
 				} catch (InterruptedException e) {

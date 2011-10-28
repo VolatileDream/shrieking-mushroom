@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.concurrent.BlockingQueue;
 
 import shriekingMushroom.CommonAccessObject;
-import shriekingMushroom.events.IEventQueue;
 import shriekingMushroom.logging.ILogger.LogLevel;
 import shriekingMushroom.networking.events.INetworkEvent;
 import shriekingMushroom.threading.IResetableStopper;
@@ -21,7 +21,7 @@ public class Server implements Runnable, IRunner {
 	private final CommonAccessObject cao;
 	private final TCPConnectionPool pool;
 	private final int port;
-	private final IEventQueue<INetworkEvent> queue;
+	private final BlockingQueue<INetworkEvent> queue;
 
 	private final Object threadLock = new Object();
 	private Thread thread = null;
@@ -30,7 +30,7 @@ public class Server implements Runnable, IRunner {
 	private final IStopper allStop;
 
 	public Server(TCPConnectionPool p, IStopper s, CommonAccessObject c,
-			int port, IEventQueue<INetworkEvent> q) {
+			int port, BlockingQueue<INetworkEvent> q) {
 		cao = c;
 		pool = p;
 		this.port = port;
