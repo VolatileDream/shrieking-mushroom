@@ -81,6 +81,9 @@ public class DefaultNetworkingVariableStore implements IVariableStore {
 				"10000");
 		this.AddOrChangeValue(var);
 
+		var = new UserVariable(unicastNameSpace + "use_keep_alive","true");
+		this.AddOrChangeValue(var);
+		
 	}
 
 	private void Multicast(String networkingNameSpace) {

@@ -71,7 +71,7 @@ public class Server implements Runnable, IRunner {
 				soc.setSoTimeout(getWaitTimeOut());
 
 				Socket connectionSocket = soc.accept();
-				connectionSocket.setKeepAlive(true);
+				connectionSocket.setKeepAlive( getKeepAlive() );
 
 				connect = new TCPConnection(cao, connectionSocket);
 
@@ -116,6 +116,11 @@ public class Server implements Runnable, IRunner {
 		start();
 	}
 
+	private boolean getKeepAlive(){
+		String keepAlive = "networking.unicast.use_keep_alive";
+		return cao.handler.GetRequiredVariableAsBoolean(keepAlive, cao.store);
+	}
+	
 	private int getWaitTimeOut() {
 		String timeOutVar = "networking.unicast.server_wait_timeout";
 		return cao.handler.GetRequiredVariableAsInt(timeOutVar, cao.store);

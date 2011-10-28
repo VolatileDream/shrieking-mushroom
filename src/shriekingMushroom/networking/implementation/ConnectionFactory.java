@@ -39,7 +39,10 @@ public class ConnectionFactory {
 		TCPConnection connect = null;
 
 		Socket soc = new Socket(inet, port);
-		soc.setKeepAlive(true);
+		
+		boolean keepAlive = cao.handler.GetRequiredVariableAsBoolean("networking.unicast.use_keep_alive", cao.store);
+		
+		soc.setKeepAlive(keepAlive);
 
 		connect = new TCPConnection(cao, soc);
 
