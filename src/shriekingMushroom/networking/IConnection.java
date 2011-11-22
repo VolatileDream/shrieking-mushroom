@@ -1,5 +1,6 @@
 package shriekingMushroom.networking;
 
+import java.io.IOException;
 import java.net.InetAddress;
 
 import shriekingMushroom.networking.exceptions.ConnectionClosedException;
@@ -48,4 +49,14 @@ public interface IConnection {
 	 */
 	long lastSent();
 
+	/**
+	 * Flushes all queued output, and then closes the connection.
+	 */
+	void close() throws IOException;
+
+	/**
+	 * Returns true if the connection is closed
+	 * @return
+	 */
+	boolean isClosed();
 }

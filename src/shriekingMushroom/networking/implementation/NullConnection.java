@@ -1,5 +1,6 @@
 package shriekingMushroom.networking.implementation;
 
+import java.io.IOException;
 import java.net.InetAddress;
 
 import shriekingMushroom.networking.IConnection;
@@ -40,4 +41,12 @@ public class NullConnection implements IConnection {
 		return false;
 	}
 
+	@Override
+	public boolean isClosed(){
+		return true;
+	}
+	
+	@Override
+	public void close() throws IOException {}
+	
 }

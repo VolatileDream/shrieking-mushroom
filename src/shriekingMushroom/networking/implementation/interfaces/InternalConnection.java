@@ -21,9 +21,12 @@ public interface InternalConnection extends IConnection {
 	 */
 	void flush() throws IOException;
 
+	/**
+	 * Read bytes in from the connection
+	 * @return Returns a byte[] of the bytes read.
+	 * <br>Returns a byte[0] if nothing is read.
+	 * @throws IOException if an IOException occurs on the underlying io
+	 */
 	byte[] read() throws IOException;
 
-	void close() throws IOException;
-
-	boolean isClosed();
 }

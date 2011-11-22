@@ -68,8 +68,7 @@ public class ConnectionThread implements Runnable {
 					INetErrorEvent er = new ErrorEvent(con);
 
 					if (!eventQueue.offer(er)) {
-						cao.log.Log("Couldn't add error event to queue",
-								LogLevel.Error);
+						cao.log.Log("Couldn't add error event to queue", LogLevel.Error);
 					}
 
 					try {
@@ -116,8 +115,7 @@ public class ConnectionThread implements Runnable {
 		if (read != null && read.length > 0) {
 			INetReadEvent evt = new ReadEvent(con, read);
 			if (!eventQueue.offer(evt)) {
-				cao.log.Log("Couldn't add read event to the queue",
-						LogLevel.Error);
+				cao.log.Log("Couldn't add read event to the queue",LogLevel.Error);
 			}
 		}
 	}

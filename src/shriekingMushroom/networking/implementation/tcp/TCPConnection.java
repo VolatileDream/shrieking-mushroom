@@ -31,10 +31,12 @@ public class TCPConnection extends Connection {
 
 	@Override
 	public void close() throws IOException {
+	
 		synchronized (status) {
 			if (status != ConnectionStatus.Open) {
 				throw new IOException("Unicast Connection isn't open");
 			}
+			flush();
 			status = ConnectionStatus.Changing;
 		}
 
@@ -97,7 +99,7 @@ public class TCPConnection extends Connection {
 			}
 
 		}
-
+		if( nb == null ){ nb = new byte[0]; }
 		return nb;
 	}
 

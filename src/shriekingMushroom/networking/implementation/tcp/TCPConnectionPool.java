@@ -39,8 +39,7 @@ public class TCPConnectionPool implements TCPNetworkAccess {
 		wait = w;
 	}
 
-	void addConnection(final InternalConnection con,
-			BlockingQueue<INetworkEvent> queue) {
+	void addConnection(final InternalConnection con, BlockingQueue<INetworkEvent> queue) {
 
 		boolean added = false;
 
@@ -67,16 +66,14 @@ public class TCPConnectionPool implements TCPNetworkAccess {
 			INetConnectEvent event = new ConnectEvent(con);
 			queue.offer(event);
 		} else {
+			cao.log.Log("Forced to close a connection", LogLevel.Error);
 			try {
-				cao.log.Log("Forced to close a connection", LogLevel.Error);
 				con.close();
-			} catch (IOException e) {
-			}
+			} catch (IOException e) {}
 		}
 	}
 
-	private ConnectionThread newThread(ArrayList<ConnectionThread> threads,
-			BlockingQueue<INetworkEvent> e) {
+	private ConnectionThread newThread(ArrayList<ConnectionThread> threads, BlockingQueue<INetworkEvent> e) {
 		ConnectionThread ct = new ConnectionThread(cao, wait, e, stop);
 
 		Thread t = new Thread(ct);
@@ -90,8 +87,7 @@ public class TCPConnectionPool implements TCPNetworkAccess {
 	// interfaces
 
 	@Override
-	public void connect(InetAddress net, int port,
-			BlockingQueue<INetworkEvent> queue) {
+	public void connect(InetAddress net, int port, BlockingQueue<INetworkEvent> queue) {
 		Client c = new Client(fac, cao, net, port);
 
 		try {
