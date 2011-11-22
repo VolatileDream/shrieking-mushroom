@@ -36,6 +36,7 @@ public class MulticastConnection extends Connection {
 			if (status != ConnectionStatus.Open) {
 				return;
 			}
+			flush();
 			status = ConnectionStatus.Changing;
 		}
 
