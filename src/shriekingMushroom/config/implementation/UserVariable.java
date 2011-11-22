@@ -8,8 +8,8 @@ public class UserVariable implements IVariable {
 	private final String name;
 	private String value;
 
-	public UserVariable(String n, String val) {
-		this.name = n;
+	public UserVariable(String name, String val) {
+		this.name = name;
 		this.value = val;
 	}
 

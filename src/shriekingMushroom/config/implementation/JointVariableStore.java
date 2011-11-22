@@ -1,33 +1,42 @@
 package shriekingMushroom.config.implementation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import shriekingMushroom.config.IVariable;
 import shriekingMushroom.config.IVariableStore;
 
 public class JointVariableStore implements IVariableStore {
 
-	private IVariableStore store = new UserVariableStore();
-
+	private final IVariableStore[] stores;
+	
 	public JointVariableStore(IVariableStore... vars) {
-		for (IVariableStore s : vars) {
-			for (IVariable v : s.GetVariables()) {
-				store.AddOrChangeValue(v);
-			}
-		}
+		stores = vars;
 	}
 
 	@Override
 	public void AddOrChangeValue(IVariable var) {
-		store.AddOrChangeValue(var);
+		throw new RuntimeException("Can't add a value to a joint store");
 	}
 
 	@Override
 	public IVariable[] GetVariables() {
-		return store.GetVariables();
+		List<IVariable> list = new ArrayList<IVariable>();
+		for( IVariableStore s : stores ){
+			for( IVariable v : s.GetVariables() ){
+				list.add(v);
+			}
+		}
+		return list.toArray(new IVariable[0]);
 	}
 
 	@Override
 	public boolean TryGetVariable(String name, IVariable[] array) {
-		return store.TryGetVariable(name, array);
+		for( IVariableStore st : stores ){
+			boolean result = st.TryGetVariable(name, array);
+			if( result ) return true;
+		}
+		return true;
 	}
 
 }
