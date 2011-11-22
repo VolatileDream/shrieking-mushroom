@@ -94,7 +94,7 @@ public class TCPConnection extends Connection {
 
 			nb = ioControl.read();
 
-			if (nb != null) {
+			if (nb != null && nb.length > 0 ) {
 				lastReceive.markCurrentTime();
 			}
 

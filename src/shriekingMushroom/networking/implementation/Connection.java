@@ -72,7 +72,7 @@ public abstract class Connection implements InternalConnection {
 				i++;
 			}
 		}
-
+		if( tmp == null ) return new byte[0][];
 		return tmp;
 	}
 
