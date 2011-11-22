@@ -49,12 +49,11 @@ public class ConnectionFactory {
 		return connect;
 	}
 
-	public InternalConnection ConstructMulticast(NetworkInterface nif,
-			InetAddress address, int port) throws SocketException, IOException {
+	public InternalConnection ConstructMulticast(NetworkInterface nif, InetAddress address, int port)
+			throws SocketException, IOException {
 
 		if (!nif.supportsMulticast()) {
-			throw new IOException("Interface " + nif.getDisplayName()
-					+ " does not support multicast");
+			throw new IOException("Interface " + nif.getDisplayName() + " does not support multicast");
 		}
 		if (!nif.isUp()) {
 			netInterfaceNotUp(nif);
@@ -75,8 +74,7 @@ public class ConnectionFactory {
 	}
 
 	private void netInterfaceNotUp(NetworkInterface nif) throws IOException {
-		throw new IOException("Interface " + nif.getDisplayName()
-				+ " is not up at the moment");
+		throw new IOException("Interface " + nif.getDisplayName() + " is not up at the moment");
 	}
 
 }

@@ -9,8 +9,7 @@ import shriekingMushroom.threading.IRunner;
 
 public interface MulticastNetworkAccess {
 
-	public IRunner subscribe(InetAddress net, int port,
-			BlockingQueue<INetworkEvent> e);
+	public IRunner subscribe(InetAddress net, int port, BlockingQueue<INetworkEvent> e);
 
 	/**
 	 * Closes all connections created with this network access
