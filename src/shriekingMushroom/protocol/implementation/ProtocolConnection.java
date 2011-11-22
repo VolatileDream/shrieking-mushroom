@@ -1,7 +1,10 @@
 package shriekingMushroom.protocol.implementation;
 
+import java.io.IOException;
 import java.net.InetAddress;
 
+import shriekingMushroom.CommonAccessObject;
+import shriekingMushroom.logging.ILogger.LogLevel;
 import shriekingMushroom.networking.IConnection;
 import shriekingMushroom.networking.exceptions.ConnectionClosedException;
 import shriekingMushroom.protocol.IMessage;
@@ -11,12 +14,14 @@ import shriekingMushroom.protocol.IProtocolConnection;
 public class ProtocolConnection<M extends IMessage> implements
 		IProtocolConnection<M> {
 
+	private final CommonAccessObject cao;
 	private final IConnection con;
 	private final IMessageFactory<M> factory;
 
-	public ProtocolConnection(IConnection c, IMessageFactory<M> f) {
-		con = c;
+	public ProtocolConnection(CommonAccessObject cao, IConnection con, IMessageFactory<M> f) {
+		this.con = con;
 		factory = f;
+		this.cao = cao;
 	}
 
 	@Override
@@ -47,4 +52,18 @@ public class ProtocolConnection<M extends IMessage> implements
 		}
 	}
 
+	@Override
+	public void close(){
+		try {
+			con.close();
+		} catch (IOException e) {
+			cao.log.Log(e, LogLevel.Warn);
+		}
+	}
+	
+	@Override
+	public boolean isClosed(){
+		return con.isClosed();
+	}
+	
 }

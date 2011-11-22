@@ -43,4 +43,14 @@ public interface IProtocolConnection<M extends IMessage> {
 	 */
 	public boolean write(M m) throws ConnectionClosedException;
 
+	/**
+	 * Flushes all the Messages that have to be written, and then closes the connection.
+	 */
+	public void close();
+	
+	/**
+	 * Returns the closed status of this connection
+	 * @return Returns true if this connection is closed, and won't accept more messages.
+	 */
+	public boolean isClosed();
 }

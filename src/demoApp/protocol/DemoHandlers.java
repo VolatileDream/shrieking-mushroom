@@ -33,7 +33,7 @@ public class DemoHandlers implements INetworkEventsHandler<DemoMyMessage> {
 	public DemoHandlers(CommonAccessObject c, IMessageFactory<DemoMyMessage> f) {
 		cao = c;
 		msgFact = f;
-		protoFact = new ProtocolConnectionFactory<DemoMyMessage>(msgFact);
+		protoFact = new ProtocolConnectionFactory<DemoMyMessage>(cao, msgFact);
 	}
 
 	@Override
