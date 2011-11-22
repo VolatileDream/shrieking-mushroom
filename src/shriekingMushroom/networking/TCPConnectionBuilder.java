@@ -17,12 +17,14 @@ public class TCPConnectionBuilder {
 		access = a;
 	}
 
-	public void withPort(int p) {
+	public TCPConnectionBuilder withPort(int p) {
 		port = p;
+		return this;
 	}
 
-	public void withQueue(BlockingQueue<INetworkEvent> q) {
+	public TCPConnectionBuilder withQueue(BlockingQueue<INetworkEvent> q) {
 		queue = q;
+		return this;
 	}
 
 	public void connect(InetAddress inet) {

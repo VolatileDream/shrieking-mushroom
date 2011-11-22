@@ -16,12 +16,14 @@ public class MulticastConnectionBuilder {
 		access = a;
 	}
 
-	public void withPort(int p) {
+	public MulticastConnectionBuilder withPort(int p) {
 		port = p;
+		return this;
 	}
 
-	public void withQueue(BlockingQueue<INetworkEvent> q) {
+	public MulticastConnectionBuilder withQueue(BlockingQueue<INetworkEvent> q) {
 		queue = q;
+		return this;
 	}
 
 	public IRunner subscribe(InetAddress inet) {

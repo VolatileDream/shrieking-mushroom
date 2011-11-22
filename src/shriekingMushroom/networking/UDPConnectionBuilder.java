@@ -17,12 +17,14 @@ public class UDPConnectionBuilder {
 		access = mna;
 	}
 
-	public void withPort(int p) {
+	public UDPConnectionBuilder withPort(int p) {
 		port = p;
+		return this;
 	}
 
-	public void withQueue(BlockingQueue<INetworkEvent> q) {
+	public UDPConnectionBuilder withQueue(BlockingQueue<INetworkEvent> q) {
 		queue = q;
+		return this;
 	}
 
 	public IRunner subscribe(InetAddress net) {
