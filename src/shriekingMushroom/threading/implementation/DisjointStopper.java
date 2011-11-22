@@ -2,6 +2,9 @@ package shriekingMushroom.threading.implementation;
 
 import shriekingMushroom.threading.IStopper;
 
+/**
+ * OR on IStopper passed in -> only one needs to stop for this to signal a stop
+ */
 public class DisjointStopper implements IStopper {
 
 	private final IStopper[] stoppers;

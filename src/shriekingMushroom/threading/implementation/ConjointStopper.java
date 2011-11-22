@@ -1,7 +1,9 @@
 package shriekingMushroom.threading.implementation;
 
 import shriekingMushroom.threading.IStopper;
-
+/**
+ * AND on the IStoppers passed in -> all of them must stop before this signals a stop
+ */
 public class ConjointStopper implements IStopper {
 
 	private final IStopper[] stoppers;
