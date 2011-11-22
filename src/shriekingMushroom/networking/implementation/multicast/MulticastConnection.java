@@ -16,11 +16,9 @@ public class MulticastConnection extends Connection {
 			throws IOException {
 		super(cao, address, port);
 
-		int ttl = cao.handler.GetRequiredVariableAsInt(
-				"networking.multicast.ttl", cao.store);
+		int ttl = cao.handler.GetRequiredVariableAsInt("networking.multicast.ttl", cao.store);
 
-		int soTimeOut = cao.handler.GetRequiredVariableAsInt(
-				"networking.multicast.so_timeout", cao.store);
+		int soTimeOut = cao.handler.GetRequiredVariableAsInt("networking.multicast.so_timeout", cao.store);
 
 		status = ConnectionStatus.Open;
 

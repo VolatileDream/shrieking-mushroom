@@ -62,8 +62,7 @@ public class ConnectionFactory {
 		MulticastConnection connect = null;
 		try {
 
-			int bufSz = cao.handler.GetRequiredVariableAsInt(
-					"networking.multicast.packet_size", cao.store);
+			int bufSz = cao.handler.GetRequiredVariableAsInt("networking.multicast.packet_size", cao.store);
 
 			connect = new MulticastConnection(cao, bufSz, nif, address, port);
 
