@@ -12,7 +12,7 @@ import shriekingMushroom.config.implementation.JointVariableStore;
 import shriekingMushroom.config.implementation.UserVariableHandler;
 import shriekingMushroom.config.implementation.def.DefaultNetworkingVariableStore;
 import shriekingMushroom.config.implementation.def.DefaultProtocolVariableStore;
-import shriekingMushroom.events.implementation.QueueBuilder;
+import shriekingMushroom.events.QueueBuilder;
 import shriekingMushroom.logging.ILogger;
 import shriekingMushroom.logging.implementation.JoinedLogger;
 import shriekingMushroom.logging.implementation.LocalTextLogger;

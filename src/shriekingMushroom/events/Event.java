@@ -1,6 +1,5 @@
-package shriekingMushroom.events.implementation;
+package shriekingMushroom.events;
 
-import shriekingMushroom.events.IEvent;
 
 public abstract class Event implements IEvent {
 
