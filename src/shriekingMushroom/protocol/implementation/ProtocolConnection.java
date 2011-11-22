@@ -66,4 +66,14 @@ public class ProtocolConnection<M extends IMessage> implements
 		return con.isClosed();
 	}
 	
+	@SuppressWarnings("unchecked")
+	@Override
+	public boolean equals( Object o ){
+		if( o instanceof ProtocolConnection ){
+			ProtocolConnection c = (ProtocolConnection)o;
+			return c.getPort() == getPort() && c.getAddress().equals( getAddress() );
+		}
+		return false;
+	}
+	
 }
