@@ -23,23 +23,20 @@ public class ProtocolSetup<M extends IMessage> {
 		cao = c;
 	}
 
-	public Tupple<IRunner, BlockingQueue<IProtocolEvent<M>>> build(
-			BlockingQueue<INetworkEvent> queue) {
+	public Tupple<IRunner, BlockingQueue<IProtocolEvent<M>>> build( BlockingQueue<INetworkEvent> queue) {
+		
 		BlockingQueue<IProtocolEvent<M>> q = new LinkedBlockingQueue<IProtocolEvent<M>>();
 		IRunner run = this.build(queue, q);
 		return new Tupple<IRunner, BlockingQueue<IProtocolEvent<M>>>(run, q);
 	}
 
-	public IRunner build(BlockingQueue<INetworkEvent> queue,
-			BlockingQueue<IProtocolEvent<M>> outEvents) {
-		INetworkEventsHandler<M> eventHandle = new EventHandler<M>(handle);
+	public IRunner build(BlockingQueue<INetworkEvent> queue, BlockingQueue<IProtocolEvent<M>> outEvents) {
 
 		int queueWaitTime = cao.handler.GetRequiredVariableAsInt(
 				"queue.poll_time_milli", cao.store);
 
 		IWaiter networkWait = new CommonWaitTime(queueWaitTime);
-		MessageMover<M> mover = new MessageMover<M>(networkWait, eventHandle,
-				queue, outEvents);
+		MessageMover<M> mover = new MessageMover<M>(networkWait, handle, queue, outEvents);
 
 		return mover;
 	}
