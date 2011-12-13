@@ -10,13 +10,13 @@ import shriekingMushroom.CommonAccessObject;
 import shriekingMushroom.logging.ILogger.LogLevel;
 import shriekingMushroom.networking.events.INetworkEvent;
 import shriekingMushroom.threading.IResetableStopper;
-import shriekingMushroom.threading.IRunner;
+import shriekingMushroom.threading.IRestartable;
 import shriekingMushroom.threading.IStopper;
 import shriekingMushroom.threading.implementation.DisjointStopper;
 import shriekingMushroom.threading.implementation.Stopper;
 
 
-public class Server implements Runnable, IRunner {
+public class Server implements Runnable, IRestartable {
 
 	private final CommonAccessObject cao;
 	private final TCPConnectionPool pool;
@@ -103,10 +103,11 @@ public class Server implements Runnable, IRunner {
 		synchronized (threadLock) {
 			if (thread != null) {
 				stop();
-				while (thread.isAlive()) {
+				while ( thread.isAlive() ) {
 					try {
 						thread.join();
 					} catch (InterruptedException e) {
+						Thread.interrupted();
 					}
 				}
 				thread = null;

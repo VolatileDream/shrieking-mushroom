@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
 
 import shriekingMushroom.networking.events.INetworkEvent;
-import shriekingMushroom.threading.IRunner;
+import shriekingMushroom.threading.IRestartable;
 
 
 public interface TCPNetworkAccess {
@@ -24,7 +24,7 @@ public interface TCPNetworkAccess {
 	 *            Event Queue to use
 	 * @return Returns an IRunner that controls the server
 	 */
-	public IRunner allowConnection(int port, BlockingQueue<INetworkEvent> e);
+	public IRestartable allowConnection(int port, BlockingQueue<INetworkEvent> e);
 
 	/**
 	 * Closes all connections that this TCP Network Access has created using

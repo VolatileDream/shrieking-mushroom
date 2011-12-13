@@ -18,7 +18,7 @@ import shriekingMushroom.networking.implementation.events.ConnectEvent;
 import shriekingMushroom.networking.implementation.events.ErrorEvent;
 import shriekingMushroom.networking.implementation.interfaces.InternalConnection;
 import shriekingMushroom.threading.IResetableStopper;
-import shriekingMushroom.threading.IRunner;
+import shriekingMushroom.threading.IRestartable;
 import shriekingMushroom.threading.IWaiter;
 import shriekingMushroom.threading.implementation.Stopper;
 
@@ -104,7 +104,7 @@ public class TCPConnectionPool implements TCPNetworkAccess {
 	}
 
 	@Override
-	public IRunner allowConnection(int port, BlockingQueue<INetworkEvent> q) {
+	public IRestartable allowConnection(int port, BlockingQueue<INetworkEvent> q) {
 		return new Server(this, stop, cao, port, q);
 	}
 
