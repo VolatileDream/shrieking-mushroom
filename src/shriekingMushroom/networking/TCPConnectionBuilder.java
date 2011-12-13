@@ -17,6 +17,10 @@ public class TCPConnectionBuilder {
 		access = a;
 	}
 
+	public TCPNetworkAccess unwrap(){
+		return access;
+	}
+	
 	public TCPConnectionBuilder withPort(int p) {
 		port = p;
 		return this;

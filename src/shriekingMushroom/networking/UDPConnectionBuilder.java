@@ -17,6 +17,10 @@ public class UDPConnectionBuilder {
 		access = mna;
 	}
 
+	public UDPNetworkAccess unwrap(){
+		return access;
+	}
+	
 	public UDPConnectionBuilder withPort(int p) {
 		port = p;
 		return this;

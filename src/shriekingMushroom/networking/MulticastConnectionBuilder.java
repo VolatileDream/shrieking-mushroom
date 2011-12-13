@@ -18,6 +18,10 @@ public class MulticastConnectionBuilder {
 		access = a;
 	}
 
+	public MulticastNetworkAccess unwrap(){
+		return access;
+	}
+	
 	public MulticastConnectionBuilder withPort(int p) {
 		port = p;
 		return this;
