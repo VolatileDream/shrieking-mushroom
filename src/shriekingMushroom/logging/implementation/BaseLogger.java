@@ -20,19 +20,19 @@ public abstract class BaseLogger implements ILogger {
 	}
 
 	@Override
-	public void Log(Exception e, LogLevel l) throws LoggingFailedException {
+	public void Log(Throwable e, LogLevel l) throws LoggingFailedException {
 		handleLogging(e.getMessage(), e, l);
 	}
 
 	@Override
-	public void Log(String str, Exception e, LogLevel l)
+	public void Log(String str, Throwable e, LogLevel l)
 			throws LoggingFailedException {
 		handleLogging(str, e, l);
 	}
 
 	protected abstract void log(String s) throws LoggingFailedException;
 
-	protected void handleLogging(String str, Exception e, LogLevel l)
+	protected void handleLogging(String str, Throwable e, LogLevel l)
 			throws LoggingFailedException {
 		if ((l.getFlag() & matchFlags) > 0) {
 			String s = getLogString(str, e, l) + '\n';
@@ -40,7 +40,7 @@ public abstract class BaseLogger implements ILogger {
 		}
 	}
 
-	private String getLogString(String str, Exception e, LogLevel l) {
+	private String getLogString(String str, Throwable e, LogLevel l) {
 		Date d = new Date();
 		String result = d.toString() + " ~ " + l.name() + ":" + str;
 		if (e != null) {

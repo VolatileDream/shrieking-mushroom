@@ -3,7 +3,7 @@ package shriekingMushroom.logging;
 public interface ILogger {
 
 	public enum LogLevel {
-		Debug(1), Info(2), Warn(4), Error(8), Fatal(16);
+		Verbose(1), Debug(2), Info(4), Warn(8), Error(16), Fatal(32);
 
 		private final int flag;
 
@@ -18,8 +18,8 @@ public interface ILogger {
 
 	public void Log(String str, LogLevel l);
 
-	public void Log(Exception e, LogLevel l);
+	public void Log(Throwable e, LogLevel l);
 
-	public void Log(String str, Exception e, LogLevel l);
+	public void Log(String str, Throwable e, LogLevel l);
 
 }

@@ -19,14 +19,14 @@ public class JoinedLogger implements ILogger {
 	}
 
 	@Override
-	public void Log(Exception e, LogLevel l) throws LoggingFailedException {
+	public void Log(Throwable e, LogLevel l) throws LoggingFailedException {
 		for (ILogger log : loggers) {
 			log.Log(e, l);
 		}
 	}
 
 	@Override
-	public void Log(String str, Exception e, LogLevel l)
+	public void Log(String str, Throwable e, LogLevel l)
 			throws LoggingFailedException {
 		for (ILogger log : loggers) {
 			log.Log(str, e, l);

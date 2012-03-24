@@ -1,9 +1,9 @@
 package shriekingMushroom.protocol.implementation;
 
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import shriekingMushroom.CommonAccessObject;
+import shriekingMushroom.events.QueueBuilder;
 import shriekingMushroom.networking.events.INetworkEvent;
 import shriekingMushroom.protocol.IMessage;
 import shriekingMushroom.protocol.INetworkEventsHandler;
@@ -17,6 +17,7 @@ public class ProtocolSetup<M extends IMessage> {
 
 	private final INetworkEventsHandler<M> handle;
 	private final CommonAccessObject cao;
+	private final QueueBuilder builder = new QueueBuilder();
 
 	public ProtocolSetup(CommonAccessObject c, INetworkEventsHandler<M> h) {
 		handle = h;
@@ -25,7 +26,7 @@ public class ProtocolSetup<M extends IMessage> {
 
 	public Tupple<IRunner, BlockingQueue<IProtocolEvent<M>>> build( BlockingQueue<INetworkEvent> queue) {
 		
-		BlockingQueue<IProtocolEvent<M>> q = new LinkedBlockingQueue<IProtocolEvent<M>>();
+		BlockingQueue<IProtocolEvent<M>> q = builder.buildQueue();
 		IRunner run = this.build(queue, q);
 		return new Tupple<IRunner, BlockingQueue<IProtocolEvent<M>>>(run, q);
 	}

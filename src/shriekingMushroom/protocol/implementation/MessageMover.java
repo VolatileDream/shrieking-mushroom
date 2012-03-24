@@ -15,7 +15,7 @@ import shriekingMushroom.threading.IRunner;
 import shriekingMushroom.threading.IWaiter;
 import shriekingMushroom.threading.implementation.Stopper;
 
-class MessageMover<M extends IMessage> implements Runnable, IRunner {
+public class MessageMover<M extends IMessage> implements Runnable, IRunner {
 
 	private final Object threadLock = new Object();
 	private final INetworkEventsHandler<M> handler;
