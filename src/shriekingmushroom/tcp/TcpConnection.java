@@ -6,9 +6,14 @@ import java.nio.channels.SelectionKey;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import shriekingmushroom.events.Event;
 
 public class TcpConnection implements AutoCloseable {
+	
+	private static final Logger logger = LogManager.getLogger( TcpConnection.class );
 	
 	private TcpMushroom mushroom;
 	
@@ -46,10 +51,10 @@ public class TcpConnection implements AutoCloseable {
 	@Override
 	public void close() throws Exception {
 		
+		logger.debug("Closing TcpConnection");
+		
 		key.channel().close();
-		
 		key.cancel();
-		
 	}
 	
 	public BlockingQueue<Event> eventQueue(){

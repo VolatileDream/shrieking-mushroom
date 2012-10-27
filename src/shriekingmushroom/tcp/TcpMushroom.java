@@ -10,10 +10,15 @@ import java.nio.channels.SocketChannel;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import shriekingmushroom.events.Event;
 import shriekingmushroom.threading.IStopper;
 
 public class TcpMushroom {
+	
+	private static final Logger logger = LogManager.getLogger( TcpMushroom.class );
 	
 	private Selector selectServer;
 	private Selector selectClient;
@@ -32,6 +37,8 @@ public class TcpMushroom {
 	
 	private  TcpThread startThread( Selector select ){
 		
+		logger.debug("Creating TcpThread");
+		
 		TcpThread tcp = new TcpThread(this, select, stopper);
 		
 		Thread th = new Thread( tcp );
@@ -41,6 +48,8 @@ public class TcpMushroom {
 	}
 	
 	public void connect( InetAddress addr, int port ) throws IOException {
+		
+		logger.debug("Connecting to {}:{}", addr, port );
 		
 		SocketChannel chan = SocketChannel.open();
 		
@@ -75,6 +84,8 @@ public class TcpMushroom {
 	}
 	
 	public AutoCloseable listen( int port ) throws IOException {
+		
+		logger.debug("Starting to listen on port {}", port );
 		
 		// create server on demand
 		if( server == null ){
