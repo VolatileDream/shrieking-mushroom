@@ -7,13 +7,11 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import shriekingmushroom.events.Event;
+import shriekingmushroom.events.EventBuilder;
 import shriekingmushroom.threading.IStopper;
 
 public class TcpMushroom {
@@ -23,16 +21,16 @@ public class TcpMushroom {
 	private Selector selectServer;
 	private Selector selectClient;
 	private IStopper stopper;
-	
-	private BlockingQueue<Event> eventQueue = new LinkedBlockingQueue<Event>( Integer.MAX_VALUE );
+	private EventBuilder builder;
 	
 	private TcpThread server;
 	private TcpThread client;
 	
-	public TcpMushroom( IStopper stop ) throws IOException {
+	public TcpMushroom( IStopper stop, EventBuilder builder ) throws IOException {
 		selectServer = Selector.open();
 		selectClient = Selector.open();
 		stopper = stop;
+		this.builder = builder;
 	}
 	
 	private  TcpThread startThread( Selector select ){
@@ -67,17 +65,18 @@ public class TcpMushroom {
 		
 		chan.configureBlocking(false);
 		
+		TcpConnection con = new TcpConnection( this );
+		
 		//bump the selector, required to make sure the channel registration doesn't block
 		selectClient.wakeup();
 		
 		SelectionKey key =
 				chan.register(
 					selectClient,
-					SelectionKey.OP_CONNECT | SelectionKey.OP_READ | SelectionKey.OP_WRITE
+					SelectionKey.OP_CONNECT | SelectionKey.OP_READ | SelectionKey.OP_WRITE,
+					con
 				);
-	
-		TcpConnection con = new TcpConnection( this, key );
-		
+		con.attach( key );
 		key.attach( con );
 		
 		return con;
@@ -108,8 +107,8 @@ public class TcpMushroom {
 		return new RemovableKey( key );
 	}
 	
-	public BlockingQueue<Event> eventQueue(){
-		return eventQueue;
+	public EventBuilder eventBuilder(){
+		return builder;
 	}
 	
 }

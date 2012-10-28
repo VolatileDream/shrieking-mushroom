@@ -1,77 +1,73 @@
 import java.io.IOException;
 import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
-import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import shriekingmushroom.ShriekingMushroom;
 import shriekingmushroom.events.Event;
-import shriekingmushroom.events.net.ConnectEvent;
-import shriekingmushroom.events.net.ReadEvent;
+import shriekingmushroom.tcp.TcpConnection;
 import shriekingmushroom.tcp.TcpMushroom;
+
+import com.lmax.disruptor.EventHandler;
 
 
 public class TestRun {
 
-	public static void main( String[] args ) throws IOException, InterruptedException {
+	public static void main( String[] args ) throws IOException, InterruptedException, URISyntaxException {
 		
-		ShriekingMushroom sm = new ShriekingMushroom();
+		Executor execPool = Executors.newFixedThreadPool( 4 );
+		int port = 8080;
+		InetAddress localhost = Inet6Address.getByName("localhost");
 		
-		TcpMushroom tcp = sm.getTcp();
 		
-		AutoCloseable ac = tcp.listen( 8080 );
-		
-		tcp.connect( Inet6Address.getByName("localhost"), 8080 );
-		
-		BlockingQueue<Event> events = tcp.eventQueue();
-		
-		Charset cs = Charset.defaultCharset();
-		
-		while( true ){
-			
-			Event e = events.poll();
+		ShriekingMushroom server = new ShriekingMushroom(512, execPool, buildHandler("Hello") );
+		TcpMushroom tcpServer = server.getTcp();
+		AutoCloseable acServer = tcpServer.listen( port );
 
-			if( e == null ){
-				Thread.sleep(100);
-				continue;
-			}
-			
-			System.out.print( e.getTimestamp() +" : ");
-			
-			if( e instanceof ReadEvent ){
-				
-				ReadEvent re = (ReadEvent)e;
-				
-				CharBuffer cb = cs.decode( re.getRead() );
-				
-				System.out.println( cb.toString() );
-				
-			}else if( e instanceof ConnectEvent ){
-				
-				ConnectEvent ce = (ConnectEvent)e;
-				
-				System.out.println( "Connected" );
-				
-				ce.getConnection().write( buffer() );
-				
-			}
-			
-		}
+		ShriekingMushroom client = new ShriekingMushroom(512, execPool, buildHandler("Other") );
+		TcpMushroom tcpClient = client.getTcp();
 		
+		tcpClient.connect( localhost, port );
 	}
-	
-	public static ByteBuffer buffer(){
-		String text = "Hello World";
-		
+
+	private static Charset charset = Charset.defaultCharset();
+
+	private static EventHandler<Event> buildHandler( final String name ){
+		return new EventHandler<Event>() {
+			private void printHello( Event e, CharSequence str ){
+				System.out.println( name + " (" +e.getTimestamp()+ "):" + str);
+			}
+			@Override
+			public void onEvent(Event event, long sequence, boolean endOfBatch) throws Exception {
+				if( event.getData() == null ){
+					printHello(event, "connected");
+					TcpConnection conn = event.getConnection();
+					if( ! conn.write( buffer(name) ) ){
+						System.err.println("Write did not succeed");
+					}
+				}else{
+					CharBuffer cb = charset.decode( event.getData() );
+					printHello(event, cb);
+				}
+			}
+		};
+	}
+
+	public static ByteBuffer buffer( String text ){
+
 		ByteBuffer buf = ByteBuffer.allocate( text.length() );
 
 		buf.put( text.getBytes() );
-				
+
 		buf.flip();
-				
+
 		return buf;
 	}
-	
-	
+
+
 }

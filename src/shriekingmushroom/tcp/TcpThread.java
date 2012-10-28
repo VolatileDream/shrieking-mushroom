@@ -7,11 +7,9 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import shriekingmushroom.events.net.ConnectEvent;
-import shriekingmushroom.events.net.ReadEvent;
 import shriekingmushroom.threading.ChannelThread;
 import shriekingmushroom.threading.IStopper;
 
@@ -39,9 +37,8 @@ public class TcpThread extends ChannelThread implements Runnable {
 		if( chan != null ){
 			TcpConnection tcp = mushroom.createTcpConnection(chan);
 			
-			mushroom.eventQueue().add( new ConnectEvent( tcp ) );
+			mushroom.eventBuilder().connectionCreated( tcp );
 		}
-		
 	}
 	
 	protected void connect( SelectionKey key ) throws IOException {
@@ -52,9 +49,8 @@ public class TcpThread extends ChannelThread implements Runnable {
 		logger.debug("Finising connection to {}", chan.getRemoteAddress() );
 		
 		if( chan.finishConnect() ){
-			mushroom.eventQueue().add( new ConnectEvent( tcp ) );
+			mushroom.eventBuilder().connectionCreated( tcp );
 		}
-		
 	}
 	
 	protected void write( SelectionKey key ) throws IOException {
@@ -62,26 +58,26 @@ public class TcpThread extends ChannelThread implements Runnable {
 		SocketChannel chan = (SocketChannel) key.channel();
 		TcpConnection tcp = (TcpConnection) key.attachment();
 		
-		logger.debug("Writing to {}", chan.getRemoteAddress() );
-		
 		ByteBuffer buf = null;
 		
 		// find something to write
 		while( tcp.hasWrite() ){
 			buf = tcp.fetchWrite();
-			if( ! buf.hasRemaining() ){
-				continue;
+			if( buf != null && buf.hasRemaining() ){
+				break;
 			}
 		}
 		
 		if( buf != null ){
+					
 			if( ! buf.isReadOnly() ){
-				logger.trace("Writing to {}. Data {}", chan.getRemoteAddress(), buf.array() );
+				logger.debug("Writing to {}. Data {}", chan.getRemoteAddress(), buf.array() );
+			}else{
+				logger.debug("Writing to {}", chan.getRemoteAddress() );
 			}
 			
 			chan.write( buf );
 		}
-		
 	}
 
 	protected void read( SelectionKey key ) throws IOException {
@@ -104,8 +100,7 @@ public class TcpThread extends ChannelThread implements Runnable {
 
 		logger.trace("Reading from {}. Data {}", chan.getRemoteAddress(), buf.array() );
 		
-		mushroom.eventQueue().add( new ReadEvent( tcp, buf ) );
-		
+		mushroom.eventBuilder().readCompleted( tcp, buf );
 	}
 	
 }

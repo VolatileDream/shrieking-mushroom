@@ -9,7 +9,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import shriekingmushroom.events.Event;
+import shriekingmushroom.events.EventBuilder;
 
 public class TcpConnection implements AutoCloseable {
 	
@@ -21,8 +21,11 @@ public class TcpConnection implements AutoCloseable {
 	
 	private SelectionKey key;
 	
-	TcpConnection( TcpMushroom m, SelectionKey k ){
+	TcpConnection( TcpMushroom m ){
 		mushroom = m;
+	}
+	
+	void attach( SelectionKey k ){
 		key = k;
 	}
 	
@@ -34,10 +37,12 @@ public class TcpConnection implements AutoCloseable {
 	 */
 	public boolean write( ByteBuffer buf ) throws ClosedChannelException {
 		
+		logger.info("Writing");
+		
 		if( ! key.channel().isOpen() ){
 			throw new ClosedChannelException();
 		}
-		return writeQueue.add(buf);
+		return writeQueue.offer(buf);
 	}
 
 	boolean hasWrite(){
@@ -57,7 +62,7 @@ public class TcpConnection implements AutoCloseable {
 		key.cancel();
 	}
 	
-	public BlockingQueue<Event> eventQueue(){
-		return mushroom.eventQueue();
+	public EventBuilder eventBuilder(){
+		return mushroom.eventBuilder();
 	}
 }
