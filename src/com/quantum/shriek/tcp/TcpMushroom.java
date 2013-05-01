@@ -12,33 +12,30 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.quantum.shriek.events.EventBuilder;
-import com.quantum.shriek.threading.IStopper;
+import com.quantum.shriek.threading.Stopable;
 
-
-public class TcpMushroom {
+public class TcpMushroom implements Stopable {
 	
 	private static final Logger logger = LogManager.getLogger( TcpMushroom.class );
 	
 	private Selector selectServer;
 	private Selector selectClient;
-	private IStopper stopper;
 	private EventBuilder builder;
 	
 	private TcpThread server;
 	private TcpThread client;
 	
-	public TcpMushroom( IStopper stop, EventBuilder builder ) throws IOException {
+	public TcpMushroom( EventBuilder builder ) throws IOException {
 		selectServer = Selector.open();
 		selectClient = Selector.open();
-		stopper = stop;
 		this.builder = builder;
 	}
 	
-	private  TcpThread startThread( Selector select ){
+	private TcpThread startThread( Selector select ){
 		
 		logger.debug("Creating TcpThread");
 		
-		TcpThread tcp = new TcpThread(this, select, stopper);
+		TcpThread tcp = new TcpThread(this, select);
 		
 		Thread th = new Thread( tcp );
 		th.start();
@@ -110,6 +107,13 @@ public class TcpMushroom {
 	
 	public EventBuilder eventBuilder(){
 		return builder;
+	}
+
+	@Override
+	public void stop() {
+		// TODO Auto-generated method stub
+		this.client.stop();
+		this.server.stop();
 	}
 	
 }

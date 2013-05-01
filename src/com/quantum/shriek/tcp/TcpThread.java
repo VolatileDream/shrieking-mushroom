@@ -11,7 +11,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.quantum.shriek.threading.ChannelThread;
-import com.quantum.shriek.threading.IStopper;
 
 
 public class TcpThread extends ChannelThread implements Runnable {
@@ -20,8 +19,8 @@ public class TcpThread extends ChannelThread implements Runnable {
 	
 	private TcpMushroom mushroom;
 	
-	TcpThread( TcpMushroom m, Selector s, IStopper stop ){
-		super( s, stop );
+	TcpThread( TcpMushroom m, Selector s ){
+		super( s );
 		this.mushroom = m;
 	}
 		
@@ -46,7 +45,7 @@ public class TcpThread extends ChannelThread implements Runnable {
 		
 		SocketChannel chan = (SocketChannel) key.channel();
 		TcpConnection tcp = (TcpConnection) key.attachment();
-		
+
 		logger.debug("Finising connection to {}", chan.getRemoteAddress() );
 		
 		if( chan.finishConnect() ){
@@ -102,6 +101,12 @@ public class TcpThread extends ChannelThread implements Runnable {
 		logger.trace("Reading from {}. Data {}", chan.getRemoteAddress(), buf.array() );
 		
 		mushroom.eventBuilder().readCompleted( tcp, buf );
+	}
+
+	@Override
+	protected void close(SelectionKey key) throws IOException {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

@@ -9,21 +9,16 @@ import com.lmax.disruptor.dsl.Disruptor;
 import com.quantum.shriek.events.Event;
 import com.quantum.shriek.events.EventBuilder;
 import com.quantum.shriek.tcp.TcpMushroom;
-import com.quantum.shriek.threading.IResetableStopper;
-import com.quantum.shriek.threading.implementation.Stopper;
+import com.quantum.shriek.threading.Stopable;
 
-
-public class ShriekingMushroom {
+public class ShriekingMushroom implements Stopable {
 	
 	private Disruptor<Event> disrupt;
 	private EventBuilder builder;
-	private IResetableStopper stopper;
 	private TcpMushroom tcp;
 	
 	@SafeVarargs
-	public ShriekingMushroom( int bufferSize, Executor exec, EventHandler<Event> ... events ){
-		stopper = new Stopper();
-		
+	public ShriekingMushroom( int bufferSize, Executor exec, EventHandler<Event> ... events ){	
 		disrupt = new Disruptor<Event>( EventBuilder.FACTORY, bufferSize, exec);
 		disrupt.handleEventsWith( events );
 		RingBuffer<Event> buffer = disrupt.start();
@@ -33,17 +28,18 @@ public class ShriekingMushroom {
 	public TcpMushroom getTcp() throws IOException {
 		synchronized (this) {
 			if( tcp == null ){
-				tcp = new TcpMushroom(stopper, builder);
+				tcp = new TcpMushroom(builder);
 			}
 		}
 		return tcp;
 	}
-	
-	public void exit(){
+
+	@Override
+	public void stop() {
+		// TODO Auto-generated method stub
+		tcp.stop();
 		
-		// this should guarantee that no more events get passed to the RingBuffer
-		stopper.setStop();
-		
+		// events shouldn't hit the disruptor any more
 		disrupt.shutdown();
 	}
 
