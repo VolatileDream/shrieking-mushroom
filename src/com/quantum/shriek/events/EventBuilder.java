@@ -25,10 +25,23 @@ public final class EventBuilder {
 	public void readCompleted( TcpConnection conn, ByteBuffer buf ){
 		long seq = buffer.next();
 		Event e = buffer.get( seq );
-		e.buildEvent(conn, buf);
+		
+		e.buildEvent(conn);
+		e.buildRead(buf);
+		
 		buffer.publish( seq );
 	}
 
+	public void connectionClose( TcpConnection conn ){
+		long seq = buffer.next();
+		Event e = buffer.get( seq );
+		
+		e.buildEvent(conn);
+		e.buildClose();
+		
+		buffer.publish( seq );
+	}
+	
 	public final static EventFactory<Event> FACTORY = new EventFactory<Event>() {
 		@Override
 		public Event newInstance() {

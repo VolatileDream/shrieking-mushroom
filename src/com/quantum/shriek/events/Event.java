@@ -4,15 +4,20 @@ import java.nio.ByteBuffer;
 
 import com.quantum.shriek.tcp.TcpConnection;
 
-
-
 public final class Event {
 
-	public enum Type { TCP, UDP, MULTI };
+	public enum ConnectionType { TCP, UDP, MULTI };
 	
-	private TcpConnection connection;
+	public enum EventType { CONNECT, READ, CLOSE };
+	
+	// Connection stuff
+	private TcpConnection tcpConnection;
+	
+	// generic stuff
 	private ByteBuffer buffer;
 	private long time;
+	private EventType event = EventType.READ;
+	private ConnectionType connection = ConnectionType.TCP;
 
 	public Event() {}
 
@@ -20,24 +25,39 @@ public final class Event {
 		return time;
 	}
 	
-	public TcpConnection getConnection(){
+	public EventType getEventType(){
+		return event;
+	}
+	
+	public ConnectionType getConnectionType(){
 		return connection;
+	}
+	
+	public TcpConnection getConnection(){
+		return tcpConnection;
 	}
 	
 	public ByteBuffer getData(){
 		return buffer;
 	}
 	
-	void buildEvent( TcpConnection conn, ByteBuffer data ){
-		time = System.currentTimeMillis();
-		connection = conn;
+	void buildRead( ByteBuffer data ){
 		if( data != null ){
 			data = data.asReadOnlyBuffer();
 		}
 		buffer = data;
+		event = EventType.READ;
+	}
+	
+	void buildClose(){
+		event = EventType.CLOSE;
 	}
 	
 	void buildEvent( TcpConnection conn ){
-		buildEvent( conn, null );
+		time = System.currentTimeMillis();
+		tcpConnection = conn;
+		
+		event = EventType.CONNECT;
+		connection = ConnectionType.TCP;
 	}
 }
