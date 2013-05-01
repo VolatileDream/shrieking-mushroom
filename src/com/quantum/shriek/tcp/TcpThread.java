@@ -105,8 +105,17 @@ public class TcpThread extends ChannelThread implements Runnable {
 
 	@Override
 	protected void close(SelectionKey key) throws IOException {
-		// TODO Auto-generated method stub
+		Object attach = key.attachment();
+
+		// server keys don't have a stop listening event.
+		// ^They can also be closed multiple ways...
 		
+		if( attach != null && attach instanceof TcpConnection ){
+		
+			TcpConnection tcp = (TcpConnection) attach;
+					
+			mushroom.eventBuilder().connectionClose(tcp);
+		}
 	}
 	
 }

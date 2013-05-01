@@ -56,11 +56,12 @@ public class TcpMushroom implements Stopable {
 	
 	TcpConnection createTcpConnection( SocketChannel chan ) throws IOException {
 		
-		// create the client on demand
-		if( client == null ){
-			client = startThread(selectClient);
+		synchronized (this) {
+			// create the client on demand
+			if (client == null) {
+				client = startThread(selectClient);
+			}
 		}
-		
 		chan.configureBlocking(false);
 		
 		TcpConnection con = new TcpConnection( this );
@@ -84,11 +85,12 @@ public class TcpMushroom implements Stopable {
 		
 		logger.debug("Starting to listen on port {}", port );
 		
-		// create server on demand
-		if( server == null ){
-			server = startThread(selectServer);
+		synchronized (this) {
+			// create server on demand
+			if (server == null) {
+				server = startThread(selectServer);
+			}
 		}
-		
 		ServerSocketChannel chan = ServerSocketChannel.open();
 		
 		//bind to port
@@ -111,9 +113,17 @@ public class TcpMushroom implements Stopable {
 
 	@Override
 	public void stop() {
-		// TODO Auto-generated method stub
-		this.client.stop();
-		this.server.stop();
+		synchronized (this) {
+			if (client != null) {
+				client.stop();
+				client = null;
+			}
+			if (server != null) {
+				server.stop();
+				server = null;
+			}
+		}
+		
 	}
 	
 }

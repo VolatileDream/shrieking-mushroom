@@ -59,6 +59,8 @@ public class TcpConnection implements AutoCloseable {
 		
 		logger.debug("Closing TcpConnection");
 		
+		mushroom.eventBuilder().connectionClose(this);
+		
 		key.channel().close();
 		key.cancel();
 	}
