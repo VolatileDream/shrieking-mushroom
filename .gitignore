@@ -1,5 +1,6 @@
 bin/*
 run/*
+*.class
 .settings
 .project
 .classpath
