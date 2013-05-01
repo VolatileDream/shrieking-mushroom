@@ -8,12 +8,12 @@ import java.nio.charset.Charset;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import shriekingmushroom.ShriekingMushroom;
-import shriekingmushroom.events.Event;
-import shriekingmushroom.tcp.TcpConnection;
-import shriekingmushroom.tcp.TcpMushroom;
 
 import com.lmax.disruptor.EventHandler;
+import com.quantum.shriek.ShriekingMushroom;
+import com.quantum.shriek.events.Event;
+import com.quantum.shriek.tcp.TcpConnection;
+import com.quantum.shriek.tcp.TcpMushroom;
 
 
 public class TestRun {

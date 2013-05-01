@@ -1,4 +1,4 @@
-package shriekingmushroom.threading;
+package com.quantum.shriek.threading;
 
 public interface IResetableStopper extends IStopableStopper {
 

@@ -1,8 +1,9 @@
-package shriekingmushroom.events;
+package com.quantum.shriek.events;
 
 import java.nio.ByteBuffer;
 
-import shriekingmushroom.tcp.TcpConnection;
+import com.quantum.shriek.tcp.TcpConnection;
+
 
 
 public final class Event {

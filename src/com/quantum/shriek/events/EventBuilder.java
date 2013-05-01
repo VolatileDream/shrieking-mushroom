@@ -1,11 +1,11 @@
-package shriekingmushroom.events;
+package com.quantum.shriek.events;
 
 import java.nio.ByteBuffer;
 
-import shriekingmushroom.tcp.TcpConnection;
 
 import com.lmax.disruptor.EventFactory;
 import com.lmax.disruptor.RingBuffer;
+import com.quantum.shriek.tcp.TcpConnection;
 
 public final class EventBuilder {
 

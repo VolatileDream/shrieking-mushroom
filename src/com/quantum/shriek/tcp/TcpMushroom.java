@@ -1,4 +1,4 @@
-package shriekingmushroom.tcp;
+package com.quantum.shriek.tcp;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -11,8 +11,9 @@ import java.nio.channels.SocketChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import shriekingmushroom.events.EventBuilder;
-import shriekingmushroom.threading.IStopper;
+import com.quantum.shriek.events.EventBuilder;
+import com.quantum.shriek.threading.IStopper;
+
 
 public class TcpMushroom {
 	

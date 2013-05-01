@@ -1,4 +1,4 @@
-package shriekingmushroom.tcp;
+package com.quantum.shriek.tcp;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -10,8 +10,9 @@ import java.nio.channels.SocketChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import shriekingmushroom.threading.ChannelThread;
-import shriekingmushroom.threading.IStopper;
+import com.quantum.shriek.threading.ChannelThread;
+import com.quantum.shriek.threading.IStopper;
+
 
 public class TcpThread extends ChannelThread implements Runnable {
 

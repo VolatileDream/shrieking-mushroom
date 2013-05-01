@@ -1,6 +1,6 @@
-package shriekingmushroom.threading.implementation;
+package com.quantum.shriek.threading.implementation;
 
-import shriekingmushroom.threading.IStopper;
+import com.quantum.shriek.threading.IStopper;
 
 /**
  * OR on IStopper passed in -> only one needs to stop for this to signal a stop

@@ -1,6 +1,6 @@
-package shriekingmushroom.threading.implementation;
+package com.quantum.shriek.threading.implementation;
 
-import shriekingmushroom.threading.IWaiter;
+import com.quantum.shriek.threading.IWaiter;
 
 public class CommonWaitTime implements IWaiter {
 

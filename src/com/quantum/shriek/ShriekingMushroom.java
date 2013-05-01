@@ -1,4 +1,4 @@
-package shriekingmushroom;
+package com.quantum.shriek;
 
 import java.io.IOException;
 import java.util.concurrent.Executor;
@@ -6,12 +6,12 @@ import java.util.concurrent.Executor;
 import com.lmax.disruptor.EventHandler;
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.dsl.Disruptor;
+import com.quantum.shriek.events.Event;
+import com.quantum.shriek.events.EventBuilder;
+import com.quantum.shriek.tcp.TcpMushroom;
+import com.quantum.shriek.threading.IResetableStopper;
+import com.quantum.shriek.threading.implementation.Stopper;
 
-import shriekingmushroom.events.Event;
-import shriekingmushroom.events.EventBuilder;
-import shriekingmushroom.tcp.TcpMushroom;
-import shriekingmushroom.threading.IResetableStopper;
-import shriekingmushroom.threading.implementation.Stopper;
 
 public class ShriekingMushroom {
 	

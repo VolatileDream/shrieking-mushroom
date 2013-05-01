@@ -1,6 +1,6 @@
-package shriekingmushroom.threading.implementation;
+package com.quantum.shriek.threading.implementation;
 
-import shriekingmushroom.threading.IResetableStopper;
+import com.quantum.shriek.threading.IResetableStopper;
 
 public class Stopper implements IResetableStopper {
 

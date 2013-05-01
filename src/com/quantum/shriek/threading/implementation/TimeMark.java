@@ -1,6 +1,6 @@
-package shriekingmushroom.threading.implementation;
+package com.quantum.shriek.threading.implementation;
 
-import shriekingmushroom.threading.ITimeMarker;
+import com.quantum.shriek.threading.ITimeMarker;
 
 public class TimeMark implements ITimeMarker {
 

@@ -1,4 +1,4 @@
-package shriekingmushroom.tcp;
+package com.quantum.shriek.tcp;
 
 import java.nio.ByteBuffer;
 import java.nio.channels.ClosedChannelException;
@@ -9,7 +9,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import shriekingmushroom.events.EventBuilder;
+import com.quantum.shriek.events.EventBuilder;
+
 
 public class TcpConnection implements AutoCloseable {
 	
