@@ -41,15 +41,24 @@
 	</dependency>
   </dependencies>
   <build>
-	  <plugins>
-		  <plugin>
-		  		<groupId>org.apache.maven.plugins</groupId>
-		  		<artifactId>maven-compiler-plugin</artifactId>
-		  		<configuration>
-		  			<source>1.7</source>
-		  			<target>1.7</target>
-		  		</configuration>
-		  	</plugin>
-	  	</plugins>
-	</build>
+    <sourceDirectory>src</sourceDirectory>
+    <testSourceDirectory>tests</testSourceDirectory>
+    <plugins>
+	  <plugin>
+  		<groupId>org.apache.maven.plugins</groupId>
+  		<artifactId>maven-compiler-plugin</artifactId>
+  		<configuration>
+  			<source>1.7</source>
+  			<target>1.7</target>
+  		</configuration>
+	  </plugin>
+	</plugins>
+</build>
+<distributionManagement>
+   <repository>
+     <id>repo.local</id>
+     <url>http://localhost:8080/archiva/repository/internal/</url>
+   </repository>
+</distributionManagement>
+<url>https://github.com/VolatileDream/shrieking-mushroom</url>
 </project>
