@@ -6,10 +6,12 @@ import java.nio.channels.SelectionKey;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.quantum.shriek.events.EventBuilder;
+
 
 
 public class TcpConnection implements AutoCloseable {

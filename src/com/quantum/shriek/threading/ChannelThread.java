@@ -38,7 +38,7 @@ public abstract class ChannelThread implements Runnable, Stopable {
 	}
 
 	public final void stop(){
-		stop = false;
+		stop = true;
 		// get the selector to wakeup.
 		select.wakeup();
 	}

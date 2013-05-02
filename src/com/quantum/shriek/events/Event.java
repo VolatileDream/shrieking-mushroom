@@ -4,6 +4,8 @@ import java.nio.ByteBuffer;
 
 import com.quantum.shriek.tcp.TcpConnection;
 
+
+
 public final class Event {
 
 	public enum ConnectionType { TCP, UDP, MULTI };
