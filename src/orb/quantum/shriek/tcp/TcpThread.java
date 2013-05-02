@@ -1,4 +1,4 @@
-package com.quantum.shriek.tcp;
+package orb.quantum.shriek.tcp;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -8,10 +8,11 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 
 
+import orb.quantum.shriek.threading.ChannelThread;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.quantum.shriek.threading.ChannelThread;
 
 
 

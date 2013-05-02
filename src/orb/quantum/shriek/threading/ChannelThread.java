@@ -1,4 +1,4 @@
-package com.quantum.shriek.threading;
+package orb.quantum.shriek.threading;
 
 import java.io.IOException;
 import java.nio.channels.ClosedSelectorException;

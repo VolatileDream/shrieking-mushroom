@@ -1,8 +1,9 @@
-package com.quantum.shriek.events;
+package orb.quantum.shriek.events;
 
 import java.nio.ByteBuffer;
 
-import com.quantum.shriek.tcp.TcpConnection;
+import orb.quantum.shriek.tcp.TcpConnection;
+
 
 
 

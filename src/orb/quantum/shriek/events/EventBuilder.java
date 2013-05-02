@@ -1,12 +1,13 @@
-package com.quantum.shriek.events;
+package orb.quantum.shriek.events;
 
 import java.nio.ByteBuffer;
+
+import orb.quantum.shriek.tcp.TcpConnection;
 
 
 
 import com.lmax.disruptor.EventFactory;
 import com.lmax.disruptor.RingBuffer;
-import com.quantum.shriek.tcp.TcpConnection;
 
 public final class EventBuilder {
 

@@ -1,4 +1,4 @@
-package com.quantum.shriek.threading;
+package orb.quantum.shriek.threading;
 
 public interface Stopable {
 

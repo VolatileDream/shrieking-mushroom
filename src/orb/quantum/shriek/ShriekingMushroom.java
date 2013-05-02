@@ -1,8 +1,13 @@
-package com.quantum.shriek;
+package orb.quantum.shriek;
 
 import java.io.IOException;
 import java.util.concurrent.Executor;
 
+
+import orb.quantum.shriek.events.Event;
+import orb.quantum.shriek.events.EventBuilder;
+import orb.quantum.shriek.tcp.TcpMushroom;
+import orb.quantum.shriek.threading.Stopable;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,10 +15,6 @@ import org.apache.logging.log4j.Logger;
 import com.lmax.disruptor.EventHandler;
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.dsl.Disruptor;
-import com.quantum.shriek.events.Event;
-import com.quantum.shriek.events.EventBuilder;
-import com.quantum.shriek.tcp.TcpMushroom;
-import com.quantum.shriek.threading.Stopable;
 
 public class ShriekingMushroom implements Stopable {
 	

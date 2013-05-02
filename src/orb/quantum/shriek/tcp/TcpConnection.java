@@ -1,4 +1,4 @@
-package com.quantum.shriek.tcp;
+package orb.quantum.shriek.tcp;
 
 import java.nio.ByteBuffer;
 import java.nio.channels.ClosedChannelException;
@@ -7,10 +7,11 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 
+import orb.quantum.shriek.events.EventBuilder;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.quantum.shriek.events.EventBuilder;
 
 
 
