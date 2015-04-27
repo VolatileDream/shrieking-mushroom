@@ -6,7 +6,7 @@ import java.nio.channels.SelectionKey;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-
+import orb.quantum.shriek.common.Connection;
 import orb.quantum.shriek.events.EventBuilder;
 
 import org.apache.logging.log4j.LogManager;
@@ -15,7 +15,7 @@ import org.apache.logging.log4j.Logger;
 
 
 
-public class TcpConnection implements AutoCloseable {
+public class TcpConnection implements Connection {
 	
 	private static final Logger logger = LogManager.getLogger( TcpConnection.class );
 	

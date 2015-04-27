@@ -2,9 +2,7 @@ package orb.quantum.shriek.events;
 
 import java.nio.ByteBuffer;
 
-import orb.quantum.shriek.tcp.TcpConnection;
-
-
+import orb.quantum.shriek.common.Connection;
 
 import com.lmax.disruptor.EventFactory;
 import com.lmax.disruptor.RingBuffer;
@@ -17,14 +15,14 @@ public final class EventBuilder {
 		this.buffer = rb;
 	}
 	
-	public void connectionCreated( TcpConnection conn ){
+	public void connectionCreated( Connection conn ){
 		long seq = buffer.next();
 		Event e = buffer.get( seq );
 		e.buildEvent(conn);
 		buffer.publish( seq );
 	}
 	
-	public void readCompleted( TcpConnection conn, ByteBuffer buf ){
+	public void readCompleted( Connection conn, ByteBuffer buf ){
 		long seq = buffer.next();
 		Event e = buffer.get( seq );
 		
@@ -34,7 +32,7 @@ public final class EventBuilder {
 		buffer.publish( seq );
 	}
 
-	public void connectionClose( TcpConnection conn ){
+	public void connectionClose( Connection conn ){
 		long seq = buffer.next();
 		Event e = buffer.get( seq );
 		
