@@ -1,4 +1,4 @@
-package orb.quantum.shriek.tcp;
+package orb.quantum.shriek.common;
 
 import java.io.IOException;
 import java.nio.channels.SelectionKey;

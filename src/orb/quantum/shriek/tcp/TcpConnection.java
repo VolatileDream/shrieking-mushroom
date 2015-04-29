@@ -13,24 +13,30 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 
-
-
 public class TcpConnection implements Connection {
 	
 	private static final Logger logger = LogManager.getLogger( TcpConnection.class );
 	
-	private TcpMushroom mushroom;
+	protected final EventBuilder builder;
 	
 	private BlockingQueue<ByteBuffer> writeQueue = new LinkedBlockingQueue<ByteBuffer>();
 	
 	private SelectionKey key;
 	
-	TcpConnection( TcpMushroom m ){
-		mushroom = m;
+	public TcpConnection( EventBuilder b ){
+		builder = b;
+	}
+	
+	public ConnectionType getType(){
+		return ConnectionType.TCP;
 	}
 	
 	void attach( SelectionKey k ){
 		key = k;
+	}
+	
+	SelectionKey getKey(){
+		return key;
 	}
 	
 	/**
@@ -57,18 +63,14 @@ public class TcpConnection implements Connection {
 		return writeQueue.poll();
 	}
 	
-	@Override
 	public void close() throws Exception {
 		
-		logger.debug("Closing TcpConnection");
+		logger.debug("Closing Connection");
 		
-		mushroom.eventBuilder().connectionClose(this);
+		builder.connectionClose(this);
 		
 		key.channel().close();
 		key.cancel();
 	}
 	
-	public EventBuilder eventBuilder(){
-		return mushroom.eventBuilder();
-	}
 }

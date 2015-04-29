@@ -7,7 +7,6 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 
-
 import orb.quantum.shriek.threading.ChannelThread;
 
 import org.apache.logging.log4j.LogManager;

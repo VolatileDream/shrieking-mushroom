@@ -9,8 +9,8 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import orb.quantum.shriek.ShriekingMushroom;
-import orb.quantum.shriek.common.Connection;
 import orb.quantum.shriek.events.Event;
+import orb.quantum.shriek.tcp.TcpConnection;
 import orb.quantum.shriek.tcp.TcpMushroom;
 
 import com.lmax.disruptor.EventHandler;
@@ -46,7 +46,7 @@ public class TestRun {
 			public void onEvent(Event event, long sequence, boolean endOfBatch) throws Exception {
 				if( event.getData() == null ){
 					printHello(event, "connected");
-					Connection conn = event.getConnection();
+					TcpConnection conn = event.getConnection();
 					if( ! conn.write( buffer(name) ) ){
 						System.err.println("Write did not succeed");
 					}

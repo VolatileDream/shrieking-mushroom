@@ -8,7 +8,7 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 
-
+import orb.quantum.shriek.common.RemovableKey;
 import orb.quantum.shriek.events.EventBuilder;
 import orb.quantum.shriek.threading.Stopable;
 
@@ -67,7 +67,7 @@ public class TcpMushroom implements Stopable {
 		}
 		chan.configureBlocking(false);
 		
-		TcpConnection con = new TcpConnection( this );
+		TcpConnection con = new TcpConnection( this.eventBuilder() );
 		
 		//bump the selector, required to make sure the channel registration doesn't block
 		selectClient.wakeup();
