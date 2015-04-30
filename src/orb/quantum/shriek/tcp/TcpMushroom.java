@@ -21,16 +21,12 @@ public class TcpMushroom implements Stopable {
 	
 	private static final Logger logger = LogManager.getLogger( TcpMushroom.class );
 	
-	private Selector selectServer;
-	private Selector selectClient;
 	private EventBuilder builder;
 	
 	private TcpThread server;
 	private TcpThread client;
 	
 	public TcpMushroom( EventBuilder builder ) throws IOException {
-		selectServer = Selector.open();
-		selectClient = Selector.open();
 		this.builder = builder;
 	}
 	
@@ -62,22 +58,19 @@ public class TcpMushroom implements Stopable {
 		synchronized (this) {
 			// create the client on demand
 			if (client == null) {
-				client = startThread(selectClient);
+				client = startThread(Selector.open());
 			}
 		}
 		chan.configureBlocking(false);
 		
 		TcpConnection con = new TcpConnection( this.eventBuilder() );
 		
-		//bump the selector, required to make sure the channel registration doesn't block
-		selectClient.wakeup();
+		SelectionKey key = client.register(
+				chan
+				,SelectionKey.OP_CONNECT | SelectionKey.OP_READ | SelectionKey.OP_WRITE
+				, con
+			);
 		
-		SelectionKey key =
-				chan.register(
-					selectClient,
-					SelectionKey.OP_CONNECT | SelectionKey.OP_READ | SelectionKey.OP_WRITE,
-					con
-				);
 		con.attach( key );
 		key.attach( con );
 		
@@ -91,7 +84,7 @@ public class TcpMushroom implements Stopable {
 		synchronized (this) {
 			// create server on demand
 			if (server == null) {
-				server = startThread(selectServer);
+				server = startThread(Selector.open());
 			}
 		}
 		ServerSocketChannel chan = ServerSocketChannel.open();
@@ -101,11 +94,8 @@ public class TcpMushroom implements Stopable {
 		
 		// non-blocking
 		chan.configureBlocking(false);
-		
-		//bump the selector, required to make sure the channel registration doesn't block
-		selectServer.wakeup();
-		
-		SelectionKey key = chan.register( selectServer, SelectionKey.OP_ACCEPT );
+
+		SelectionKey key = server.register( chan, SelectionKey.OP_ACCEPT );
 		
 		return new RemovableKey( key );
 	}

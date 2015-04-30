@@ -3,11 +3,11 @@ package orb.quantum.shriek;
 import java.io.IOException;
 import java.util.concurrent.Executor;
 
-
 import orb.quantum.shriek.events.Event;
 import orb.quantum.shriek.events.EventBuilder;
 import orb.quantum.shriek.tcp.TcpMushroom;
 import orb.quantum.shriek.threading.Stopable;
+import orb.quantum.shriek.udp.UdpMushroom;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,6 +23,7 @@ public class ShriekingMushroom implements Stopable {
 	private final Disruptor<Event> disrupt;
 	private final EventBuilder builder;
 	private TcpMushroom tcp;
+	private UdpMushroom udp;
 	
 	@SafeVarargs
 	public ShriekingMushroom( int bufferSize, Executor exec, EventHandler<Event> ... events ){	
@@ -42,6 +43,16 @@ public class ShriekingMushroom implements Stopable {
 		return tcp;
 	}
 
+	public UdpMushroom getUdp() throws IOException {
+		synchronized (this){
+			if( udp == null ){
+				logger.debug("UDP Created");
+				udp = new UdpMushroom(builder);
+			}
+		}
+		return udp;
+	}
+	
 	@Override
 	public void stop() {
 		
@@ -50,6 +61,10 @@ public class ShriekingMushroom implements Stopable {
 		synchronized (this) {
 			if( tcp != null ){
 				tcp.stop();
+			}
+			
+			if ( udp != null ){
+				udp.stop();
 			}
 			
 			// events shouldn't hit the disruptor any more

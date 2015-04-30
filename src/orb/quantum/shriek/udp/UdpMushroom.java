@@ -20,14 +20,12 @@ public class UdpMushroom implements Stopable {
 	
 	private static final Logger logger = LogManager.getLogger( TcpMushroom.class );
 	
-	private final Selector selectClient;
 	private final EventBuilder builder;
 		
 	private UdpThread client;
 	private UdpServerConnection wildcard; // for any non specified connection
 	
 	public UdpMushroom( EventBuilder builder ) throws IOException {
-		selectClient = Selector.open();
 		this.builder = builder;
 	}
 	
@@ -80,19 +78,14 @@ public class UdpMushroom implements Stopable {
 		synchronized (this) {
 			// create the client on demand
 			if (client == null) {
-				client = startThread(selectClient);
+				client = startThread(Selector.open());
 			}
 		}
 		chan.configureBlocking(false);
 		
 		UdpServerConnection con = new UdpServerConnection( this.eventBuilder() );
 		
-		//bump the selector, required to make sure the channel registration doesn't block
-		selectClient.wakeup();
-		
-		SelectionKey key =
-				chan.register(
-					selectClient,
+		SelectionKey key = client.register(chan,
 					SelectionKey.OP_READ | SelectionKey.OP_WRITE,
 					con
 				);

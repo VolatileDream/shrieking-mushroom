@@ -9,8 +9,8 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import orb.quantum.shriek.ShriekingMushroom;
+import orb.quantum.shriek.common.Connection;
 import orb.quantum.shriek.events.Event;
-import orb.quantum.shriek.tcp.TcpConnection;
 import orb.quantum.shriek.tcp.TcpMushroom;
 
 import com.lmax.disruptor.EventHandler;
@@ -24,15 +24,32 @@ public class TestRun {
 		int port = 8080;
 		InetAddress localhost = Inet6Address.getByName("localhost");
 		
+		System.out.println("Address + Executor");
 		
 		ShriekingMushroom server = new ShriekingMushroom(512, execPool, buildHandler("Hello") );
 		TcpMushroom tcpServer = server.getTcp();
+		
+		long start = System.currentTimeMillis();
+		System.out.println("TCP Server Start: " + start);
 		AutoCloseable acServer = tcpServer.listen( port );
 
+		long end = System.currentTimeMillis();
+		System.out.println("TCP Server End: " + end);
+		System.out.println("Diff: " + (end-start) );
+		
 		ShriekingMushroom client = new ShriekingMushroom(512, execPool, buildHandler("Other") );
+		
+		start = System.currentTimeMillis();
+		System.out.println("TCP Client Start: " + start);
+		
 		TcpMushroom tcpClient = client.getTcp();
 		
 		tcpClient.connect( localhost, port );
+		
+		end = System.currentTimeMillis();
+		System.out.println("TCP Client End: " + end);
+		System.out.println("Diff: " + (end-start) );
+		
 	}
 
 	private static Charset charset = Charset.defaultCharset();
@@ -46,7 +63,7 @@ public class TestRun {
 			public void onEvent(Event event, long sequence, boolean endOfBatch) throws Exception {
 				if( event.getData() == null ){
 					printHello(event, "connected");
-					TcpConnection conn = event.getConnection();
+					Connection conn = event.getConnection();
 					if( ! conn.write( buffer(name) ) ){
 						System.err.println("Write did not succeed");
 					}
