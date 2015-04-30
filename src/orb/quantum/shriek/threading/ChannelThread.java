@@ -1,14 +1,19 @@
 package orb.quantum.shriek.threading;
 
 import java.io.IOException;
-import java.nio.channels.ClosedChannelException;
 import java.nio.channels.ClosedSelectorException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.spi.AbstractSelectableChannel;
 import java.util.Set;
-import java.util.concurrent.Phaser;
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,18 +21,15 @@ import org.apache.logging.log4j.Logger;
 public abstract class ChannelThread implements Runnable, Stopable {
 
 	private static final Logger logger = LogManager.getLogger( ChannelThread.class );
-	
+
 	// these objects are used to synchronize and fix the really weird synchronization
 	// that is built around Selector, SelectableChannel and SelectionKey. :(
+
+	private BlockingQueue<Registration> registrations = new LinkedBlockingQueue<>();
 	
-	// the ChannelThread object counts as the 1 that this phaser is initialized with.
-	private Phaser selectorPhaser = new Phaser(1);
-	private Semaphore selectorSem = new Semaphore(0);
-	
-	
-	
+
 	private Selector select;
-	
+
 	private volatile boolean stop = false;
 
 	public ChannelThread( Selector s ){
@@ -60,59 +62,22 @@ public abstract class ChannelThread implements Runnable, Stopable {
 		int depth = shutdownSelector(0);
 		logger.debug("Shutdown ChannelThread: {}", depth);
 	}
-	
-	public SelectionKey register( AbstractSelectableChannel chan, int ops ) throws ClosedChannelException {
-		return register(chan, ops, null);
-	}
-	
-	public SelectionKey register( AbstractSelectableChannel chan, int ops, Object attach ) throws ClosedChannelException {
-		SelectionKey key;
-		
-		synchronized(selectorPhaser){
-			System.out.println("register: wakeup");
-			select.wakeup();
-			
-			System.out.println("register: phaser");
-			// register and arrive for this phase.
-			selectorPhaser.register();
-			selectorPhaser.awaitAdvance( selectorPhaser.arrive() );
-			System.out.println("register: after phaser");
-			
-			// -------
-			// At this point another thread will get scheduled.
-			// It may or may not be another registering thread.
-			// -------
-			
-			System.out.println("register: selector ready!");
-			key = chan.register(select, ops, attach);
-			
-			// arrive for the next phase, and remove ourselves
-			selectorPhaser.arriveAndDeregister();
-			System.out.println("register: no more phaser");
-			
-			// release resources for the selector thread to advance.
-			selectorSem.release();
-			System.out.println("register: done");
-		}
-		
-		return key;
-	}
-		
+
 	private int shutdownSelector( int recursionDepth ){
-		
+
 		try {
 			Set<SelectionKey> keys = select.keys();
 
 			for( SelectionKey key : keys ){
 				// custom close things
 				close(key);
-				
+
 				key.channel().close();
 				key.cancel();
 			}
-			
+
 			select.close();
-			
+
 		} catch (ClosedSelectorException e) {
 
 			//already closed, nothing that we can do
@@ -122,45 +87,98 @@ public abstract class ChannelThread implements Runnable, Stopable {
 
 		} catch (IOException e) {
 			logger.debug(e);
-			
+
 			//try 
 			return shutdownSelector( recursionDepth + 1 );
 		}
-		
+
 		return recursionDepth;
 	}
 
-	private final void loop() throws Exception {
-
-		// Have a time out so that registering new keys doesn't block forever.
-		int count = select.select(10);
+	private class Registration implements Future<SelectionKey>, Callable<SelectionKey> {
 		
+		final AbstractSelectableChannel channel;
+		final int operations;
+		final Object attached;
+		
+		final FutureTask<SelectionKey> task;
+		
+		public Registration( AbstractSelectableChannel chan, int ops, Object attach ){
+			channel = chan;
+			operations = ops;
+			attached = attach;
+			task = new FutureTask<>(this);
+		}
+		@Override
+		public SelectionKey call() throws Exception {
+			return channel.register(ChannelThread.this.select, operations, attached);
+		}
+		@Override
+		public boolean cancel(boolean mayInterruptIfRunning) {
+			return task.cancel(mayInterruptIfRunning);
+		}
+		@Override
+		public boolean isCancelled() {
+			return task.isCancelled();
+		}
+		@Override
+		public boolean isDone() {
+			return task.isDone();
+		}
+		@Override
+		public SelectionKey get() throws InterruptedException, ExecutionException {
+			return task.get();
+		}
+		@Override
+		public SelectionKey get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException,
+				TimeoutException {
+			return task.get(timeout, unit);
+		}
+	}
+	
+	public SelectionKey register( AbstractSelectableChannel chan, int ops ) {
+		return register(chan, ops, null);
+	}
+
+	public SelectionKey register( final AbstractSelectableChannel chan, final int ops, final Object attach ) {
+		Registration newRegistration;
+		synchronized(registrations){
+			select.wakeup();
+
+			newRegistration = new Registration(chan, ops, attach);
+			
+			registrations.add(newRegistration);
+		}
+		
+		try {
+			// both of the exceptions that come off of this suck.
+			// We just rethrow them because there's not much else to do here.
+			
+			// For clarity: Interrupted + Execution Exception are thrown.
+			return newRegistration.get();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private final void loop() throws Exception {
+		
+		// Have a time out so that registering new keys doesn't block forever.
+		int count = select.select();
+
 		if (count == 0){
 			// We got woken up because someone has attempted to register a new
 			// key to our selector. This is to fix up the weird behaviour around
 			// synchronization with Selector.
-			System.out.println("Selector: awake");
-			synchronized(selectorPhaser){
-				System.out.println("Selector: locked");
-				// this call does NOT release the lock on selectorPhaser.
-				// Which is a critical design point for this synchro mechanism.
-				selectorPhaser.arrive();
-				
-				System.out.println("Selector: arrived");
-				
-				// -1 : we don't wait for ourselves (this thread is registered)
-				int waitCount = selectorPhaser.getRegisteredParties() - 1;
-				
-				// Any thread that made it to registering for the Phaser is
-				// going to release the semaphore, once they all have then they
-				// have all registered their channels with the Selector. And
-				// then we can resume.
-				selectorSem.acquire(waitCount);
-				
-				System.out.println("Selector: acquired");
+
+			synchronized(registrations){
+				while( !registrations.isEmpty() ){
+					Registration reg = registrations.remove();
+					reg.task.run();
+				}
 			}
 			
-			return; // nothing to do, return.
+			return; // no keys to look at.
 		}
 
 		for( SelectionKey key : select.selectedKeys() ){
@@ -169,7 +187,7 @@ public abstract class ChannelThread implements Runnable, Stopable {
 			if( ! key.isValid() ){
 				continue;
 			}
-			
+
 			if( key.isAcceptable() ){
 				accept(key);
 				// keys that are acceptable will not be any of the other things
@@ -231,5 +249,5 @@ public abstract class ChannelThread implements Runnable, Stopable {
 	 * @throws IOException
 	 */
 	protected abstract void close( SelectionKey key ) throws IOException ;
-	
+
 }
