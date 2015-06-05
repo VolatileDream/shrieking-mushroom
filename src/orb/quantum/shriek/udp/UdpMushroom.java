@@ -36,6 +36,7 @@ public class UdpMushroom implements Stopable {
 		UdpThread udp = new UdpThread(this, select);
 		
 		Thread th = new Thread( udp );
+		th.setName("[shriek-tcp]");
 		th.start();
 		
 		return udp;
