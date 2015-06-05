@@ -14,6 +14,8 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,7 +28,8 @@ public abstract class ChannelThread implements Runnable, Stopable {
 	// that is built around Selector, SelectableChannel and SelectionKey. :(
 
 	private BlockingQueue<Registration> registrations = new LinkedBlockingQueue<>();
-	
+
+	private Lock registrationLock = new ReentrantLock();
 
 	private Selector select;
 
@@ -39,6 +42,8 @@ public abstract class ChannelThread implements Runnable, Stopable {
 	@Override
 	public final void run() {
 
+		registrationLock.lock();
+		
 		while( ! stop ) {
 
 			try {
@@ -49,6 +54,8 @@ public abstract class ChannelThread implements Runnable, Stopable {
 
 		}
 
+		registrationLock.unlock();
+		
 		shutdownSelector();
 	}
 
@@ -141,13 +148,15 @@ public abstract class ChannelThread implements Runnable, Stopable {
 	}
 
 	public SelectionKey register( final AbstractSelectableChannel chan, final int ops, final Object attach ) {
-		Registration newRegistration;
-		synchronized(registrations){
-			select.wakeup();
-
-			newRegistration = new Registration(chan, ops, attach);
-			
+		Registration newRegistration = new Registration(chan, ops, attach);
+		
+		{
+			// Because of concurrency models, we can't guarantee 
+			registrationLock.lock();
 			registrations.add(newRegistration);
+		
+			select.wakeup();
+			registrationLock.unlock();
 		}
 		
 		try {
@@ -163,19 +172,21 @@ public abstract class ChannelThread implements Runnable, Stopable {
 
 	private final void loop() throws Exception {
 		
+		registrationLock.unlock();
+		
 		// Have a time out so that registering new keys doesn't block forever.
 		int count = select.select();
 
+		registrationLock.lock();
+		
 		if (count == 0){
 			// We got woken up because someone has attempted to register a new
 			// key to our selector. This is to fix up the weird behaviour around
 			// synchronization with Selector.
 
-			synchronized(registrations){
-				while( !registrations.isEmpty() ){
-					Registration reg = registrations.remove();
-					reg.task.run();
-				}
+			while( !registrations.isEmpty() ){
+				Registration reg = registrations.remove();
+				reg.task.run();
 			}
 			
 			return; // no keys to look at.
