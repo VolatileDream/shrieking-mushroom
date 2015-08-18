@@ -1,4 +1,4 @@
-package shriekingmushroom.tcp;
+package orb.quantum.shriek.common;
 
 import java.io.IOException;
 import java.nio.channels.SelectionKey;
