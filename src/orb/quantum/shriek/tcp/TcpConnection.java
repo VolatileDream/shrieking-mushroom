@@ -7,7 +7,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import orb.quantum.shriek.common.Connection;
-import orb.quantum.shriek.threading.IoHandler;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,11 +24,6 @@ public class TcpConnection implements Connection {
 	
 	public TcpConnection( TcpMushroom tcp ){
 		this.tcp = tcp;
-	}
-	
-	@Override
-	public IoHandler getHandler(){
-		return tcp.handler;
 	}
 	
 	void attach( SelectionKey k ){

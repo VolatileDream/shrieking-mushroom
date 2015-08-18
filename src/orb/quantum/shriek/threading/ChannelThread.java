@@ -7,6 +7,7 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.spi.AbstractSelectableChannel;
 import java.util.Set;
+import java.util.concurrent.locks.ReentrantLock;
 
 import orb.quantum.shriek.common.Connection;
 
@@ -15,7 +16,25 @@ import org.apache.logging.log4j.Logger;
 
 public class ChannelThread implements Runnable, Stopable {
 
+	public static class KeyAttachment {
+
+		public Connection connection;
+		public final IoHandler handler;
+
+		public KeyAttachment( Connection c, IoHandler h){
+			if(h == null){
+				throw new IllegalArgumentException("IoHandler can't be null");
+			}
+			connection = c;
+			handler = h;
+		}
+
+	}
+
 	private static final Logger logger = LogManager.getLogger( ChannelThread.class );
+
+	// Concurrency is hard. :c
+	final ReentrantLock selectorLock = new ReentrantLock();
 
 	private final Selector select;
 
@@ -27,13 +46,14 @@ public class ChannelThread implements Runnable, Stopable {
 
 	@Override
 	public final void run() {
-		
+
 		while( ! stop ) {
 
 			try {
 				loop();
 			} catch (Exception e) {
-				logger.debug(e);
+				e.printStackTrace();
+				logger.error(e);
 			}
 
 		}
@@ -59,13 +79,14 @@ public class ChannelThread implements Runnable, Stopable {
 			Set<SelectionKey> keys = select.keys();
 
 			for( SelectionKey key : keys ){
-				// custom close things
-				IoHandler handler = ((Connection) key.attachment()).getHandler();
+			
+				try {
+					closeKey(key);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				
-				handler.close(key);
-
-				key.channel().close();
-				key.cancel();
 			}
 
 			select.close();
@@ -78,7 +99,8 @@ public class ChannelThread implements Runnable, Stopable {
 			logger.debug(e);
 
 		} catch (IOException e) {
-			logger.debug(e);
+			e.printStackTrace();
+			logger.error(e);
 
 			//try 
 			return shutdownSelector( recursionDepth + 1 );
@@ -86,58 +108,94 @@ public class ChannelThread implements Runnable, Stopable {
 
 		return recursionDepth;
 	}
+
+	private void closeKey(SelectionKey key) throws IOException{
+		// custom close things
+		KeyAttachment attach = (KeyAttachment) key.attachment();
+		IoHandler handler = attach.handler;
+
+		handler.close(key);
+
+		key.channel().close();
+		key.cancel();
+	}
 	
-	public SelectionKey register( AbstractSelectableChannel chan, int ops ) {
-		return register(chan, ops, null);
+	public SelectionKey register( AbstractSelectableChannel chan, int ops, Connection con, IoHandler handler ) {
+		return register( chan, ops, new KeyAttachment(con, handler) );
 	}
 
-	public SelectionKey register( final AbstractSelectableChannel chan, final int ops, final Object attach ) {
-		
-		select.wakeup();
+	public SelectionKey register( final AbstractSelectableChannel chan, final int ops, final KeyAttachment attach ) {
+
+		if( attach == null ){
+			throw new IllegalArgumentException("KeyAttachment can't be null.");
+		}
+
 		try {
+			selectorLock.lock();
+			select.wakeup();
 			return chan.register(select, ops, attach);
 		} catch (ClosedChannelException e) {
+			e.printStackTrace();
 			logger.error(e);
+		} finally {
+			selectorLock.unlock();
 		}
 		return null;
 	}
 
-	private final void loop() throws Exception {
-	
-		// Have a time out so that registering new keys doesn't block forever.
+	private final void loop() throws IOException {
+
+		// yes, this looks silly, but it allows registration to complete.
+		// from: http://stackoverflow.com/a/1112809/296828
+		selectorLock.lock();
+		selectorLock.unlock();
+
 		select.select();
 
 		for( SelectionKey key : select.selectedKeys() ){
 
-			// dealing with canceled keys
-			if( ! key.isValid() ){
-				continue;
-			}
-
-			IoHandler handler = ((Connection) key.attachment()).getHandler();
-			
-			if( key.isAcceptable() ){
-				handler.accept(key);
-				// keys that are acceptable will not be any of the other things
-				continue;
-			}
-
-			if( key.isConnectable() ){
-				handler.connect(key);
-			}
-
-			if( key.isWritable() ){
-				handler.write(key);
-			}
-
-			if( key.isReadable() ){
-				handler.read(key);
+			try {
+				handleKey(key);
+			} catch (Exception e) {
+				e.printStackTrace();
+				try {
+					closeKey(key);
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
 			}
 
 		}
 
 	}
 
+	private void handleKey(SelectionKey key) throws IOException{
+		// dealing with canceled keys
+		if( ! key.isValid() ){
+			return;
+		}
+
+		KeyAttachment attach = ((KeyAttachment) key.attachment());
+		IoHandler handler = attach.handler;
+
+		if( key.isAcceptable() ){
+			handler.accept(key);
+			// keys that are acceptable will not be any of the other things
+			return;
+		}
+
+		if( key.isConnectable() ){
+			handler.connect(key);
+		}
+
+		if( key.isWritable() ){
+			handler.write(key);
+		}
+
+		if( key.isReadable() ){
+			handler.read(key);
+		}
+	}
 
 
 }

@@ -51,10 +51,10 @@ public class TcpMushroom {
 				chan
 				, SelectionKey.OP_CONNECT | SelectionKey.OP_READ | SelectionKey.OP_WRITE
 				, con
+				, handler
 			);
 		
 		con.attach( key );
-		key.attach( con );
 		
 		return con;
 	}
@@ -71,7 +71,7 @@ public class TcpMushroom {
 		// non-blocking
 		chan.configureBlocking(false);
 
-		SelectionKey key = thread.register( chan, SelectionKey.OP_ACCEPT );
+		SelectionKey key = thread.register( chan, SelectionKey.OP_ACCEPT, null, handler );
 		
 		return new RemovableKey( key );
 	}

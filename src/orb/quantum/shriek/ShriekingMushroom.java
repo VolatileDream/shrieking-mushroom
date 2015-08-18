@@ -32,7 +32,7 @@ public class ShriekingMushroom implements Stopable {
 	private UdpMushroom udp;
 	
 	@SafeVarargs
-	public ShriekingMushroom( int bufferSize, Executor exec, EventHandler<Event> ... events ){	
+	public ShriekingMushroom( int bufferSize, Executor exec, EventHandler<Event> ... events ){
 		disrupt = new Disruptor<Event>( EventBuilder.FACTORY, bufferSize, exec);
 		disrupt.handleEventsWith( events );
 		RingBuffer<Event> buffer = disrupt.start();
@@ -45,6 +45,9 @@ public class ShriekingMushroom implements Stopable {
 				selector = Selector.open();
 				if( thread == null ){
 					thread = new ChannelThread( selector );
+					Thread runningThread = new Thread(thread);
+					runningThread.setName("[shriek-select]");
+					runningThread.start();
 				}
 			}
 		}
@@ -78,12 +81,6 @@ public class ShriekingMushroom implements Stopable {
 		
 		synchronized (this) {
 			thread.stop();
-			
-			try {
-				selector.close();
-			} catch (IOException e) {
-				logger.error(e);
-			}
 			
 			// events shouldn't hit the disruptor any more
 			disrupt.shutdown();

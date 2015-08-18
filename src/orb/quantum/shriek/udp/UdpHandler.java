@@ -7,6 +7,7 @@ import java.nio.channels.DatagramChannel;
 import java.nio.channels.SelectionKey;
 
 import orb.quantum.shriek.tcp.TcpHandler;
+import orb.quantum.shriek.threading.ChannelThread.KeyAttachment;
 import orb.quantum.shriek.threading.IoHandler;
 import orb.quantum.shriek.udp.UdpServerConnection.UdpClientConnection;
 import orb.quantum.shriek.udp.UdpServerConnection.UdpWrite;
@@ -29,6 +30,10 @@ public class UdpHandler implements IoHandler {
 		throw new RuntimeException("Operation should not be triggered by UDP socket.");
 	}
 
+	private UdpServerConnection getConnection(SelectionKey key){
+		return (UdpServerConnection) ((KeyAttachment) key.attachment()).connection;
+	}
+	
 	@Override
 	public void accept(SelectionKey key) throws IOException {
 		unsupported();
@@ -41,13 +46,13 @@ public class UdpHandler implements IoHandler {
 
 	@Override
 	public void close(SelectionKey key) throws IOException {
-		unsupported();
+		
 	}
 
 	@Override
 	public void write(SelectionKey key) throws IOException {
 		DatagramChannel chan = (DatagramChannel) key.channel();
-		UdpServerConnection udp = (UdpServerConnection) key.attachment();
+		UdpServerConnection udp = getConnection(key);
 
 		UdpWrite buf = null;
 
@@ -75,7 +80,7 @@ public class UdpHandler implements IoHandler {
 	public void read(SelectionKey key) throws IOException {
 
 		DatagramChannel chan = (DatagramChannel) key.channel();
-		UdpServerConnection udp = (UdpServerConnection) key.attachment();
+		UdpServerConnection udp = getConnection(key);
 
 		logger.debug("Reading from {}", chan.getRemoteAddress() );
 

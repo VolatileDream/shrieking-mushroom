@@ -69,12 +69,12 @@ public class UdpMushroom implements Stopable {
 		
 		UdpServerConnection con = new UdpServerConnection( this );
 		
-		SelectionKey key = thread.register(chan,
-					SelectionKey.OP_READ | SelectionKey.OP_WRITE,
-					con
+		SelectionKey key = thread.register( chan
+					, SelectionKey.OP_READ | SelectionKey.OP_WRITE
+					, null
+					, client
 				);
 		con.attach( key );
-		key.attach( con );
 		
 		return con;
 	}
@@ -89,7 +89,8 @@ public class UdpMushroom implements Stopable {
 			try {
 				wildcard.close();
 			} catch (Exception e) {
-				logger.debug(e);
+				e.printStackTrace();
+				logger.error(e);
 			}
 			wildcard = null;
 		}

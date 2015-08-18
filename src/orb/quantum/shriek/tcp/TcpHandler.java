@@ -2,10 +2,12 @@ package orb.quantum.shriek.tcp;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.channels.AsynchronousCloseException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 
+import orb.quantum.shriek.threading.ChannelThread.KeyAttachment;
 import orb.quantum.shriek.threading.IoHandler;
 
 import org.apache.logging.log4j.LogManager;
@@ -20,18 +22,32 @@ public class TcpHandler implements IoHandler {
 	TcpHandler( TcpMushroom m ){
 		this.mushroom = m;
 	}
-		
+	
+	private TcpConnection getConnection(SelectionKey key){
+		return (TcpConnection) ((KeyAttachment) key.attachment()).connection;
+	}
+	
 	public void accept( SelectionKey key ) throws IOException {
 		
 		ServerSocketChannel serv = (ServerSocketChannel) key.channel();
 		
-		logger.debug("Accepting Socket connection: {}", serv.getLocalAddress() );
+		if(!serv.isOpen()){
+			return;
+		} else {
+			logger.debug("Accepting Socket connection: {}", serv.getLocalAddress() );
+		}
 		
-		SocketChannel chan = serv.accept();
 		
-		logger.debug("Accepted Socket connection from {}", chan.getRemoteAddress() );
+		SocketChannel chan = null;
+		try {
+			chan = serv.accept();
+		} catch (AsynchronousCloseException e) {
+			// this happens, it's the same as erroneously attempting to accept
+		}
 		
 		if( chan != null ){
+			logger.debug("Accepted Socket connection from {}", chan.getRemoteAddress() );
+			
 			TcpConnection tcp = mushroom.createTcpConnection(chan);
 			
 			mushroom.builder.connectionCreated( tcp );
@@ -41,7 +57,7 @@ public class TcpHandler implements IoHandler {
 	public void connect( SelectionKey key ) throws IOException {
 		
 		SocketChannel chan = (SocketChannel) key.channel();
-		TcpConnection tcp = (TcpConnection) key.attachment();
+		TcpConnection tcp = getConnection(key);
 
 		logger.debug("Finising connection to {}", chan.getRemoteAddress() );
 		
@@ -53,7 +69,7 @@ public class TcpHandler implements IoHandler {
 	public void write( SelectionKey key ) throws IOException {
 		
 		SocketChannel chan = (SocketChannel) key.channel();
-		TcpConnection tcp = (TcpConnection) key.attachment();
+		TcpConnection tcp = getConnection(key);
 		
 		ByteBuffer buf = null;
 		
@@ -80,7 +96,7 @@ public class TcpHandler implements IoHandler {
 	public void read( SelectionKey key ) throws IOException {
 		
 		SocketChannel chan = (SocketChannel) key.channel();
-		TcpConnection tcp = (TcpConnection) key.attachment();
+		TcpConnection tcp = getConnection(key);
 		
 		logger.debug("Reading from {}", chan.getRemoteAddress() );
 		
@@ -102,15 +118,13 @@ public class TcpHandler implements IoHandler {
 
 	@Override
 	public void close(SelectionKey key) throws IOException {
-		Object attach = key.attachment();
+		TcpConnection tcp = getConnection(key);
 
 		// server keys don't have a stop listening event. They can also be
-		// closed multiple ways, and they do _not_ have an attachment. 
+		// closed multiple ways, and they do _not_ have a connection. 
 		
-		if( attach != null && attach instanceof TcpConnection ){
-		
-			TcpConnection tcp = (TcpConnection) attach;
-					
+		if( tcp != null ){
+
 			mushroom.builder.connectionClose(tcp);
 		}
 	}

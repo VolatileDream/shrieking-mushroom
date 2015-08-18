@@ -10,7 +10,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import orb.quantum.shriek.common.Connection;
-import orb.quantum.shriek.threading.IoHandler;
 
 class UdpServerConnection implements AutoCloseable {
 
@@ -124,11 +123,6 @@ class UdpServerConnection implements AutoCloseable {
 				connections.remove(this);
 				udp.builder.connectionClose(this);
 			}
-		}
-
-		@Override
-		public IoHandler getHandler() {
-			return udp.client;
 		}
 	}
 
