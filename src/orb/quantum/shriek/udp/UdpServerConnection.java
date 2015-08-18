@@ -10,7 +10,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import orb.quantum.shriek.common.Connection;
-import orb.quantum.shriek.events.EventBuilder;
+import orb.quantum.shriek.threading.IoHandler;
 
 class UdpServerConnection implements AutoCloseable {
 
@@ -19,10 +19,10 @@ class UdpServerConnection implements AutoCloseable {
 	private final Map<SocketAddress, UdpClientConnection> connections = new HashMap<>();
 	private BlockingQueue<UdpWrite> writeQueue = new LinkedBlockingQueue<>();
 
-	protected final EventBuilder builder;
+	protected final UdpMushroom udp;
 
-	public UdpServerConnection( EventBuilder e ){
-		builder = e;
+	public UdpServerConnection( UdpMushroom udp ){
+		this.udp = udp;
 	}
 
 	private SelectionKey key;
@@ -46,7 +46,7 @@ class UdpServerConnection implements AutoCloseable {
 			if( c == null ){
 				c = new UdpClientConnection(addr);
 				connections.put(addr, c);
-				builder.connectionCreated(c);
+				udp.builder.connectionCreated(c);
 			}
 			return c;
 		}
@@ -119,16 +119,16 @@ class UdpServerConnection implements AutoCloseable {
 		}
 
 		@Override
-		public ConnectionType getType() {
-			return ConnectionType.UDP;
-		}
-
-		@Override
 		public void close() throws Exception {
 			synchronized(connections){
 				connections.remove(this);
-				builder.connectionClose(this);
+				udp.builder.connectionClose(this);
 			}
+		}
+
+		@Override
+		public IoHandler getHandler() {
+			return udp.client;
 		}
 	}
 

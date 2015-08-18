@@ -5,11 +5,10 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
 
 import orb.quantum.shriek.common.Connection;
 import orb.quantum.shriek.events.EventBuilder;
-import orb.quantum.shriek.tcp.TcpMushroom;
+import orb.quantum.shriek.threading.ChannelThread;
 import orb.quantum.shriek.threading.Stopable;
 import orb.quantum.shriek.udp.UdpServerConnection.UdpClientConnection;
 
@@ -18,30 +17,20 @@ import org.apache.logging.log4j.Logger;
 
 public class UdpMushroom implements Stopable {
 	
-	private static final Logger logger = LogManager.getLogger( TcpMushroom.class );
+	private static final Logger logger = LogManager.getLogger( UdpMushroom.class );
 	
-	private final EventBuilder builder;
-		
-	private UdpThread client;
+	final EventBuilder builder;
+	final UdpHandler client;
+	final ChannelThread thread;
+	
 	private UdpServerConnection wildcard; // for any non specified connection
 	
-	public UdpMushroom( EventBuilder builder ) throws IOException {
+	public UdpMushroom( EventBuilder builder, ChannelThread thread ) throws IOException {
 		this.builder = builder;
+		this.thread = thread;
+		client = new UdpHandler(this);
 	}
-	
-	private UdpThread startThread( Selector select ){
 		
-		logger.debug("Creating TcpThread");
-		
-		UdpThread udp = new UdpThread(this, select);
-		
-		Thread th = new Thread( udp );
-		th.setName("[shriek-tcp]");
-		th.start();
-		
-		return udp;
-	}
-	
 	public Connection connect( UdpServerConnection conn, InetAddress addr, int port ) throws IOException{
 		return conn.connect(new InetSocketAddress(addr, port));
 	}
@@ -76,17 +65,11 @@ public class UdpMushroom implements Stopable {
 	
 	UdpServerConnection createUdpConnection( DatagramChannel chan ) throws IOException {
 		
-		synchronized (this) {
-			// create the client on demand
-			if (client == null) {
-				client = startThread(Selector.open());
-			}
-		}
 		chan.configureBlocking(false);
 		
-		UdpServerConnection con = new UdpServerConnection( this.eventBuilder() );
+		UdpServerConnection con = new UdpServerConnection( this );
 		
-		SelectionKey key = client.register(chan,
+		SelectionKey key = thread.register(chan,
 					SelectionKey.OP_READ | SelectionKey.OP_WRITE,
 					con
 				);
@@ -103,10 +86,12 @@ public class UdpMushroom implements Stopable {
 	@Override
 	public void stop() {
 		synchronized (this) {
-			if (client != null) {
-				client.stop();
-				client = null;
+			try {
+				wildcard.close();
+			} catch (Exception e) {
+				logger.debug(e);
 			}
+			wildcard = null;
 		}
 	}
 	

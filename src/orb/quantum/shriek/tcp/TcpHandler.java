@@ -3,30 +3,25 @@ package orb.quantum.shriek.tcp;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 
-import orb.quantum.shriek.threading.ChannelThread;
+import orb.quantum.shriek.threading.IoHandler;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+public class TcpHandler implements IoHandler {
 
-
-
-public class TcpThread extends ChannelThread implements Runnable {
-
-	private static final Logger logger = LogManager.getLogger( TcpThread.class );
+	private static final Logger logger = LogManager.getLogger( TcpHandler.class );
 	
-	private TcpMushroom mushroom;
+	private final TcpMushroom mushroom;
 	
-	TcpThread( TcpMushroom m, Selector s ){
-		super( s );
+	TcpHandler( TcpMushroom m ){
 		this.mushroom = m;
 	}
 		
-	protected void accept( SelectionKey key ) throws IOException {
+	public void accept( SelectionKey key ) throws IOException {
 		
 		ServerSocketChannel serv = (ServerSocketChannel) key.channel();
 		
@@ -39,11 +34,11 @@ public class TcpThread extends ChannelThread implements Runnable {
 		if( chan != null ){
 			TcpConnection tcp = mushroom.createTcpConnection(chan);
 			
-			mushroom.eventBuilder().connectionCreated( tcp );
+			mushroom.builder.connectionCreated( tcp );
 		}
 	}
 	
-	protected void connect( SelectionKey key ) throws IOException {
+	public void connect( SelectionKey key ) throws IOException {
 		
 		SocketChannel chan = (SocketChannel) key.channel();
 		TcpConnection tcp = (TcpConnection) key.attachment();
@@ -51,11 +46,11 @@ public class TcpThread extends ChannelThread implements Runnable {
 		logger.debug("Finising connection to {}", chan.getRemoteAddress() );
 		
 		if( chan.finishConnect() ){
-			mushroom.eventBuilder().connectionCreated( tcp );
+			mushroom.builder.connectionCreated( tcp );
 		}
 	}
 	
-	protected void write( SelectionKey key ) throws IOException {
+	public void write( SelectionKey key ) throws IOException {
 		
 		SocketChannel chan = (SocketChannel) key.channel();
 		TcpConnection tcp = (TcpConnection) key.attachment();
@@ -82,7 +77,7 @@ public class TcpThread extends ChannelThread implements Runnable {
 		}
 	}
 
-	protected void read( SelectionKey key ) throws IOException {
+	public void read( SelectionKey key ) throws IOException {
 		
 		SocketChannel chan = (SocketChannel) key.channel();
 		TcpConnection tcp = (TcpConnection) key.attachment();
@@ -102,21 +97,21 @@ public class TcpThread extends ChannelThread implements Runnable {
 
 		logger.trace("Reading from {}. Data {}", chan.getRemoteAddress(), buf.array() );
 		
-		mushroom.eventBuilder().readCompleted( tcp, buf );
+		mushroom.builder.readCompleted( tcp, buf );
 	}
 
 	@Override
-	protected void close(SelectionKey key) throws IOException {
+	public void close(SelectionKey key) throws IOException {
 		Object attach = key.attachment();
 
-		// server keys don't have a stop listening event.
-		// ^They can also be closed multiple ways...
+		// server keys don't have a stop listening event. They can also be
+		// closed multiple ways, and they do _not_ have an attachment. 
 		
 		if( attach != null && attach instanceof TcpConnection ){
 		
 			TcpConnection tcp = (TcpConnection) attach;
 					
-			mushroom.eventBuilder().connectionClose(tcp);
+			mushroom.builder.connectionClose(tcp);
 		}
 	}
 	

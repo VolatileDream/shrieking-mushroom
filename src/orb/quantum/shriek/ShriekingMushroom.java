@@ -1,11 +1,13 @@
 package orb.quantum.shriek;
 
 import java.io.IOException;
+import java.nio.channels.Selector;
 import java.util.concurrent.Executor;
 
 import orb.quantum.shriek.events.Event;
 import orb.quantum.shriek.events.EventBuilder;
 import orb.quantum.shriek.tcp.TcpMushroom;
+import orb.quantum.shriek.threading.ChannelThread;
 import orb.quantum.shriek.threading.Stopable;
 import orb.quantum.shriek.udp.UdpMushroom;
 
@@ -22,6 +24,10 @@ public class ShriekingMushroom implements Stopable {
 	
 	private final Disruptor<Event> disrupt;
 	private final EventBuilder builder;
+	
+	private ChannelThread thread;
+	private Selector selector;
+	
 	private TcpMushroom tcp;
 	private UdpMushroom udp;
 	
@@ -33,11 +39,23 @@ public class ShriekingMushroom implements Stopable {
 		builder = new EventBuilder( buffer );
 	}
 	
+	private ChannelThread getThread() throws IOException{
+		synchronized(this){
+			if( selector == null ){
+				selector = Selector.open();
+				if( thread == null ){
+					thread = new ChannelThread( selector );
+				}
+			}
+		}
+		return thread;
+	}
+	
 	public TcpMushroom getTcp() throws IOException {
 		synchronized (this) {
 			if( tcp == null ){
+				tcp = new TcpMushroom(builder, getThread());
 				logger.debug("TCP Created");
-				tcp = new TcpMushroom(builder);
 			}
 		}
 		return tcp;
@@ -47,7 +65,7 @@ public class ShriekingMushroom implements Stopable {
 		synchronized (this){
 			if( udp == null ){
 				logger.debug("UDP Created");
-				udp = new UdpMushroom(builder);
+				udp = new UdpMushroom(builder, getThread());
 			}
 		}
 		return udp;
@@ -59,12 +77,12 @@ public class ShriekingMushroom implements Stopable {
 		// close all, tcp, udp, multicast
 		
 		synchronized (this) {
-			if( tcp != null ){
-				tcp.stop();
-			}
+			thread.stop();
 			
-			if ( udp != null ){
-				udp.stop();
+			try {
+				selector.close();
+			} catch (IOException e) {
+				logger.error(e);
 			}
 			
 			// events shouldn't hit the disruptor any more

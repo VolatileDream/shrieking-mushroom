@@ -7,7 +7,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import orb.quantum.shriek.common.Connection;
-import orb.quantum.shriek.events.EventBuilder;
+import orb.quantum.shriek.threading.IoHandler;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,18 +17,19 @@ public class TcpConnection implements Connection {
 	
 	private static final Logger logger = LogManager.getLogger( TcpConnection.class );
 	
-	protected final EventBuilder builder;
+	protected final TcpMushroom tcp;
 	
 	private BlockingQueue<ByteBuffer> writeQueue = new LinkedBlockingQueue<ByteBuffer>();
 	
 	private SelectionKey key;
 	
-	public TcpConnection( EventBuilder b ){
-		builder = b;
+	public TcpConnection( TcpMushroom tcp ){
+		this.tcp = tcp;
 	}
 	
-	public ConnectionType getType(){
-		return ConnectionType.TCP;
+	@Override
+	public IoHandler getHandler(){
+		return tcp.handler;
 	}
 	
 	void attach( SelectionKey k ){
@@ -67,7 +68,7 @@ public class TcpConnection implements Connection {
 		
 		logger.debug("Closing Connection");
 		
-		builder.connectionClose(this);
+		tcp.builder.connectionClose(this);
 		
 		key.channel().close();
 		key.cancel();

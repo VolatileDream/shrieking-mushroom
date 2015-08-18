@@ -50,6 +50,14 @@ public class TestRun {
 		System.out.println("TCP Client End: " + end);
 		System.out.println("Diff: " + (end-start) );
 		
+		Thread.sleep(10000);
+		
+		try {
+			acServer.close();
+		} catch (Exception e) { /* totally ignored */ }
+		
+		server.stop();
+		client.stop();
 	}
 
 	private static Charset charset = Charset.defaultCharset();

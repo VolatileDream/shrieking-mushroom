@@ -5,24 +5,22 @@ import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
 
-import orb.quantum.shriek.tcp.TcpThread;
-import orb.quantum.shriek.threading.ChannelThread;
+import orb.quantum.shriek.tcp.TcpHandler;
+import orb.quantum.shriek.threading.IoHandler;
 import orb.quantum.shriek.udp.UdpServerConnection.UdpClientConnection;
 import orb.quantum.shriek.udp.UdpServerConnection.UdpWrite;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class UdpThread extends ChannelThread implements Runnable {
+public class UdpHandler implements IoHandler {
 
-	private static final Logger logger = LogManager.getLogger( TcpThread.class );
+	private static final Logger logger = LogManager.getLogger( TcpHandler.class );
 
 	private UdpMushroom mushroom;
 
-	UdpThread( UdpMushroom m, Selector s ){
-		super( s );
+	UdpHandler( UdpMushroom m ){
 		this.mushroom = m;
 	}
 
@@ -32,22 +30,22 @@ public class UdpThread extends ChannelThread implements Runnable {
 	}
 
 	@Override
-	protected void accept(SelectionKey key) throws IOException {
+	public void accept(SelectionKey key) throws IOException {
 		unsupported();
 	}
 
 	@Override
-	protected void connect(SelectionKey key) throws IOException {
+	public void connect(SelectionKey key) throws IOException {
 		unsupported();
 	}
 
 	@Override
-	protected void close(SelectionKey key) throws IOException {
+	public void close(SelectionKey key) throws IOException {
 		unsupported();
 	}
 
 	@Override
-	protected void write(SelectionKey key) throws IOException {
+	public void write(SelectionKey key) throws IOException {
 		DatagramChannel chan = (DatagramChannel) key.channel();
 		UdpServerConnection udp = (UdpServerConnection) key.attachment();
 
@@ -74,7 +72,7 @@ public class UdpThread extends ChannelThread implements Runnable {
 	}
 
 	@Override
-	protected void read(SelectionKey key) throws IOException {
+	public void read(SelectionKey key) throws IOException {
 
 		DatagramChannel chan = (DatagramChannel) key.channel();
 		UdpServerConnection udp = (UdpServerConnection) key.attachment();
